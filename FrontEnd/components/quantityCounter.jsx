@@ -3,14 +3,14 @@ import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { icons } from "../constants";
 
-const Counter = () => {
-  const [count, setCount] = useState(1);
+const Counter = ({ count }) => {
+  // const [count, setCount] = useState(1);
 
   return (
     <View className=" rounded-xl flex-row items-center space-x-2 bg-primary">
       <TouchableOpacity
         className=" "
-        onPress={() => count > 1 && setCount(count - 1)}
+        // onPress={() => count > 1 && setCount(count - 1)}
       >
         <Image
           source={icons.minus}
@@ -20,7 +20,10 @@ const Counter = () => {
         />
       </TouchableOpacity>
       <Text className="text-lg px-1 text-white">{count}</Text>
-      <TouchableOpacity className="" onPress={() => setCount(count + 1)}>
+      <TouchableOpacity
+        className=""
+        // onPress={() => setCount(count + 1)}
+      >
         <Image
           source={icons.plus}
           resizeMode="contain"

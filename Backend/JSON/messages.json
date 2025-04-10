@@ -1,0 +1,135 @@
+[{
+  "_id": {
+    "$oid": "67731ea83633aa6739208f09"
+  },
+  "sender": {
+    "$oid": "6745f78a3688d18da40b752c"
+  },
+  "receiver": {
+    "$oid": "676bb775cf524afed14f8ca6"
+  },
+  "content": "Hello",
+  "createdAt": {
+    "$date": "2024-12-30T22:28:56.192Z"
+  },
+  "updatedAt": {
+    "$date": "2024-12-30T22:28:56.192Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "677321cfed9d58675b41bce5"
+  },
+  "sender": {
+    "$oid": "676bb775cf524afed14f8ca6"
+  },
+  "receiver": {
+    "$oid": "6745f78a3688d18da40b752c"
+  },
+  "content": "Good evening, how can I help you",
+  "createdAt": {
+    "$date": "2024-12-30T22:42:23.157Z"
+  },
+  "updatedAt": {
+    "$date": "2024-12-30T22:42:23.157Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67d839997748273a978213d9"
+  },
+  "sender": {
+    "$oid": "6745f78a3688d18da40b752c"
+  },
+  "receiver": {
+    "$oid": "676bb775cf524afed14f8ca6"
+  },
+  "content": "I want to book an appointment for next Saturday ",
+  "createdAt": {
+    "$date": "2025-03-17T15:02:49.161Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-17T15:02:49.161Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67da20f56bc9f7e540651847"
+  },
+  "sender": {
+    "$oid": "676bb775cf524afed14f8ca6"
+  },
+  "receiver": {
+    "$oid": "6745f78a3688d18da40b752c"
+  },
+  "content": "Sure, let me check if there are any available",
+  "createdAt": {
+    "$date": "2025-03-19T01:42:13.412Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-21T03:12:52.214Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67dcdb45895471d6ebd85d24"
+  },
+  "sender": {
+    "$oid": "676bb775cf524afed14f8ca6"
+  },
+  "receiver": {
+    "$oid": "6745f78a3688d18da40b752c"
+  },
+  "content": "I can schedule you at 8pm ",
+  "createdAt": {
+    "$date": "2025-03-21T03:21:41.016Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-21T03:21:41.016Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67dcdc04895471d6ebd85d2e"
+  },
+  "sender": {
+    "$oid": "676bb775cf524afed14f8ca6"
+  },
+  "receiver": {
+    "$oid": "6745f78a3688d18da40b752c"
+  },
+  "content": "Does it suit you, or should we consider another day ?",
+  "createdAt": {
+    "$date": "2025-03-21T03:24:52.232Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-21T03:40:16.951Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67e6fdeafc36423a2d6f7c1d"
+  },
+  "sender": {
+    "$oid": "676bb775cf524afed14f8ca6"
+  },
+  "receiver": {
+    "$oid": "6745f78a3688d18da40b752c"
+  },
+  "media": {
+    "$oid": "67e6fdeafc36423a2d6f7c19"
+  },
+  "createdAt": {
+    "$date": "2025-03-28T19:52:10.346Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-28T19:52:10.346Z"
+  },
+  "__v": 0
+}]

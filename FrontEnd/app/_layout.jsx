@@ -1,9 +1,11 @@
-import { SplashScreen, Stack } from "expo-router";
+import { router, SplashScreen, Stack, useSegments } from "expo-router";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
-
+import { ActivityIndicator, Text, View } from "react-native";
+import { useUserStore } from "../store/userStore";
 SplashScreen.preventAutoHideAsync();
-export default function RootLayout() {
+function RootLayout() {
+  // const segments = useSegments();
   const [fontsLoaded, error] = useFonts({
     "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
     "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
@@ -20,12 +22,41 @@ export default function RootLayout() {
     if (fontsLoaded) SplashScreen.hideAsync();
     if (!fontsLoaded && !error) return;
   }, [fontsLoaded, error]);
+  const { user, loading, role, getUser, isFirstLaunch } = useUserStore();
+  useEffect(() => {
+    getUser();
+  }, []);
+  useEffect(() => {
+    if (!loading) {
+      SplashScreen.hideAsync();
+      if (user == null) {
+        router.replace("auth/sign-in");
+      }
+      if (user !== null) {
+        if (role !== "Doctor") {
+          router.replace("/patient/home");
+        } else {
+          router.replace("/doctor/dashboard");
+        }
+      }
+    }
+  }, [user, loading]);
+  if (loading) {
+    return (
+      <View className="h-full flex items-center justify-center bg-white">
+        <Text>Loading</Text>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
+
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="(auth)" />
-      <Stack.Screen name="(tabs)" />
-      {/* <Stack.Screen name="(doctor)" /> */}
+      <Stack.Screen name="patient/(tabs)" />
+      <Stack.Screen name="doctor" />
     </Stack>
   );
 }
+export default RootLayout;

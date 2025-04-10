@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const userModel = require("../models/User");
+const patientModel = require("../models/Patient");
 const productModel = require("../models/Product");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -20,7 +21,7 @@ module.exports.signin = async (req, res) => {
     const user = await userModel.login(email, password);
     const token = jwt.sign({ uid: user._id }, process.env.TOKEN_SECRET);
     if (token) {
-      res.json({ accessToken: token });
+      res.json({ accessToken: token, user: user });
     }
   } catch (error) {
     console.error(error.message);
@@ -28,9 +29,19 @@ module.exports.signin = async (req, res) => {
   }
 };
 module.exports.getUser = async (req, res) => {
+  const { uid } = req.user;
+  try {
+    const user = await userModel.findById(uid).select("-passowrd");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (error) {
+    console.log(error);
+  }
+};
+module.exports.getUserById = async (req, res) => {
   const { id } = req.params;
   try {
-    const user = await userModel.findById(id);
+    const user = await userModel.findById(id).select("-passowrd");
     if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
   } catch (error) {
@@ -39,7 +50,7 @@ module.exports.getUser = async (req, res) => {
 };
 module.exports.likeProduct = async (req, res) => {
   const { uid } = req.user;
-  console.log(uid);
+
   const { productId } = req.body;
   if (!uid || !productId) {
     return res
@@ -71,24 +82,43 @@ module.exports.likeProduct = async (req, res) => {
 
 module.exports.addToCart = async (req, res) => {
   const { uid } = req.user;
-  const { productId } = req.body;
+  const { productId } = req.params;
+
   try {
-    const user = await userModel.findById(uid);
+    // Fetch user with only cart field
+    const user = await patientModel.findById(uid);
+    return res.json(user);
     if (!user) return res.status(404).json({ message: "User not found" });
-    const product = await productModel.findById(productId);
-    if (!product) return res.status(404).json({ message: "Product not found" });
-    const cartIndex = user.cart.find(
-      (cartElement) => cartElement.product == product.id
+
+    // Check if product exists (only select _id)
+    const productExists = await productModel.exists({ _id: productId });
+    if (!productExists)
+      return res.status(404).json({ message: "Product not found" });
+
+    // Ensure cart exists
+    // if (!user.cart) user.cart = [];
+    return res.json(user);
+    // Check if product is already in the cart
+    const alreadyInCart = user.cart.some((cartItem) =>
+      cartItem.product.equals(productId)
     );
-    if (cartIndex) {
-      return res.status(401).send("Product already exists in cart");
+    return res.json(alreadyInCart);
+    if (alreadyInCart) {
+      return res
+        .status(400)
+        .json({ message: "Product already exists in cart" });
     }
-    user.cart.push({ product: product.id });
+
+    // Add to cart
+    user.cart.push({ product: productId });
     await user.save();
-    res.json(user);
+
+    res.status(200).json({ message: "Product added to cart", cart: user.cart });
   } catch (error) {
-    console.log(error.message);
-    res.status(500).json({ message: "Connection error : ", error });
+    console.error(error.message);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 module.exports.removeCart = async (req, res) => {

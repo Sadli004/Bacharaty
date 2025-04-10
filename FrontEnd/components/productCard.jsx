@@ -1,45 +1,67 @@
-import { View, Text, Image, ImageBackground } from "react-native";
-import React from "react";
+import { View, Text, Image, ImageBackground, Alert } from "react-native";
+import React, { useState } from "react";
 import { images, icons } from "../constants";
 import { TouchableOpacity } from "react-native";
 import { router } from "expo-router";
+import { useProductStore } from "../store/productStore";
+import { useUserStore } from "../store/userStore";
 
 const ProductCard = ({ item }) => {
+  const { product, getSingleProduct, likeProduct, addToCart } =
+    useProductStore();
+  const { user } = useUserStore();
   const imageUrl =
-    "https://cosmeticstoredz.com/wp-content/uploads/2023/12/CC-228.png";
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQW674mm7aoc6mLqkJR7ISwbc2pEPApLNt69g&s";
   return (
     <TouchableOpacity
-      className=" flex-1 m-2 border border-primary rounded-xl  overflow-hidden shadow-md bg-white"
-      onPress={() => router.push("product/[id]")}
+      className="flex-1 m-2 border border-light rounded-xl overflow-hidden shadow-md bg-white p-1"
+      onPress={() => {
+        getSingleProduct(item._id);
+        router.push(`patient/product/[${item._id}]`);
+      }}
     >
-      <View className=" h-[120px] bg-gray-200 m-0.5  rounded-lg bg-primary">
-        <TouchableOpacity className="absolute top-0 right-0 z-10">
-          <Image
-            source={icons.heart}
-            className="m-2 h-7 w-7 "
-            tintColor="black"
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
+      {/* Product Image as Background */}
+      <View className="relative h-[160px] rounded-xl overflow-hidden">
         <Image
           source={{ uri: imageUrl }}
-          resizeMode="cover" // Ensure the image covers the area
-          className="w-full h-full rounded-lg "
+          resizeMode="cover"
+          className="absolute w-full h-full"
         />
+
+        {/* Wishlist Button */}
+        <TouchableOpacity
+          className="absolute top-2 right-2  p-1 bg-transparent shadow-md"
+          onPress={() => likeProduct(item._id)}
+        >
+          {user.liked.includes(item._id) ? (
+            <Image
+              source={icons.heart_filled}
+              className="h-6 w-6"
+              tintColor="red"
+            />
+          ) : (
+            <Image source={icons.heart} className="h-6 w-6" tintColor="black" />
+          )}
+        </TouchableOpacity>
       </View>
-      <View className="m-2">
-        <Text className="text-black font-psemibold text-xl">{item.name}</Text>
-        <Text className="text-sm text-gray font-pregular">
-          {item.brand ?? "Brand"}
-        </Text>
-        <View className="flex-row justify-between ">
-          <Text className="text-lg">{item.price}</Text>
-          <TouchableOpacity onPress={() => router.push("cart")}>
+
+      {/* Product Details */}
+      <View className="p-3 bg-white">
+        <Text className="text-black font-semibold text-base">{item.name}</Text>
+        <Text className="text-sm text-gray-500">{item.brand}</Text>
+        <View className="flex-row justify-between items-center mt-2">
+          <Text className="text-lg font-bold text-primary">{item.price}</Text>
+
+          {/* Add to Cart Button */}
+          <TouchableOpacity
+            onPress={() => {
+              addToCart(item._id);
+            }}
+          >
             <Image
               source={icons.cart}
-              tintColor="#0CC0DF"
-              resizeMode="contain"
               className="h-7 w-7"
+              tintColor="#0CC0DF"
             />
           </TouchableOpacity>
         </View>

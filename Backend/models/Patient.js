@@ -1,3 +1,6 @@
+const mongoose = require("mongoose");
+const { Schema } = require("mongoose");
+const User = require("./User");
 const PatientSchema = new Schema({
   cart: [
     {

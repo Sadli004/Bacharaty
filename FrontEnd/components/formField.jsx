@@ -12,18 +12,21 @@ const FormField = ({
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
-    <View className={`space-y-2 w-full flex-column ${props.otherStyles}`}>
+    <View className={`space-y-2 w-full flex-column ${props.containerStyles}`}>
       <Text>{title}</Text>
-      <View className="w-full h-14 border border-primary focus:border-secondary bg-gray-100 rounded-xl justify-between flex-row items-center">
+      <View
+        className={`w-full h-14 border border-primary focus:border-pactive bg-gray-100 rounded-xl justify-between flex-row items-center ${props.otherStyles}`}
+      >
         <TextInput
           className="flex-1 items-center p-4 "
           placeholder={placeholder}
-          placeholderTextColor="#1c5c73"
+          placeholderTextColor="black"
+          defaultValue={props.defaultValue}
           keyboardType={keyboardType}
           onChangeText={handleChange}
-          secureTextEntry={keyboardType === "password" && !showPassword}
+          secureTextEntry={props.type === "password" && !showPassword}
         />
-        {keyboardType === "password" && (
+        {props.type === "password" && (
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Image
               source={showPassword ? icons.eyeHide : icons.eye}

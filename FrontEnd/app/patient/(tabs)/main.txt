@@ -1,0 +1,19 @@
+import { View, Text, SafeAreaView } from "react-native";
+import React from "react";
+import CustomButton from "../../../components/customButton";
+
+const main = () => {
+  return (
+    <SafeAreaView className="h-full flex items-center justify-center">
+      <View className="bg-lactive h-250 max-w-250 p-4 rounded-3xl">
+        <Text className="text-3xl font-pbold">
+          Find your glow with Bacharaty
+        </Text>
+        <CustomButton title="Book appointment" />
+        <CustomButton title="Show Now" />
+      </View>
+    </SafeAreaView>
+  );
+};
+
+export default main;

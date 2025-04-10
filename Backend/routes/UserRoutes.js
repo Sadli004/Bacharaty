@@ -2,6 +2,7 @@ const { bucket } = require("../index");
 const {
   signup,
   getUser,
+  getUserById,
   signin,
   likeProduct,
   addToCart,
@@ -48,9 +49,10 @@ router.get("/download/files/:fileId", async (req, res) => {
 // Signup User
 router.post("/signup", upload().single("profilepic"), signup);
 router.post("/login", signin);
-router.get("/:id", getUser);
+router.get("/", checkAccess, getUser);
+router.get("/:id", getUserById);
 router.post("/product/like", checkAccess, likeProduct);
 router.get("/product/like/", checkAccess, getLiked);
 router.get("/product/cart", checkAccess, getCart);
-router.post("/product/cart", checkAccess, addToCart);
+router.post("/product/cart/:productId", checkAccess, addToCart);
 module.exports = router;

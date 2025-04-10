@@ -3,7 +3,13 @@ import React from "react";
 import { TouchableOpacity } from "react-native";
 import { icons } from "../constants";
 
-const CustomButton = ({ handlePress, title, containerStyles, ...props }) => {
+const CustomButton = ({
+  handlePress,
+  title,
+  containerStyles,
+  textStyles,
+  ...props
+}) => {
   return (
     <TouchableOpacity
       className={`bg-primary rounded-lg  mt-4 p-4 ${containerStyles}`}
@@ -17,7 +23,9 @@ const CustomButton = ({ handlePress, title, containerStyles, ...props }) => {
           tintColor="#0CC0DF"
         />
       ) : (
-        <Text className="text-gray-100 font-psemibold text-center">
+        <Text
+          className={`text-gray-100 font-psemibold text-center text-white  ${textStyles}`}
+        >
           {title}
         </Text>
       )}

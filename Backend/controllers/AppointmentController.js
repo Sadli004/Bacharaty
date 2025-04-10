@@ -37,7 +37,9 @@ module.exports.getAppointmentsByUser = async (req, res) => {
 module.exports.getAppointmentsForDoctor = async (req, res) => {
   const { uid } = req.user;
   try {
-    const appointments = await Appointment.find({ doctor: uid });
+    const appointments = await Appointment.find({ doctor: uid })
+      .select("-doctor")
+      .populate("patient", "name");
     res.json(appointments);
   } catch (error) {
     res.status(500).send(error.message);
