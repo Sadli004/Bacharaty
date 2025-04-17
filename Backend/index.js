@@ -1,73 +1,94 @@
 const express = require("express");
-const bodyParser = require("body-parser");
-const app = express();
-const userRoutes = require("./modules/user/user.routes");
-const productRoutes = require("./modules/product/product.routes");
-const doctorRoutes = require("./modules/doctor/doctor.routes");
-const appointmentRoutes = require("./modules/appointment/appointment.routes");
-const filesRoutes = require("./modules/files/files.routes");
-const chatRoutes = require("./modules/chat/chat.routes");
-const patientRoutes = require("./modules/patient/patient.routes");
-const connDb = require("./config/db");
+const http = require("http");
+const { Server } = require("socket.io");
 const cors = require("cors");
-const { default: mongoose } = require("mongoose");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-app.use(
-  cors({
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
     origin: "*",
-    credentials: true, // Required for cookies, authorization headers with HTTPS
-  })
-); // Enable CORS for all routes
+    credentials: true,
+  },
+});
+
+io.use((socket, next) => {
+  const token = socket.handshake.auth.token;
+  if (!token) return next(new Error("No token provided"));
+
+  jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
+    if (err) return next(new Error("Invalid token"));
+    socket.user = decoded;
+    next();
+  });
+});
+
+const onlineUsers = new Map();
+
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+
+  socket.on("join", (userId) => {
+    onlineUsers.set(userId, socket.id);
+    console.log(onlineUsers);
+  });
+
+  socket.on("send-message", ({ chatId, message, receiverId }) => {
+    console.log(message);
+    const receiverSocketId = onlineUsers.get(receiverId);
+    console.log(receiverSocketId);
+    if (receiverSocketId) {
+      console.log(receiverId);
+      io.to(receiverSocketId).emit("new-message", { chatId, message });
+    }
+  });
+  // Handle message updates
+  socket.on("update-message", ({ message, receiverId }) => {
+    const receiverSocketId = onlineUsers.get(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("message-updated", message);
+    }
+  });
+
+  // Handle message deletions
+  socket.on("delete-message", ({ messageId, receiverId }) => {
+    const receiverSocketId = onlineUsers.get(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("message-deleted", messageId);
+    }
+  });
+  socket.on("disconnect", () => {
+    for (let [key, value] of onlineUsers.entries()) {
+      if (value === socket.id) {
+        onlineUsers.delete(key);
+        break;
+      }
+    }
+    console.log("User disconnected:", socket.id);
+  });
+});
+
+// Middleware
+app.use(cors({ origin: "*", credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-const PORT = process.env.PORT;
+
+// DB and routes
+const connDb = require("./config/db");
 connDb();
-// let bucket;
-// (() => {
-//   mongoose.connection.on("connected", () => {
-//     bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
-//       bucketName: "chat_media",
-//     });
-//   });
-// })();
-// app.get("/download/files/:fileId", async (req, res) => {
-//   try {
-//     const { fileId } = req.params;
 
-//     // Check if file exists
-//     const file = await bucket
-//       .find({ _id: new mongoose.Types.ObjectId(fileId) })
-//       .toArray();
-//     if (file.length === 0) {
-//       return res.status(404).json({ error: { text: "File not found" } });
-//     }
+app.use("/user", require("./modules/user/user.routes"));
+app.use("/product", require("./modules/product/product.routes"));
+app.use("/doctor", require("./modules/doctor/doctor.routes"));
+app.use("/patient", require("./modules/patient/patient.routes"));
+app.use("/appointment", require("./modules/appointment/appointment.routes"));
+app.use("/chat", require("./modules/chat/chat.routes"));
+app.use("/download", require("./modules/files/files.routes"));
 
-//     // set the headers
-//     res.set("Content-Type", file[0].contentType);
-//     res.set("Content-Disposition", `attachment; filename=${file[0].filename}`);
-
-//     // create a stream to read from the bucket
-//     const downloadStream = bucket.openDownloadStream(
-//       new mongoose.Types.ObjectId(fileId)
-//     );
-
-//     // pipe the stream to the response
-//     downloadStream.pipe(res);
-//   } catch (error) {
-//     console.log(error);
-//     res.status(400).json({ error: { text: `Unable to download file`, error } });
-//   }
-// });
-app.use("/user", userRoutes);
-app.use("/product", productRoutes);
-app.use("/doctor", doctorRoutes);
-app.use("/patient", patientRoutes);
-app.use("/appointment", appointmentRoutes);
-app.use("/chat", chatRoutes);
-app.use("/download", filesRoutes);
-app.listen(PORT, (err, res) => {
-  if (err) console.log(err);
+// Start server
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

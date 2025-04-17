@@ -72,7 +72,7 @@ const MessageInput = ({
   };
   return (
     <View
-      className={` ${otherStyles} w-full h-14 border border-primary focus:border-pactive bg-gray-100 rounded-3xl justify-between flex-row items-center`}
+      className={` ${otherStyles} w-full h-12 border border-primary focus:border-pactive bg-gray-100 rounded-3xl justify-between flex-row items-center`}
     >
       {audioUri && (
         <View className="flex-row items-center bg-white border rounded-xl px-2 py-1 mb-2 mx-2">
@@ -88,7 +88,7 @@ const MessageInput = ({
       <TextInput
         className="flex-1 items-center p-4 "
         placeholder={placeholder}
-        placeholderTextColor="#1c5c73"
+        placeholderTextColor="black"
         keyboardType="default"
         value={value}
         onChangeText={(newText) => setValue(newText)}

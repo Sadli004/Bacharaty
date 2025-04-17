@@ -2,18 +2,19 @@ const userModel = require("../../models/User");
 const { Media } = require("../../models/Media");
 const jwt = require("jsonwebtoken");
 const { uploadToGridFS } = require("../../utils/upload");
+const { default: isEmail } = require("validator/lib/isEmail");
 require("dotenv").config();
 module.exports.signin = async (req, res) => {
   const { email, password } = req.body;
   try {
+    if (!isEmail(email)) return res.status(400).send("Invalid email");
     const user = await userModel.login(email, password);
     const token = jwt.sign({ uid: user._id }, process.env.TOKEN_SECRET);
     if (token) {
       res.json({ accessToken: token, user: user });
     }
   } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Internal Server Error");
+    res.status(500).send(error.message);
   }
 };
 module.exports.getUserById = async (req, res) => {
@@ -77,3 +78,10 @@ module.exports.deleteUser = async (req, res) => {
     console.log(error);
   }
 };
+// module.exports.logout = async (req,res) => {
+//   try {
+
+//   } catch (error) {
+
+//   }
+// }

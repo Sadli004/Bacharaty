@@ -15,6 +15,6 @@ router.get("/user", checkAccess, getChatsPerUser);
 router.post("/:chatId", checkAccess, upload.single("file"), sendMessage);
 router.get("/:chatId", checkAccess, getChatById);
 router.patch("/seen/:chatId", checkAccess, markSeen);
-router.patch("message/edit/:messageId", checkAccess, editMessage);
-router.delete("message/delete/:messageId", checkAccess, deleteMessage);
+router.patch("/message/edit/:messageId", checkAccess, editMessage);
+router.delete("/message/delete/:messageId", checkAccess, deleteMessage);
 module.exports = router;

@@ -14,7 +14,7 @@ import { router } from "expo-router";
 import { useUserStore } from "../../../store/userStore";
 import { formatTime, fromLastMsg } from "../../../utils/date";
 export default function Chat() {
-  const { getUserChats, chats } = useChatStore();
+  const { getUserChats, chats, receiver } = useChatStore();
   const { user } = useUserStore();
   useEffect(() => {
     getUserChats();
@@ -22,7 +22,7 @@ export default function Chat() {
   return (
     <View className="flex-1">
       {/*Header */}
-      <SafeAreaView className="bg-secondary h-[160px] mb-4">
+      <SafeAreaView className="bg-secondary  mb-4">
         <View className="p-2">
           <Text className="font-pbold text-xl mb-2">Chats</Text>
           <SearchInput otherStyles="rounded-3xl bg-light" />
@@ -48,7 +48,11 @@ export default function Chat() {
                 )}
               </View>
               <Image
-                source={images.profile_doc}
+                source={{
+                  uri:
+                    receiver?.profilePicture ||
+                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
+                }}
                 className="rounded-full w-16 h-16"
                 resizeMode="cover"
               />
@@ -66,14 +70,17 @@ export default function Chat() {
                       ? "You"
                       : item.receiver?.name}
                     :{" "}
-                    {!item.chatId?.lastMessage?.content
+                    {!item.chatId?.lastMessage?.content &&
+                    item.chatId.lastMessage?.media
                       ? "Sent an image"
-                      : item.chatId?.lastMessage?.content}
+                      : item.chatId?.lastMessage?.content
+                      ? item.chatId?.lastMessage?.content
+                      : ""}
                   </Text>
                 </View>
                 <View className="">
                   <Text className="text-xs text-gray-500">
-                    {fromLastMsg(item.chatId?.lastMessage?.createdAt) || "2h"}
+                    {fromLastMsg(item.chatId?.lastMessage?.createdAt) || ""}
                   </Text>
                 </View>
               </View>

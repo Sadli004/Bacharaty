@@ -85,31 +85,7 @@ const SignUp = () => {
                 />
               </View>
             </DismissKeyboard>
-            {/* <View className="mt-7 items-center">
-            <View className="flex-1 h-px bg-gray" />
-            <Text className="text-gray-500 text-center font-pregular mb-4">
-              Or{" "}
-            </Text>
-            <View className="flex-1 h-px bg-gray" />
-            <View className=" gap-8 w-[90%]">
-              <TouchableOpacity className=" border border-gray shadow-md items-center justify-center flex-row rounded-3xl py-2 px-4">
-                <Image
-                  source={icons.google}
-                  resizeMode="contain"
-                  className="w-6 h-6 mr-3 self-start"
-                />
-                <Text className="text-base">Continue with Google</Text>
-              </TouchableOpacity>
-              <TouchableOpacity className=" border border-gray shadow-md items-center justify-center flex-row rounded-3xl py-2 px-4">
-                <Image
-                  source={icons.apple}
-                  resizeMode="contain"
-                  className="w-6 h-6 mr-3 self-start"
-                />
-                <Text className="text-base">Continue with Apple</Text>
-              </TouchableOpacity>
-            </View>
-          </View> */}
+
             <Text className="mt-12 text-center font-pregular items-center">
               Already have an account? {""}
               <Pressable onPress={() => router.back()}>

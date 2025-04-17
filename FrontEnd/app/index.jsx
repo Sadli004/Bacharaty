@@ -27,7 +27,7 @@ export default function Index() {
           <Text className="text-3xl">OnBoarding screen</Text>
         </View>
       ) : (
-        <Text>I'm fucked</Text>
+        <Text>Hello</Text>
       )}
     </SafeAreaView>
   );

@@ -18,11 +18,11 @@ import { DismissKeyboard } from "../../../utils/keyboard";
 import { useUserStore } from "../../../store/userStore";
 const Magasin = () => {
   const { products, fetchProducts, loading } = useProductStore();
-  const { user, token } = useUserStore();
+  const { user } = useUserStore();
+
   useEffect(() => {
     fetchProducts();
-    console.log(token);
-  }, [fetchProducts]);
+  }, []);
 
   return (
     <View className=" flex-1 bg-[#f9f9f9]">

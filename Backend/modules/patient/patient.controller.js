@@ -29,7 +29,7 @@ module.exports.getCart = async (req, res) => {
   try {
     const patient = await Patient.findById(uid).populate(
       "cart.product",
-      "name price brand"
+      "name price brand picture"
     );
     if (!patient) {
       return res.status(404).send("User not found");

@@ -25,13 +25,13 @@ const ProductItem = () => {
     <SafeAreaView className=" rounded-lg   shadow h-full flex-1 ">
       <View className=" flex-1 relative  ">
         <Image
-          source={{ uri: imageUrl }}
-          resizeMode="cover"
-          className="h-[60%] w-full "
+          source={{ uri: product.picture || imageUrl }}
+          resizeMode="contain"
+          className="h-[60%] w-full bg-white"
         />
       </View>
 
-      <View className=" absolute bottom-0 left-0 right-0 rounded-t-3xl bg-white shadow p-6  ">
+      <View className=" absolute bottom-0 left-0 right-0 rounded-t-3xl bg-[#f9f9f9] shadow p-6  ">
         <View className="flex-row justify-between items-center">
           <Text className="text-3xl font-psemibold">{product.name}</Text>
           <TouchableOpacity

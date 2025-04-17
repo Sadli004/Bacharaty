@@ -1,13 +1,14 @@
 import axios from "axios";
 import { create } from "zustand";
 import * as SecureS from "expo-secure-store";
-
+import showToast from "../utils/showToast";
 export const useUserStore = create((set) => ({
   user: null,
   role: null,
   token: null,
   isFirstLaunch: false,
   loading: true,
+
   getUser: async () => {
     const token = await SecureS.getItemAsync("token");
 
@@ -28,12 +29,12 @@ export const useUserStore = create((set) => ({
       const response = await axios.get(
         `${process.env.EXPO_PUBLIC_API_URL}/user/`
       );
-      console.log("User response:", response.data);
 
       const profilePicUri = response.data.profilePicture
         ? `${process.env.EXPO_PUBLIC_API_URL}/download/user/profile/${response.data.profilePicture}`
         : null;
       response.data.profilePicture = profilePicUri;
+
       set({
         user: response.data,
         role: response.data.role,
@@ -85,9 +86,9 @@ export const useUserStore = create((set) => ({
   },
 
   login: async (email, password) => {
-    console.log("login");
     if ((!email, !password)) {
       alert("Please enter both email and password");
+      return;
     }
     try {
       const response = await axios.post(
@@ -104,7 +105,8 @@ export const useUserStore = create((set) => ({
       set({ user: user, role: user.role, token: token, loading: false });
     } catch (error) {
       console.log(error.message);
-      return;
+      console.log(error.response.data);
+      throw error;
     }
   },
   registre: async (formData) => {
@@ -136,4 +138,22 @@ export const useUserStore = create((set) => ({
     axios.defaults.headers.common["authorization"] = "";
     set({ user: null, role: null, loading: false });
   },
+  // likeProduct: async (productId) => {
+
+  //   try {
+  //     axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
+  //     const response = await axios.post(
+  //       `${process.env.EXPO_PUBLIC_API_URL}/product/like/`,
+  //       {
+  //         productId,
+  //       }
+  //     );
+
+  //     set((state) => ({
+  //       user: {...user, liked : response.data.patient.liked}
+  //     }));
+  //   } catch (error) {
+  //     console.error(error.response?.data.message);
+  //   }
+  // },
 }));

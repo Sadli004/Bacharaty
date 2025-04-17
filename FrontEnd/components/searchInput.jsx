@@ -4,12 +4,12 @@ import { icons } from "../constants";
 const SearchInput = ({ otherStyles }) => {
   return (
     <View
-      className={`w-full h-14 border border-primary focus:border-pactive bg-gray-100 rounded-xl justify-between flex-row items-center ${otherStyles}`}
+      className={`w-full h-12 border border-primary shadow-md focus:border-pactive bg-gray-100 rounded-xl justify-between flex-row items-center ${otherStyles}`}
     >
       <TextInput
         className="flex-1 items-center p-4 "
         placeholder="Type to search"
-        placeholderTextColor="#1c5c73"
+        placeholderTextColor="gray"
       />
       <Image
         source={icons.search}

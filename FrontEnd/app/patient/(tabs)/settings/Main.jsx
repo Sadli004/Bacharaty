@@ -17,7 +17,7 @@ export default function Settings() {
   const router = useRouter();
   const { user, logout } = useUserStore();
   useEffect(() => {
-    console.log(user);
+    if (!user) router.replace("auth/sign-in");
   }, []);
   return (
     <View className="flex-1 justify-center items-center bg-[#f9f9f9]">
@@ -27,7 +27,9 @@ export default function Settings() {
           className="w-20 h-20 rounded-full"
           resizeMode="cover"
           source={{
-            uri: user?.profilePicture,
+            uri:
+              user?.profilePicture ||
+              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
           }}
         />
         <Text className="font-pbold text-xl">{user?.name || "username"}</Text>
@@ -167,7 +169,7 @@ export default function Settings() {
           containerStyles="bg-primary rounded-3xl"
           textStyles="text-white"
           handlePress={() => {
-            router.push("auth/sign-in");
+            // router.push("auth/sign-in");
             logout();
           }}
         />

@@ -7,7 +7,7 @@ const Counter = ({ count }) => {
   // const [count, setCount] = useState(1);
 
   return (
-    <View className=" rounded-xl flex-row items-center space-x-2 bg-primary">
+    <View className=" rounded-xl flex-row items-center shadow-md space-x-2 bg-primary">
       <TouchableOpacity
         className=" "
         // onPress={() => count > 1 && setCount(count - 1)}

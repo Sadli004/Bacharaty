@@ -3,6 +3,7 @@ import { useFonts } from "expo-font";
 import { useEffect } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import { useUserStore } from "../store/userStore";
+import { ToastProvider } from "react-native-toast-notifications";
 SplashScreen.preventAutoHideAsync();
 function RootLayout() {
   // const segments = useSegments();
@@ -51,12 +52,14 @@ function RootLayout() {
   }
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="index" />
-      <Stack.Screen name="(auth)" />
-      <Stack.Screen name="patient/(tabs)" />
-      <Stack.Screen name="doctor" />
-    </Stack>
+    <ToastProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="patient/(tabs)" />
+        <Stack.Screen name="doctor" />
+      </Stack>
+    </ToastProvider>
   );
 }
 export default RootLayout;

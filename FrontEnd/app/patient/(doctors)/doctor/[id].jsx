@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, Image } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { icons, images } from "../../../../constants";
 import CustomButton from "../../../../components/customButton";
@@ -12,6 +12,17 @@ const Docotor = () => {
   const { user } = useUserStore();
   const { doctor } = useDoctorStore();
   const { startNewChat } = useChatStore();
+  const [loading, setLoading] = useState(false);
+  const { chats } = useChatStore();
+  const handleStartChat = async () => {
+    const existingChat = chats.find((chat) => chat.receiver._id == id);
+    console.log(existingChat);
+    if (existingChat) router.replace(`patient/${existingChat.chatId._id}`);
+    else {
+      const chat = await startNewChat(user._id, id);
+      router.replace(`patient/${chat.chatId._id}`);
+    }
+  };
   useEffect(() => {
     console.log(id);
   }, [id]);
@@ -97,8 +108,7 @@ const Docotor = () => {
           containerStyles="flex-1 bg-primary rounded-3xl py-2 mx-2 p-4 flex-1 shadow-md"
           textStyles="text-white items-center"
           handlePress={() => {
-            startNewChat(user._id, id);
-            router.push("patient/(tabs)/chat");
+            handleStartChat();
           }}
         />
       </SafeAreaView>

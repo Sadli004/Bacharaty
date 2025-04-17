@@ -11,10 +11,14 @@ import { useRouter } from "expo-router";
 import { useUserStore } from "../../../../store/userStore";
 import CustomButton from "../../../../components/customButton";
 import { icons } from "../../../../constants";
+import { useEffect } from "react";
 
 export default function Settings() {
   const router = useRouter();
   const { user, logout } = useUserStore();
+  useEffect(() => {
+    if (!user) router.push("auth/sign-in");
+  }, [user]);
   return (
     <View className="flex-1 justify-center items-center bg-[#f9f9f9]">
       {/* Header*/}
@@ -23,9 +27,7 @@ export default function Settings() {
           className="w-20 h-20 rounded-full"
           resizeMode="cover"
           source={{
-            uri:
-              user?.profilePicUri ||
-              "https://randomuser.me/api/portraits/men/20.jpg",
+            uri: user?.profilePicture,
           }}
         />
         <Text className="font-pbold text-xl">{user?.name}</Text>

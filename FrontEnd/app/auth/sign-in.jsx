@@ -14,17 +14,24 @@ import { icons } from "../../constants";
 import { TouchableOpacity } from "react-native";
 import { Redirect, router } from "expo-router";
 import { useUserStore } from "../../store/userStore";
+import { useToast } from "react-native-toast-notifications";
+import showToast from "../../utils/showToast";
 const SignIn = () => {
+  const toast = useToast();
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
   const { user, login } = useUserStore();
-  useEffect(() => {
-    if (user) {
-      router.push("patient/settings");
-    }
-  }, [user]);
+
+  const handleSignIn = async () => {
+    login(form.email, form.password).catch((error) => {
+      toast.show(error.response.data || "Login error", {
+        type: "danger",
+        placement: "bottom",
+      });
+    });
+  };
   return (
     <SafeAreaView className="bg-[#f9f9f9] ">
       <ScrollView>
@@ -58,18 +65,18 @@ const SignIn = () => {
             </Text>
             <CustomButton
               title="Sign In"
-              handlePress={() => login(form.email, form.password)}
-              containerStyles="mt-7"
+              handlePress={handleSignIn}
+              containerStyles="mt-7 shadow-md"
             />
           </View>
           <View className="mt-7 items-center">
-            <View className="flex-1 h-px bg-gray" />
+            {/* <View className="flex-1 h-px bg-gray" /> */}
             <Text className="text-gray-500 text-center font-pregular mb-4">
               Or{" "}
             </Text>
-            <View className="flex-1 h-px bg-gray" />
+            {/* <View className="flex-1 h-px bg-gray" /> */}
             <View className=" gap-8 w-[90%]">
-              <TouchableOpacity className=" border border-gray shadow-md items-center justify-center flex-row rounded-3xl py-2 px-4">
+              <TouchableOpacity className=" border border-gray shadow-md  items-center justify-center flex-row rounded-3xl py-2 px-4">
                 <Image
                   source={icons.google}
                   resizeMode="contain"
@@ -89,10 +96,7 @@ const SignIn = () => {
           </View>
           <Text className="mt-12 text-center font-pregular">
             Don't have an account? {""}
-            <Link
-              href="auth/sign-up"
-              className="text-secondary text-primary font-psemibold"
-            >
+            <Link href="auth/sign-up" className=" text-primary font-psemibold">
               Sign Up
             </Link>
           </Text>

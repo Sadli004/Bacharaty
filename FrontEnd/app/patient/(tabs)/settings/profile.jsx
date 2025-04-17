@@ -44,10 +44,13 @@ export default function Profile() {
                 className="w-20 h-20 rounded-full"
                 resizeMode="cover"
                 source={{
-                  uri: imageUri || user.profilePicture,
+                  uri:
+                    imageUri ||
+                    user.profilePicture ||
+                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
                 }}
               />
-              <Text className="font-pbold text-xl">{user.name}</Text>
+              <Text className="font-pbold text-xl">{user?.name}</Text>
               <TouchableOpacity
                 className="p-2.5 px-4 bg-primary rounded-3xl shadow-md"
                 onPress={pickImage}

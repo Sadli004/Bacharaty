@@ -16,8 +16,8 @@ const Doctor = () => {
   return (
     <View className="flex-1">
       {/* Header */}
-      <SafeAreaView className="  mb-4 h-[160px] bg-secondary ">
-        <View className="p-2">
+      <SafeAreaView className="  mb-4 bg-secondary ">
+        <View className="p-2 mt-2">
           <Text className="font-psemibold text-xl mb-2 mx-2">Doctors</Text>
           <SearchInput otherStyles="rounded-3xl bg-light " />
         </View>

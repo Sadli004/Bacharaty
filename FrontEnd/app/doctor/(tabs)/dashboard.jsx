@@ -7,25 +7,28 @@ import { useUserStore } from "../../../store/userStore";
 import { useAppointmentStore } from "../../../store/appointmentStore";
 import { AppDate } from "../../../utils/date";
 import CustomButton from "../../../components/customButton";
+import { router } from "expo-router";
 const Dashboard = () => {
   const { fetchDoctorAppointments, appointments } = useAppointmentStore();
   const { user } = useUserStore();
   useEffect(() => {
     fetchDoctorAppointments();
   }, []);
-
+  useEffect(() => {
+    if (!user) router.push("auth/sign-in");
+  }, [user]);
   return (
-    <View className="flex-1 bg-gray-100 p-2 bg-[#f9f9f9]">
+    <View className="flex-1  p-2 bg-[#f9f9f9]">
       {/* Doctor Profile */}
       <SafeAreaView className="flex-row items-center  justify-between">
         <View className="flex-row items-center">
           <Image
-            source={{ uri: user.profilePicture }}
+            source={{ uri: user?.profilePicture }}
             className="w-16 h-16 rounded-full border-2 border-primary"
           />
           <View className="ml-4">
             <Text className="text-gray-500 text-lg">Hello,</Text>
-            <Text className="text-xl font-pbold">{user.name}</Text>
+            <Text className="text-xl font-pbold">{user?.name}</Text>
           </View>
         </View>
         <View>

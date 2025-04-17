@@ -35,11 +35,11 @@ export default function Tab() {
       {/* Doctor Profile */}
       <SafeAreaView className="flex-row items-center mb-8 mx-2">
         <Image
-          source={{ uri: user.profilePicture || icons.profile }}
+          source={{ uri: user?.profilePicture }}
           className="w-16 h-16 rounded-full border-2 border-primary"
         />
         <View className="ml-4">
-          <Text className="text-lg font-pbold">{user.name}</Text>
+          <Text className="text-lg font-pbold">{user?.name}</Text>
           <Text className="text-gray-500">Dermatologist</Text>
         </View>
       </SafeAreaView>

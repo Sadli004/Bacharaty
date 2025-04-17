@@ -8,6 +8,7 @@ import {
   Platform,
   TouchableOpacity,
   Alert,
+  StatusBar,
 } from "react-native";
 import { icons } from "../../constants";
 import React, { useEffect, useState, useRef } from "react";
@@ -17,22 +18,28 @@ import { useChatStore } from "../../store/chatStore";
 import { useUserStore } from "../../store/userStore";
 import { formatDate, formatTime } from "../../utils/date";
 import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
-
+import { connectSocket, getSocket } from "../../utils/socket-io";
+import Toast from "react-native-toast-notifications";
+import { useToast } from "react-native-toast-notifications";
 const Chat = () => {
   const { chatId } = useLocalSearchParams();
   const MessagesRef = useRef(null);
   const [message, setMessage] = useState("");
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [isEditing, setIsEditing] = useState();
+  const isAndroid = Platform.OS == "android";
+  const statusBarHeight = StatusBar.currentHeight;
+  const toast = useToast();
   const {
     messages,
     getChatMessages,
     sendMessage,
     chat,
+    receiver,
     editMessage,
     deleteMessage,
   } = useChatStore();
-  const { user } = useUserStore();
+  const { user, token } = useUserStore();
   useEffect(() => {
     getChatMessages(chatId);
   }, [chatId]);
@@ -41,6 +48,46 @@ const Chat = () => {
       MessagesRef?.current?.scrollToEnd({ animated: true });
     }
   }, [messages]);
+  useEffect(() => {
+    if (!user || !token) return;
+    connectSocket(token, user._id);
+
+    const socket = getSocket();
+    if (!socket) return;
+
+    socket.on("new-message", ({ chatId: incomingChatId, message }) => {
+      if (incomingChatId === chatId) {
+        useChatStore.setState((state) => ({
+          messages: [...state.messages, message],
+        }));
+      }
+      toast.show("You received a new message");
+    });
+    socket.on("message-updated", (updatedMessage) => {
+      useChatStore.setState((state) => ({
+        messages: state.messages.map((msg) =>
+          msg._id === updatedMessage._id ? updatedMessage : msg
+        ),
+      }));
+    });
+
+    // Listen for message deletions
+    socket.on("message-deleted", (deletedMessageId) => {
+      useChatStore.setState((state) => ({
+        messages: state.messages.filter((msg) => msg._id !== deletedMessageId),
+      }));
+    });
+
+    return () => {
+      socket.off("new-message");
+      socket.off("message-updated");
+      socket.off("messagae-deleted");
+    };
+  }, [chatId, user, token]);
+
+  useEffect(() => {
+    if (!user) router.push("auth/sign-in");
+  }, [user]);
   const handleSendMessage = () => {
     if (message.trim()) {
       if (isEditing) {
@@ -54,7 +101,7 @@ const Chat = () => {
     }
   };
   const handleLongPress = (msg) => {
-    if (msg.content) {
+    if (msg.content && msg.sender == user?._id) {
       Alert.alert(
         "Message Options",
         "Choose an action:",
@@ -83,7 +130,12 @@ const Chat = () => {
     setSelectedMessage(msg);
     setIsEditing(true);
   };
-
+  const handleCall = () => {
+    Alert.alert(
+      "This feature is not available yet",
+      "This app is still under development and the requested feature will be available on release"
+    );
+  };
   return (
     <View className="flex-1 bg-[#f9f9f9]">
       <KeyboardAvoidingView
@@ -91,7 +143,10 @@ const Chat = () => {
         className="flex-1"
       >
         {/**Header */}
-        <SafeAreaView className="bg-lgray items-center justify-between flex-row h-auto">
+        <SafeAreaView
+          className="bg-lgray items-center justify-between flex-row h-auto"
+          style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}
+        >
           <View className="flex-row items-center py-2  ml-2">
             <TouchableOpacity onPress={() => router.back()}>
               <Image
@@ -103,17 +158,19 @@ const Chat = () => {
             </TouchableOpacity>
             <View className="flex-row items-center gap-2 ml-2">
               <Image
-                source={{
-                  uri: "https://randomuser.me/api/portraits/men/32.jpg",
-                }}
+                source={
+                  { uri: receiver?.profilePicture } || {
+                    uri: "https://randomuser.me/api/portraits/men/32.jpg",
+                  }
+                }
                 resizeMode="cover"
                 className="h-10 w-10 rounded-full"
               />
-              <Text className="text-xl">{chat?.receiver.name}</Text>
+              <Text className="text-xl">{receiver?.name}</Text>
             </View>
           </View>
           <View className="flex-row gap-4 items-center mr-4">
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => handleCall()}>
               <Image
                 source={icons.audio_call}
                 resizeMode="contain"
@@ -121,7 +178,7 @@ const Chat = () => {
                 tintColor="#0CC0DF"
               />
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => handleCall()}>
               <Image
                 source={icons.video_call}
                 resizeMode="contain"
@@ -140,12 +197,12 @@ const Chat = () => {
             onContentSizeChange={() =>
               MessagesRef.current?.scrollToEnd({ animated: true })
             }
-            refreshing
-            onRefresh={() => getChatMessages(chatId)}
+            // refreshing
+            // onRefresh={() => getChatMessages(chatId)}
             contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end" }}
             keyboardShouldPersistTaps="handled"
             renderItem={({ item, index }) => {
-              const isSender = item.sender == user._id;
+              const isSender = item.sender == user?._id;
               const isSameSender =
                 index > 0 && messages[index - 1].sender === item.sender;
               const newDay =
@@ -162,17 +219,17 @@ const Chat = () => {
                   )}
                   {item.content && (
                     <TouchableOpacity
-                      onLongPress={() => handleLongPress(item)}
+                      onLongPress={() => handleLongPress(item, isSender)}
                       activeOpacity={1}
                       className={`p-3 ${isSameSender ? "mx-2 my-0.5" : "m-2"} 
-                      ${
-                        isSender
-                          ? ` self-end rounded-t-xl rounded-bl-xl ${
-                              item.content && "bg-secondary"
-                            }
-                        ${item.media && "border flex-1 border-primary"}`
-                          : "bg-lgray self-start rounded-t-xl rounded-br-xl"
-                      }`}
+                        ${
+                          isSender
+                            ? ` self-end rounded-t-xl rounded-bl-xl ${
+                                item.content && "bg-secondary"
+                              }
+                          ${item.media && "border flex-1 border-primary"}`
+                            : "bg-lgray self-start rounded-t-xl rounded-br-xl"
+                        }`}
                     >
                       <>
                         <Text className={`font-pregular `}>{item.content}</Text>

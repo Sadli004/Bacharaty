@@ -7,14 +7,13 @@ import { useProductStore } from "../store/productStore";
 import { useUserStore } from "../store/userStore";
 
 const ProductCard = ({ item }) => {
-  const { product, getSingleProduct, likeProduct, addToCart } =
-    useProductStore();
+  const { getSingleProduct, likeProduct, addToCart } = useProductStore();
   const { user } = useUserStore();
   const imageUrl =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQW674mm7aoc6mLqkJR7ISwbc2pEPApLNt69g&s";
   return (
     <TouchableOpacity
-      className="flex-1 m-2 border border-light rounded-xl overflow-hidden shadow-md bg-white p-1"
+      className="w-[180px] m-2 border border-light rounded-xl overflow-hidden shadow-md bg-white p-1"
       onPress={() => {
         getSingleProduct(item._id);
         router.push(`patient/product/[${item._id}]`);
@@ -23,7 +22,7 @@ const ProductCard = ({ item }) => {
       {/* Product Image as Background */}
       <View className="relative h-[160px] rounded-xl overflow-hidden">
         <Image
-          source={{ uri: imageUrl }}
+          source={{ uri: item.picture || imageUrl }}
           resizeMode="cover"
           className="absolute w-full h-full"
         />
@@ -31,9 +30,11 @@ const ProductCard = ({ item }) => {
         {/* Wishlist Button */}
         <TouchableOpacity
           className="absolute top-2 right-2  p-1 bg-transparent shadow-md"
-          onPress={() => likeProduct(item._id)}
+          onPress={() => {
+            likeProduct(item._id);
+          }}
         >
-          {user.liked.includes(item._id) ? (
+          {user?.liked.includes(item._id) ? (
             <Image
               source={icons.heart_filled}
               className="h-6 w-6"
@@ -47,15 +48,15 @@ const ProductCard = ({ item }) => {
 
       {/* Product Details */}
       <View className="p-3 bg-white">
-        <Text className="text-black font-semibold text-base">{item.name}</Text>
-        <Text className="text-sm text-gray-500">{item.brand}</Text>
+        <Text className="text-black font-semibold text-base">{item?.name}</Text>
+        <Text className="text-sm text-gray-500">{item?.brand}</Text>
         <View className="flex-row justify-between items-center mt-2">
-          <Text className="text-lg font-bold text-primary">{item.price}</Text>
+          <Text className="text-lg font-bold text-primary">{item?.price}</Text>
 
           {/* Add to Cart Button */}
           <TouchableOpacity
             onPress={() => {
-              addToCart(item._id);
+              addToCart(item?._id);
             }}
           >
             <Image

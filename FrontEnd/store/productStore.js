@@ -6,6 +6,7 @@ export const useProductStore = create((set, get) => ({
   products: [],
   product: {},
   cart: [],
+
   loading: true,
   fetchProducts: async () => {
     try {
@@ -35,22 +36,30 @@ export const useProductStore = create((set, get) => ({
       const response = await axios.get(
         `${process.env.EXPO_PUBLIC_API_URL}/patient/cart/`
       );
-      // console.log(response.data);
-      set({ cart: response.data });
+
+      set({ cart: response.data, loading: false });
     } catch (error) {
       console.error(error.message);
     }
   },
   likeProduct: async (productId) => {
     const token = useUserStore.getState().token;
+    const user = useUserStore.getState().user;
     try {
       axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
       const response = await axios.post(
         `${process.env.EXPO_PUBLIC_API_URL}/product/like/`,
         {
-          productId: productId,
+          productId,
         }
       );
+      console.log(response.data.patient.liked);
+      user.liked = response.data.patient.liked;
+      useUserStore.setState();
+      set((state) => ({
+        user: state.user,
+        liked: response.data.patient.liked,
+      }));
     } catch (error) {
       console.error(error.response?.data.message);
     }

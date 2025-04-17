@@ -33,18 +33,31 @@ module.exports.getChatsPerUser = async (req, res) => {
 module.exports.createChat = async (req, res) => {
   const { patient, doctor } = req.body;
   try {
-    if (!patient || !doctor)
+    if (!patient || !doctor) {
       return res.status(400).send("All fields must be filled");
-    if (!mongoose.isValidObjectId(patient) || !mongoose.isValidObjectId(doctor))
+    }
+
+    if (
+      !mongoose.isValidObjectId(patient) ||
+      !mongoose.isValidObjectId(doctor)
+    ) {
       return res.status(400).send("Invalid id");
+    }
+
     const existingChat = await Chat.findOne({
       participants: { $all: [patient, doctor] },
     });
+
     if (existingChat) {
-      return res.status(400).json({ message: "chat already exists" }, chat);
+      return res.status(200).json({
+        message: "Chat already exists",
+        chat: existingChat,
+      });
     }
+
     const chat = new Chat({ participants: [patient, doctor] });
     await chat.save();
+
     const user1 = await User.findByIdAndUpdate(
       patient,
       {
@@ -52,7 +65,7 @@ module.exports.createChat = async (req, res) => {
       },
       { new: true }
     );
-    await user1.save();
+
     const user2 = await User.findByIdAndUpdate(
       doctor,
       {
@@ -62,9 +75,12 @@ module.exports.createChat = async (req, res) => {
       },
       { new: true }
     );
-    await user2.save();
+
+    await Promise.all([user1.save(), user2.save()]);
+
     res.status(200).json({ message: "Chat created successfully", chat });
   } catch (error) {
+    console.error(error);
     res.status(500).send(error.message);
   }
 };
@@ -149,30 +165,34 @@ module.exports.sendMessage = async (req, res) => {
     });
     // updating receiver chats status
     const user = await User.findById(receiver).select("chats");
-    const chatIndex = user.findIndex((chat) => chat.chatId == chatId);
+    const chatIndex = user.chats.findIndex((chat) => chat.chatId == chatId);
     if (chatIndex >= 0) {
       user.chats[chatIndex].isSeen = false;
     }
     await user.save();
     // updating sender chats status
     const user2 = await User.findByIdAndUpdate(sender).select("chats");
-    const chatIndex2 = user2.findIndex((chat) => chat.chatId == chatId);
+    const chatIndex2 = user2.chats.findIndex((chat) => chat.chatId == chatId);
     if (chatIndex2 >= 0) {
       user2.chats[chatIndex2].isSeen = true;
     }
     return res.status(200).json(message);
   } catch (error) {
+    console.log(error.messagej);
     res.status(500).send(error.message);
   }
 };
 module.exports.getChatById = async (req, res) => {
   let { chatId } = req.params;
   const { uid } = req.user;
+
   if (!mongoose.isValidObjectId(chatId))
-    return res.status(400).send("Invalid ID");
+    return res.status(400).send("Invalid chat ID");
 
   try {
     chatId = new mongoose.Types.ObjectId(chatId);
+    const userObjectId = new mongoose.Types.ObjectId(uid);
+
     const chat = await Chat.aggregate([
       { $match: { _id: chatId } },
 
@@ -185,7 +205,8 @@ module.exports.getChatById = async (req, res) => {
           as: "messages",
         },
       },
-      //sort messages by timestamp
+
+      // Sort messages by createdAt
       {
         $addFields: {
           messages: {
@@ -193,7 +214,8 @@ module.exports.getChatById = async (req, res) => {
           },
         },
       },
-      // Extract receiverId from participants
+
+      // Get the receiverId by excluding the current user ID
       {
         $addFields: {
           receiverId: {
@@ -203,7 +225,7 @@ module.exports.getChatById = async (req, res) => {
                   input: "$participants",
                   as: "participant",
                   cond: {
-                    $ne: ["$$participant", uid],
+                    $ne: ["$$participant", userObjectId],
                   },
                 },
               },
@@ -213,35 +235,33 @@ module.exports.getChatById = async (req, res) => {
         },
       },
 
-      // Lookup receiver details from User collection
+      // Lookup receiver from users collection
       {
         $lookup: {
-          from: "users", // Make sure this matches your User collection name in MongoDB
+          from: "users",
           localField: "receiverId",
           foreignField: "_id",
           as: "receiver",
         },
       },
-
-      // Unwind receiver array since lookup returns an array
       { $unwind: "$receiver" },
 
-      // Project required fields
+      // Select only necessary fields
       {
         $project: {
-          _id: 1, // Chat ID
+          _id: 1,
           messages: {
-            _id: 1, // Message ID
+            _id: 1,
             content: 1,
             media: 1,
             audio: 1,
             sender: 1,
             createdAt: 1,
           },
-          // receiverId: 1,
           receiver: {
-            _id: 1, // Extract receiver's ID
-            name: 1, // Extract receiver's name
+            _id: 1,
+            name: 1,
+            profilePicture: 1,
           },
         },
       },
@@ -250,11 +270,13 @@ module.exports.getChatById = async (req, res) => {
     if (!chat || chat.length === 0)
       return res.status(404).send("Chat not found");
 
-    res.status(200).json(chat[0]); // Return first match since _id is unique
+    res.status(200).json(chat[0]);
   } catch (error) {
+    console.error(error);
     res.status(500).send(error.message);
   }
 };
+
 module.exports.editMessage = async (req, res) => {
   const { messageId } = req.params;
   const { uid } = req.user;

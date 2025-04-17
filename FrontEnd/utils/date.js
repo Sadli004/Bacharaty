@@ -43,7 +43,7 @@ export const fromLastMsg = (date) => {
   const d = new Date(date);
   const now = new Date();
   const diff = (now.getTime() - d.getTime()) / 1000;
-  console.log(diff);
+  // console.log(diff);
   if (diff < 60) return "Just now";
   if (diff < 3600 && diff > 60) return `${Math.floor(diff / 60)} minutes ago`;
   if (diff > 3600 && diff < 86400)

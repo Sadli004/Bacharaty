@@ -1,7 +1,8 @@
 import React from "react";
 import { Tabs } from "expo-router";
-import { Image, Text, View } from "react-native";
+import { Image, Platform, Text, View } from "react-native";
 import { icons } from "../../../constants";
+
 const TabIcon = ({ color, focused, icon, name }) => {
   return (
     <View className="justify-center items-center gap-2 min-w-[70px]">
@@ -23,6 +24,7 @@ const TabIcon = ({ color, focused, icon, name }) => {
   );
 };
 const TabsLayout = () => {
+  const isAndroid = Platform.OS == "android";
   return (
     <Tabs
       screenOptions={{
@@ -31,6 +33,7 @@ const TabsLayout = () => {
         tabBarStyle: {
           backgroundColor: "#b4ebf5",
           paddingTop: 10,
+          paddingBottom: isAndroid ? 10 : 0,
         },
       }}
     >
