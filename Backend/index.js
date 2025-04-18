@@ -13,7 +13,7 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-app.use(cors());
+
 io.use((socket, next) => {
   const token = socket.handshake.auth.token;
   if (!token) return next(new Error("No token provided"));
@@ -71,7 +71,14 @@ io.on("connection", (socket) => {
 });
 
 // Middleware
-app.use(cors({ origin: "*", credentials: true }));
+const corsOptions = {
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
