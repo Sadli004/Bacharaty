@@ -13,7 +13,7 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-
+app.use(cors());
 io.use((socket, next) => {
   const token = socket.handshake.auth.token;
   if (!token) return next(new Error("No token provided"));
