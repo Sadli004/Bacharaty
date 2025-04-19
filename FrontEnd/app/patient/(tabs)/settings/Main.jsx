@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   Pressable,
   Switch,
+  Platform,
+  StatusBar,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useUserStore } from "../../../../store/userStore";
@@ -16,21 +18,27 @@ import { useEffect } from "react";
 export default function Settings() {
   const router = useRouter();
   const { user, logout } = useUserStore();
+  const isAndroid = Platform.OS == "android";
+  const statusBarHeight = StatusBar.currentHeight;
   useEffect(() => {
     if (!user) router.replace("auth/sign-in");
   }, []);
   return (
     <View className="flex-1 justify-center items-center bg-[#f9f9f9]">
       {/* Header*/}
-      <View className="items-center gap-2">
+      <View
+        className="items-center gap-2"
+        style={{ paddingTop: isAndroid ? statusBarHeight : "" }}
+      >
         <Image
           className="w-20 h-20 rounded-full"
           resizeMode="cover"
-          source={{
-            uri:
-              user?.profilePicture ||
-              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
-          }}
+          source={
+            { uri: user?.ProfilePicture } || {
+              uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
+            } ||
+            images.profile
+          }
         />
         <Text className="font-pbold text-xl">{user?.name || "username"}</Text>
         <TouchableOpacity

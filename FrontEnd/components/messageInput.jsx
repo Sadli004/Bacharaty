@@ -71,40 +71,60 @@ const MessageInput = ({
     }
   };
   return (
-    <View
-      className={` ${otherStyles} w-full h-12 border border-primary focus:border-pactive bg-gray-100 rounded-3xl justify-between flex-row items-center`}
-    >
-      {audioUri && (
-        <View className="flex-row items-center bg-white border rounded-xl px-2 py-1 mb-2 mx-2">
-          <Text className="flex-1">Audio ready</Text>
-          <TouchableOpacity onPress={reset}>
-            <Text className="text-red-500 px-2">Cancel</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleSendAudio}>
-            <Text className="text-green-600 font-bold px-2">Send</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-      <TextInput
-        className="flex-1 items-center p-4 "
-        placeholder={placeholder}
-        placeholderTextColor="black"
-        keyboardType="default"
-        value={value}
-        onChangeText={(newText) => setValue(newText)}
-      />
-      {value.trim() ? (
-        <TouchableOpacity onPress={handleSend}>
+    <View className="flex-row w-full items-center gap-1 mt-1">
+      <TouchableOpacity onPress={pickFile}>
+        <View className="rounded-full bg-lgray p-2">
           <Image
-            source={icons.send}
-            tintColor="#1c5c73"
+            source={icons.attachment}
+            // tintColor="#1c5c73"
+            tintColor="gray"
             resizeMode="contain"
-            className="w-6 h-6 mr-2"
+            className="w-5 h-5 "
           />
-        </TouchableOpacity>
-      ) : (
-        <>
-          <TouchableOpacity onPress={pickFile}>
+        </View>
+      </TouchableOpacity>
+      <View
+        className={` ${otherStyles} flex-1 h-12 bg-lgray focus:border-pactive bg-gray-100 rounded-3xl justify-between flex-row items-center`}
+      >
+        {audioUri && (
+          <View className="flex-row items-center bg-white border rounded-xl px-2 py-1 mb-2 mx-2">
+            <Text className="flex-1">Audio ready</Text>
+            <TouchableOpacity onPress={reset}>
+              <Text className="text-red-500 px-2">Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleSendAudio}>
+              <Text className="text-green-600 font-bold px-2">Send</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {/* <TouchableOpacity onPress={pickFile}>
+            <Image
+              source={icons.attachment}
+              tintColor="#1c5c73"
+              resizeMode="contain"
+              className="w-5 h-5 mr-2"
+            />
+          </TouchableOpacity> */}
+        <TextInput
+          className="flex-1 items-center p-4 "
+          placeholder={placeholder}
+          placeholderTextColor="gray"
+          keyboardType="default"
+          value={value}
+          onChangeText={(newText) => setValue(newText)}
+        />
+        {value.trim() ? (
+          <TouchableOpacity onPress={handleSend}>
+            <Image
+              source={icons.send}
+              tintColor="#1c5c73"
+              resizeMode="contain"
+              className="w-6 h-6 mr-2"
+            />
+          </TouchableOpacity>
+        ) : (
+          <>
+            {/* <TouchableOpacity onPress={pickFile}>
             <Image
               source={icons.attachment}
               tintColor="#1c5c73"
@@ -127,20 +147,21 @@ const MessageInput = ({
               resizeMode="contain"
               className="w-6 h-6 mr-2"
             />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPressIn={startRecording}
-            onPressOut={stopRecording}
-          >
-            <Image
-              source={icons.mic}
-              tintColor="#1c5c73"
-              resizeMode="contain"
-              className="w-5 h-5 mr-2"
-            />
-          </TouchableOpacity>
-        </>
-      )}
+          </TouchableOpacity> */}
+            <TouchableOpacity
+              onPressIn={startRecording}
+              onPressOut={stopRecording}
+            >
+              <Image
+                source={icons.mic}
+                tintColor="gray"
+                resizeMode="contain"
+                className="w-5 h-5 mr-2"
+              />
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
     </View>
     // </View>
   );

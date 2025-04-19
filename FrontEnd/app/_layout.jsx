@@ -55,7 +55,9 @@ function RootLayout() {
     <ToastProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
-        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="auth/sign-in" />
+        <Stack.Screen name="auth/sign-up" />
+        {/* <Stack.Screen name="(auth)" /> */}
         <Stack.Screen name="patient/(tabs)" />
         <Stack.Screen name="doctor" />
       </Stack>

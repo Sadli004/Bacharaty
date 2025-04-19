@@ -8,30 +8,29 @@ import { useDoctorStore } from "../../../../store/doctorStore";
 import { useChatStore } from "../../../../store/chatStore";
 import { useUserStore } from "../../../../store/userStore";
 const Docotor = () => {
-  const { id } = useLocalSearchParams();
   const { user } = useUserStore();
   const { doctor } = useDoctorStore();
   const { startNewChat } = useChatStore();
-  const [loading, setLoading] = useState(false);
-  const { chats } = useChatStore();
+  const { chats, chatId } = useChatStore();
   const handleStartChat = async () => {
-    const existingChat = chats.find((chat) => chat.receiver._id == id);
-    console.log(existingChat);
-    if (existingChat) router.replace(`patient/${existingChat.chatId._id}`);
-    else {
-      const chat = await startNewChat(user._id, id);
-      router.replace(`patient/${chat.chatId._id}`);
+    if (chats.length != 0) {
+      const existingChat = chats.find(
+        (chat) => chat.receiver._id == doctor._id
+      );
+      console.log(existingChat);
+      if (existingChat) router.replace(`patient/${existingChat.chatId._id}`);
+    } else {
+      const newChatId = await startNewChat(user._id, doctor._id);
+      if (newChatId) router.replace(`patient/${newChatId}`);
     }
   };
-  useEffect(() => {
-    console.log(id);
-  }, [id]);
+
   return (
     <View className="flex-1 bg-[#f9f9f9]">
       {/* Doctor Info Card */}
       <View className="items-center p-4">
         <Image
-          source={images.profile_doc} // Replace with actual URL or local image
+          source={{ uri: doctor.profilePicture } || images.profile} // Replace with actual URL or local image
           className="w-28 h-28 rounded-full border-2 border-primary"
           resizeMode="cover"
         />

@@ -16,7 +16,7 @@ const DoctorsLayout = () => {
             alignItems: "center",
           },
           headerLeft: () => (
-            <TouchableOpacity onPress={() => router.back()}>
+            <TouchableOpacity onPressIn={() => router.back()}>
               <Image
                 source={icons.leftArrow}
                 resizeMode="contain"

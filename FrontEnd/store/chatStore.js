@@ -6,6 +6,9 @@ export const useChatStore = create((set) => ({
   chats: [],
   messages: [],
   chat: null,
+  loadingMessages: true,
+  loadingChats: true,
+
   getUserChats: async () => {
     const token = useUserStore.getState().token;
     axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
@@ -44,7 +47,7 @@ export const useChatStore = create((set) => ({
         };
       });
 
-      set({ chats: processedChats });
+      set({ chats: processedChats, loadingChats: false });
     } catch (error) {
       console.error("Error fetching chats:", error.message);
     }
@@ -59,12 +62,9 @@ export const useChatStore = create((set) => ({
           doctor,
         }
       );
-      // console.log(response.data);
-      set((state) => ({
-        chats: [...state.chats, response.data],
-      }));
+      return response.data.chat._id;
     } catch (error) {
-      console.error(error.message);
+      console.error(error.response.data.message);
     }
   },
   getChatMessages: async (chatId) => {
@@ -100,9 +100,10 @@ export const useChatStore = create((set) => ({
         messages,
         receiver,
         chat: response.data,
+        loadingMessages: false,
       });
     } catch (error) {
-      console.error(error.message);
+      console.error(error.response.data);
     }
   },
   sendMessage: async (chatId, message) => {

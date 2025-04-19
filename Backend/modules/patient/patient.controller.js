@@ -2,6 +2,7 @@ const Patient = require("../../models/Patient");
 const userModel = require("../../models/User");
 const productModel = require("../../models/Product");
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 module.exports.signup = async (req, res) => {
   const info = req.body;
   try {

@@ -78,7 +78,7 @@ module.exports.createChat = async (req, res) => {
 
     await Promise.all([user1.save(), user2.save()]);
 
-    res.status(200).json({ message: "Chat created successfully", chat });
+    res.status(200).json(chat);
   } catch (error) {
     console.error(error);
     res.status(500).send(error.message);

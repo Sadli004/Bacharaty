@@ -1,13 +1,23 @@
-import { View, Text, FlatList, SafeAreaView, Image } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  SafeAreaView,
+  Image,
+  StatusBar,
+  Platform,
+} from "react-native";
 import React, { useEffect } from "react";
 import { icons, images } from "../../../constants";
-import { Link, router } from "expo-router";
-import CustomButton from "../../../components/customButton";
+import { router } from "expo-router";
 import SearchInput from "../../../components/searchInput";
 import { TouchableOpacity } from "react-native";
 import { useDoctorStore } from "../../../store/doctorStore";
+
 const Doctor = () => {
   const { fetchDoctors, doctors, getDoctorProfile, doctor } = useDoctorStore();
+  const isAndroid = Platform.OS == "android";
+  const statusBarHeight = StatusBar.currentHeight;
   useEffect(() => {
     fetchDoctors();
   }, []);
@@ -16,8 +26,11 @@ const Doctor = () => {
   return (
     <View className="flex-1">
       {/* Header */}
-      <SafeAreaView className="  mb-4 bg-secondary ">
-        <View className="p-2 mt-2">
+      <SafeAreaView
+        className="  mb-4 bg-secondary"
+        style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}
+      >
+        <View className="p-2 ">
           <Text className="font-psemibold text-xl mb-2 mx-2">Doctors</Text>
           <SearchInput otherStyles="rounded-3xl bg-light " />
         </View>
@@ -26,7 +39,6 @@ const Doctor = () => {
         data={doctors}
         keyExtractor={(item) => item._id}
         renderItem={({ item, index }) => {
-          console.log(item.profilePicture);
           return (
             <TouchableOpacity
               onPress={() => {

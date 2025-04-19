@@ -26,7 +26,7 @@ export const useDoctorStore = create((set) => ({
           feePerConsultation: doc.feePerConsultation,
         };
       });
-      console.log("doctors " + doctors[0].profilePicture);
+
       set({ doctors: doctors, loading: false });
     } catch (error) {
       console.error(error.message);
@@ -35,7 +35,7 @@ export const useDoctorStore = create((set) => ({
   getDoctorProfile: async (doctorId) => {
     try {
       const apiUrl = Config.API_URL;
-      console.log(`API URL is ${apiUrl}`);
+
       const response = await axios.get(
         `${process.env.EXPO_PUBLIC_API_URL}/doctor/${doctorId}`
       );

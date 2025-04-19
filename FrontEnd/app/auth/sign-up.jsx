@@ -86,13 +86,14 @@ const SignUp = () => {
               </View>
             </DismissKeyboard>
 
-            <Text className="mt-12 text-center font-pregular items-center">
+            <Text className="mt-12 text-center font-pregular">
               Already have an account? {""}
-              <Pressable onPress={() => router.back()}>
-                <Text className="text-primary font-psemibold self-center">
-                  Sign In
-                </Text>
-              </Pressable>
+              <Link
+                href="auth/sign-in"
+                className=" text-primary font-psemibold"
+              >
+                Sign In
+              </Link>
             </Text>
           </View>
         </KeyboardAvoidingView>

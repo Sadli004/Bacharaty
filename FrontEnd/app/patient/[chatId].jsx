@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Alert,
   StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import { icons } from "../../constants";
 import React, { useEffect, useState, useRef } from "react";
@@ -34,13 +35,14 @@ const Chat = () => {
     messages,
     getChatMessages,
     sendMessage,
-    chat,
+    loadingMessages,
     receiver,
     editMessage,
     deleteMessage,
   } = useChatStore();
   const { user, token } = useUserStore();
   useEffect(() => {
+    console.log(chatId);
     getChatMessages(chatId);
   }, [chatId]);
   useEffect(() => {
@@ -160,7 +162,7 @@ const Chat = () => {
               <Image
                 source={
                   { uri: receiver?.profilePicture } || {
-                    uri: "https://randomuser.me/api/portraits/men/32.jpg",
+                    uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
                   }
                 }
                 resizeMode="cover"
@@ -197,8 +199,8 @@ const Chat = () => {
             onContentSizeChange={() =>
               MessagesRef.current?.scrollToEnd({ animated: true })
             }
-            // refreshing
-            // onRefresh={() => getChatMessages(chatId)}
+            refreshing={loadingMessages}
+            onRefresh={() => getChatMessages(chatId)}
             contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end" }}
             keyboardShouldPersistTaps="handled"
             renderItem={({ item, index }) => {
@@ -212,16 +214,24 @@ const Chat = () => {
                 index === 0;
               return (
                 <>
-                  {newDay && (
-                    <Text className="self-center my-2">
-                      {formatDate(item.createdAt)}
-                    </Text>
-                  )}
-                  {item.content && (
-                    <TouchableOpacity
-                      onLongPress={() => handleLongPress(item, isSender)}
-                      activeOpacity={1}
-                      className={`p-3 ${isSameSender ? "mx-2 my-0.5" : "m-2"} 
+                  {loadingMessages ? (
+                    <View>
+                      <ActivityIndicator size="large" color="black" />
+                    </View>
+                  ) : (
+                    <>
+                      {newDay && (
+                        <Text className="self-center my-2">
+                          {formatDate(item.createdAt)}
+                        </Text>
+                      )}
+                      {item.content && (
+                        <TouchableOpacity
+                          onLongPress={() => handleLongPress(item, isSender)}
+                          activeOpacity={1}
+                          className={`p-3 ${
+                            isSameSender ? "mx-2 my-0.5" : "m-2"
+                          } 
                         ${
                           isSender
                             ? ` self-end rounded-t-xl rounded-bl-xl ${
@@ -230,25 +240,29 @@ const Chat = () => {
                           ${item.media && "border flex-1 border-primary"}`
                             : "bg-lgray self-start rounded-t-xl rounded-br-xl"
                         }`}
-                    >
-                      <>
-                        <Text className={`font-pregular `}>{item.content}</Text>
-                        <Text className="text-xs font-plight text-gray-300 self-end">
-                          {formatTime(item.createdAt)}
-                        </Text>
-                      </>
-                    </TouchableOpacity>
-                  )}
+                        >
+                          <>
+                            <Text className={`font-pregular `}>
+                              {item.content}
+                            </Text>
+                            <Text className="text-xs font-plight text-gray-300 self-end">
+                              {formatTime(item.createdAt)}
+                            </Text>
+                          </>
+                        </TouchableOpacity>
+                      )}
 
-                  {item.media && (
-                    <Image
-                      source={{ uri: item.media }}
-                      resizeMode="cover"
-                      style={{ width: 200, height: 250 }}
-                      className={`border border-primary flex-1 mx-2 rounded-xl ${
-                        isSender ? "self-end" : "self-start"
-                      }`}
-                    />
+                      {item.media && (
+                        <Image
+                          source={{ uri: item.media }}
+                          resizeMode="cover"
+                          style={{ width: 200, height: 250 }}
+                          className={`border border-primary flex-1 mx-2 rounded-xl ${
+                            isSender ? "self-end" : "self-start"
+                          }`}
+                        />
+                      )}
+                    </>
                   )}
                 </>
               );
@@ -257,7 +271,7 @@ const Chat = () => {
             ListEmptyComponent={
               <View className="min-h-[70vh] items-center justify-center">
                 <Text className="font-semibold text-xl">
-                  Send a message to start conversation
+                  Send a message to start this conversation
                 </Text>
               </View>
             }

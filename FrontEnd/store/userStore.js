@@ -86,7 +86,7 @@ export const useUserStore = create((set) => ({
   },
 
   login: async (email, password) => {
-    if ((!email, !password)) {
+    if (!email || !password) {
       alert("Please enter both email and password");
       return;
     }

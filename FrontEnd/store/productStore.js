@@ -6,8 +6,7 @@ export const useProductStore = create((set, get) => ({
   products: [],
   product: {},
   cart: [],
-
-  loading: true,
+  loadingCart: true,
   fetchProducts: async () => {
     try {
       const result = await axios.get(
@@ -37,7 +36,7 @@ export const useProductStore = create((set, get) => ({
         `${process.env.EXPO_PUBLIC_API_URL}/patient/cart/`
       );
 
-      set({ cart: response.data, loading: false });
+      set({ cart: response.data, loadingCart: false });
     } catch (error) {
       console.error(error.message);
     }
@@ -54,12 +53,6 @@ export const useProductStore = create((set, get) => ({
         }
       );
       console.log(response.data.patient.liked);
-      user.liked = response.data.patient.liked;
-      useUserStore.setState();
-      set((state) => ({
-        user: state.user,
-        liked: response.data.patient.liked,
-      }));
     } catch (error) {
       console.error(error.response?.data.message);
     }

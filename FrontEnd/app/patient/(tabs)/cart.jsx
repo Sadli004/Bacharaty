@@ -16,7 +16,7 @@ import CartProduct from "../../../components/cartProduct";
 import { useProductStore } from "../../../store/productStore";
 
 const Cart = () => {
-  const { getCart, cart, getSingleProduct, loading } = useProductStore();
+  const { getCart, cart, getSingleProduct, loadingCart } = useProductStore();
   const [Price, setPrice] = useState(0);
   const [discount, setDiscount] = useState(0);
   const isAndroid = Platform.OS == "android";
@@ -39,7 +39,7 @@ const Cart = () => {
       setPrice(0);
     }
   }, [cart]);
-  if (loading) {
+  if (loadingCart) {
     return (
       <View className="min-h-[70%] items-center justify-center">
         <ActivityIndicator size="large" color="black" />
@@ -55,7 +55,7 @@ const Cart = () => {
         data={cart}
         keyExtractor={(item) => item._id}
         onRefresh={getCart}
-        refreshing={loading}
+        refreshing={loadingCart}
         renderItem={({ item }) => (
           <CartProduct
             item={item}

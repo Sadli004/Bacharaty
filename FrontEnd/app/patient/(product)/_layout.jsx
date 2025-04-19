@@ -1,4 +1,4 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, Platform } from "react-native";
 import React from "react";
 import { router, Stack } from "expo-router";
 import { icons } from "../../../constants";
@@ -17,6 +17,7 @@ const ProductLayout = () => {
                 source={icons.leftArrow}
                 resizeMode="contain"
                 tintColor="#0CC0DF"
+                className={`${Platform.OS == "android" ? "mr-2" : ""}`}
               />
             </TouchableOpacity>
           ),

@@ -20,7 +20,7 @@ export default function Chat() {
     getUserChats();
   }, []);
   useEffect(() => {
-    if (!user) router.push("auth/sign-in");
+    if (!user) router.replace("auth/sign-in");
   }, [user]);
   return (
     <View className="flex-1">
@@ -43,7 +43,7 @@ export default function Chat() {
           renderItem={({ item }) => (
             <TouchableOpacity
               className="flex-row gap-2 border-b border-secondary p-2 items-center"
-              onPress={() => router.push(`patient/${item.chatId._id}`)}
+              onPress={() => router.push(`patient/${item.chatId?._id}`)}
             >
               <View className="items-center justify-center">
                 {!item.isSeen && (
@@ -69,7 +69,7 @@ export default function Chat() {
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >
-                    {item.chatId?.lastMessage?.sender._id == user._id
+                    {item.chatId?.lastMessage?.sender?._id == user?._id
                       ? "You"
                       : item.receiver?.name}
                     :{" "}

@@ -5,6 +5,8 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  Platform,
+  StatusBar,
 } from "react-native";
 import SearchInput from "../../../components/searchInput";
 import { images } from "../../../constants";
@@ -14,33 +16,42 @@ import { router } from "expo-router";
 import { useUserStore } from "../../../store/userStore";
 import { formatTime, fromLastMsg } from "../../../utils/date";
 export default function Chat() {
-  const { getUserChats, chats, receiver } = useChatStore();
+  const { getUserChats, chats, receiver, loadingChats } = useChatStore();
   const { user } = useUserStore();
+  const isAndroid = Platform.OS == "android";
+  const statusBarHeight = StatusBar.currentHeight;
   useEffect(() => {
     getUserChats();
   }, []);
+  if (!user) router.replace("auth/sign-in");
   return (
     <View className="flex-1">
       {/*Header */}
-      <SafeAreaView className="bg-secondary  mb-4">
+      <SafeAreaView
+        className="bg-secondary  "
+        style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}
+      >
         <View className="p-2">
           <Text className="font-pbold text-xl mb-2">Chats</Text>
           <SearchInput otherStyles="rounded-3xl bg-light" />
         </View>
       </SafeAreaView>
-      <View>
+      <View className="mt-3">
         <FlatList
           data={chats}
           extraData={chats}
-          refreshing
+          refreshing={loadingChats}
           onRefresh={() => {
             getUserChats();
           }}
           keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <TouchableOpacity
-              className="flex-row gap-2 border-b border-secondary p-2 items-center"
-              onPress={() => router.push(`patient/${item.chatId._id}`)}
+              className={`flex-row gap-2 border-b border-gray p-2 items-center ${
+                index != 0 && "mt-0.5"
+              }`}
+              // style={{ marginTop: index != 0 ? 10 : 0 }}
+              onPress={() => router.push(`patient/${item.chatId?._id}`)}
             >
               <View className="items-center justify-center">
                 {!item.isSeen && (

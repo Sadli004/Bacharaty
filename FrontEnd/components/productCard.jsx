@@ -13,7 +13,7 @@ const ProductCard = ({ item }) => {
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQW674mm7aoc6mLqkJR7ISwbc2pEPApLNt69g&s";
   return (
     <TouchableOpacity
-      className="w-[180px] m-2 border border-light rounded-xl overflow-hidden shadow-md bg-white p-1"
+      className="w-[45%] m-2 border border-light rounded-xl overflow-hidden shadow-md bg-white p-1"
       onPress={() => {
         getSingleProduct(item._id);
         router.push(`patient/product/[${item._id}]`);

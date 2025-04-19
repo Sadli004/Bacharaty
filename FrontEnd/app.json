@@ -8,13 +8,12 @@
     "scheme": "myapp",
     "newArchEnabled": true,
     "userInterfaceStyle": "automatic",
-
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.abdellah004.Bacharaty"
@@ -22,7 +21,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/icon.png"
     },
     "plugins": [
       "expo-router",
@@ -47,6 +46,12 @@
       "eas": {
         "projectId": "cf70882a-334d-4dec-a5eb-1b1e82baea3d"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/cf70882a-334d-4dec-a5eb-1b1e82baea3d"
     }
   }
 }

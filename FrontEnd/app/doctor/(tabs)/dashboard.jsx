@@ -15,7 +15,7 @@ const Dashboard = () => {
     fetchDoctorAppointments();
   }, []);
   useEffect(() => {
-    if (!user) router.push("auth/sign-in");
+    if (!user) router.replace("auth/sign-in");
   }, [user]);
   return (
     <View className="flex-1  p-2 bg-[#f9f9f9]">
