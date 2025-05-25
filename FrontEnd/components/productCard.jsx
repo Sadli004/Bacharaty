@@ -20,11 +20,11 @@ const ProductCard = ({ item }) => {
       }}
     >
       {/* Product Image as Background */}
-      <View className="relative h-[160px] rounded-xl overflow-hidden">
+      <View className="relative h-[160px] rounded-xl overflow-hidden border border-lactive shadow-sm">
         <Image
           source={{ uri: item.picture || imageUrl }}
           resizeMode="cover"
-          className="absolute w-full h-full"
+          className="absolute w-full h-full "
         />
 
         {/* Wishlist Button */}

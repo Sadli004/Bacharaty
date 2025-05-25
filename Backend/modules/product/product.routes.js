@@ -5,4 +5,5 @@ router.post("/", productController.createProduct);
 router.get("/", productController.getProducts);
 router.get("/:id", productController.getProductById);
 router.post("/like/", checkAccess, productController.likeProduct);
+router.delete("/like/", checkAccess, productController.unlikeProduct);
 module.exports = router;

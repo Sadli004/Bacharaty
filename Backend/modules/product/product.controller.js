@@ -37,35 +37,69 @@ module.exports.getProductById = async (req, res) => {
     console.log(error);
   }
 };
+
 module.exports.likeProduct = async (req, res) => {
   const { uid } = req.user;
   const { productId } = req.body;
   try {
-    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
-      return res
-        .status(400)
-        .json({ message: "Please enter a valid product Id" });
-    }
-    const product = productModel.findById(productId).select("_id");
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
-    }
-    const patient = await patientModel.findById(uid).select("liked");
-    if (!patient) {
-      return res.status(404).json({ message: "Patient not found" });
-    }
-    const likedIndex = patient.liked.indexOf(productId);
-    if (likedIndex === -1) {
-      // Product is not already liked, add it
-      patient.liked.push(productId);
-    } else {
-      // Product is already liked, remove it
-      patient.liked.splice(likedIndex, 1);
-    }
-    await patient.save();
-    res.json({ message: "Product liked successfully", patient });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Server error" });
+    if (
+      !mongoose.Types.ObjectId.isValid(uid) ||
+      !mongoose.Types.ObjectId.isValid(productId)
+    )
+      return res.status(400).send("Invalid Id");
+    const product = await productModel.findByIdAndUpdate(
+      productId,
+      {
+        $push: { likers: { likerId: uid } },
+        $inc: { numLikes: 1 },
+      },
+      { new: true }
+    );
+    if (!product) res.status(404).send("Product not found");
+    const user = await userModel.findByIdAndUpdate(
+      uid,
+      {
+        $push: { liked: { productId } },
+      },
+      { new: true }
+    );
+    res.send(product);
+  } catch (error) {
+    res.status(500).send("Internal server error");
+    console.log(error.message);
+  }
+};
+module.exports.unlikeProduct = async (req, res) => {
+  const { uid } = req.user;
+  const { productId } = req.body;
+  try {
+    if (
+      !mongoose.Types.ObjectId.isValid(uid) ||
+      !mongoose.Types.ObjectId.isValid(productId)
+    )
+      return res.status(400).send("Invalid Id");
+
+    const product = await productModel.findByIdAndUpdate(
+      productId,
+      {
+        $pull: { likers: { likerId: uid } },
+        $inc: { numLikes: -1 },
+      },
+      { new: true }
+    );
+    if (!product) res.status(404).send("Product not found");
+
+    const user = await userModel.findByIdAndUpdate(
+      uid,
+      {
+        $pull: { liked: { productId } },
+      },
+      { new: true }
+    );
+    if (!user) res.status(404).send("User not found");
+    res.send(product);
+  } catch (error) {
+    res.status(500).send("Internal server error");
+    console.log(error.message);
   }
 };

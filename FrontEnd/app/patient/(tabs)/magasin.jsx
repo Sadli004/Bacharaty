@@ -33,12 +33,14 @@ const Magasin = () => {
         className="flex-1"
       >
         <SafeAreaView
-          className="bg-secondary"
+          className="bg-transparent" /*transparent*/
           style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}
         >
           {/*Header */}
           <View className="flex-row justify-between mx-2">
-            <Text className="font-psemibold text-xl">Welcome {user?.name}</Text>
+            <Text className="font-psemibold text-xl mx-2">
+              Welcome {user?.name}
+            </Text>
           </View>
           {/*Search Bar*/}
           <View className="m-2">

@@ -13,18 +13,29 @@ import { useRouter } from "expo-router";
 import { useUserStore } from "../../../../store/userStore";
 import CustomButton from "../../../../components/customButton";
 import { icons, images } from "../../../../constants";
-import { useEffect } from "react";
-
+import { useEffect, useState } from "react";
+import { useColorScheme, Appearance } from "react-native";
 export default function Settings() {
   const router = useRouter();
   const { user, logout } = useUserStore();
+  const [darkModeEnable, setDarkModeEnable] = useState(false);
+  const theme = useColorScheme();
   const isAndroid = Platform.OS == "android";
   const statusBarHeight = StatusBar.currentHeight;
+  const handleSwitch = () =>
+    setDarkModeEnable((previousState) => !previousState);
   useEffect(() => {
     if (!user) router.replace("auth/sign-in");
-  }, []);
+  }, [user]);
+  useEffect(() => {
+    Appearance.setColorScheme(theme == "light" ? "dark" : "light");
+  }, [darkModeEnable]);
   return (
-    <View className="flex-1 justify-center items-center bg-[#f9f9f9]">
+    <View
+      className={`flex-1 justify-center items-center ${
+        theme == "light" ? "bg-[#f9f9f9]" : "bg-[#121212]"
+      }`}
+    >
       {/* Header*/}
       <View
         className="items-center gap-2"
@@ -34,13 +45,18 @@ export default function Settings() {
           className="w-20 h-20 rounded-full"
           resizeMode="cover"
           source={
-            { uri: user?.ProfilePicture } || {
+            // { uri: user?.ProfilePicture } ||
+            {
               uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
-            } ||
-            images.profile
+            }
           }
         />
-        <Text className="font-pbold text-xl">{user?.name || "username"}</Text>
+        <Text
+          className="font-pbold text-xl"
+          style={{ color: theme == "dark" && "white" }}
+        >
+          {user?.name || "username"}
+        </Text>
         <TouchableOpacity
           className="p-3 bg-primary rounded-3xl"
           onPress={() => router.push("patient/(tabs)/settings/profile")}
@@ -51,7 +67,11 @@ export default function Settings() {
       {/* Options menu*/}
       <View className="w-[90%] mx-2 my-8 gap-2 ">
         <Text className="font-psemibold text-lg">Account</Text>
-        <View className=" shadow-md rounded-3xl p-2 bg-lgray">
+        <View
+          className={`shadow-md rounded-3xl p-2 ${
+            theme == "dark" ? "bg-gray-dark" : "bg-gray-light"
+          }`}
+        >
           <TouchableOpacity
             activeOpacity={0.5}
             className="flex-row items-center justify-between p-2 "
@@ -62,7 +82,9 @@ export default function Settings() {
                 resizeMode="contain"
                 className="h-6 w-6"
               />
-              <Text>Adress information</Text>
+              <Text className={`${theme == "dark" && "text-white"}`}>
+                Adress information
+              </Text>
             </View>
             <Image
               source={icons.rightArrow}
@@ -166,7 +188,7 @@ export default function Settings() {
               <Text>Dark mode</Text>
             </View>
 
-            <Switch />
+            <Switch value={darkModeEnable} onValueChange={handleSwitch} />
           </View>
         </View>
       </View>

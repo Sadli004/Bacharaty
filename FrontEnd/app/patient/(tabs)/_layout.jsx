@@ -30,7 +30,7 @@ const TabsLayout = () => {
         tabBarShowLabel: false,
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: isAndroid ? "#f9f9f9" : "#b4ebf5",
+          backgroundColor: isAndroid ? "#f9f9f9" : "transparent",
           paddingTop: 10,
         },
       }}
@@ -38,14 +38,29 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="home"
         options={{
-          title: "Home",
+          title: "home",
           headerShown: false,
           tabBarIcon: ({ color, focused }) => (
             <TabIcon
               color={color}
               focused={focused}
               icon={icons.home}
-              name="Home"
+              name="home"
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="magasin"
+        options={{
+          title: "Magasin",
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <TabIcon
+              color={color}
+              focused={focused}
+              icon={icons.magasin}
+              name="Magasin"
             />
           ),
         }}

@@ -35,7 +35,7 @@ function RootLayout() {
       }
       if (user !== null) {
         if (role !== "Doctor") {
-          router.replace("/patient/home");
+          router.replace("/patient/magasin"); //home
         } else {
           router.replace("/doctor/dashboard");
         }

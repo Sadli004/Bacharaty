@@ -2,6 +2,7 @@ import { create } from "zustand";
 import axios from "axios";
 import { Alert } from "react-native";
 import { useUserStore } from "./userStore";
+
 export const useProductStore = create((set, get) => ({
   products: [],
   product: {},
@@ -57,6 +58,7 @@ export const useProductStore = create((set, get) => ({
       console.error(error.response?.data.message);
     }
   },
+  unlikeProduct: async () => {},
   addToCart: async (productId) => {
     const token = useUserStore.getState().token;
     try {

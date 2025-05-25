@@ -24,14 +24,14 @@ const Doctor = () => {
 
   const myp = "#D6F0F3";
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-[#f9f9f9]">
       {/* Header */}
       <SafeAreaView
-        className="  mb-4 bg-secondary"
+        className="  mb-4 bg-transparent"
         style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}
       >
         <View className="p-2 ">
-          <Text className="font-psemibold text-xl mb-2 mx-2">Doctors</Text>
+          <Text className="font-psemibold text-3xl mb-2 mx-2">Doctors</Text>
           <SearchInput otherStyles="rounded-3xl bg-light " />
         </View>
       </SafeAreaView>
@@ -45,7 +45,7 @@ const Doctor = () => {
                 getDoctorProfile(item._id);
                 router.push(`patient/doctor/${doctor._id}`);
               }}
-              className=" bg-lactive shadow-md   p-2 m-1 mx-2 rounded-xl flex-row items-center h-[100px] overflow-hidden"
+              className=" bg-lactive shadow-sm   p-2 m-1 mx-2 rounded-xl flex-row items-center h-[100px] overflow-hidden"
             >
               <Image
                 source={images.profile_doc || item.profilePicture}
