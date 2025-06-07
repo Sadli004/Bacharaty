@@ -25,8 +25,9 @@ export default function Settings() {
   const handleSwitch = () =>
     setDarkModeEnable((previousState) => !previousState);
   useEffect(() => {
+    console.log(theme);
     if (!user) router.replace("auth/sign-in");
-  }, [user]);
+  }, [user, theme]);
   useEffect(() => {
     Appearance.setColorScheme(theme == "light" ? "dark" : "light");
   }, [darkModeEnable]);

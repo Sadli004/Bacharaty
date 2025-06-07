@@ -42,6 +42,7 @@ module.exports.likeProduct = async (req, res) => {
   const { uid } = req.user;
   const { productId } = req.body;
   try {
+    console.log(productId);
     if (
       !mongoose.Types.ObjectId.isValid(uid) ||
       !mongoose.Types.ObjectId.isValid(productId)
@@ -50,19 +51,21 @@ module.exports.likeProduct = async (req, res) => {
     const product = await productModel.findByIdAndUpdate(
       productId,
       {
-        $push: { likers: { likerId: uid } },
+        $addToSet: { likers: { likerId: uid } },
         $inc: { numLikes: 1 },
       },
       { new: true }
     );
-    if (!product) res.status(404).send("Product not found");
-    const user = await userModel.findByIdAndUpdate(
+    if (!product) return res.status(404).send("Product not found");
+    const user = await patientModel.findByIdAndUpdate(
       uid,
       {
-        $push: { liked: { productId } },
+        $addToSet: { liked: productId },
       },
       { new: true }
     );
+    if (!user) return res.status(404).send("User not found");
+    console.log(user);
     res.send(product);
   } catch (error) {
     res.status(500).send("Internal server error");
@@ -82,7 +85,7 @@ module.exports.unlikeProduct = async (req, res) => {
     const product = await productModel.findByIdAndUpdate(
       productId,
       {
-        $pull: { likers: { likerId: uid } },
+        $addToSet: { likers: { likerId: uid } },
         $inc: { numLikes: -1 },
       },
       { new: true }
@@ -96,6 +99,7 @@ module.exports.unlikeProduct = async (req, res) => {
       },
       { new: true }
     );
+    console.log(user);
     if (!user) res.status(404).send("User not found");
     res.send(product);
   } catch (error) {

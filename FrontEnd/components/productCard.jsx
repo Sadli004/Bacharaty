@@ -31,7 +31,9 @@ const ProductCard = ({ item }) => {
         <TouchableOpacity
           className="absolute top-2 right-2  p-1 bg-transparent shadow-md"
           onPress={() => {
-            likeProduct(item._id);
+            !user?.liked.includes(item._id)
+              ? likeProduct(item._id)
+              : console.log("unlike");
           }}
         >
           {user?.liked.includes(item._id) ? (

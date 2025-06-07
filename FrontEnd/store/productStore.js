@@ -53,9 +53,10 @@ export const useProductStore = create((set, get) => ({
           productId,
         }
       );
-      console.log(response.data.patient.liked);
+      console.log(response.data);
     } catch (error) {
-      console.error(error.response?.data.message);
+      console.error(error);
+      // console.error(error.response?.data.message);
     }
   },
   unlikeProduct: async () => {},
