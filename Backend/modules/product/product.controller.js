@@ -51,7 +51,7 @@ module.exports.likeProduct = async (req, res) => {
     const product = await productModel.findByIdAndUpdate(
       productId,
       {
-        $addToSet: { likers: { likerId: uid } },
+        $addToSet: { likers: uid },
         $inc: { numLikes: 1 },
       },
       { new: true }
@@ -66,7 +66,7 @@ module.exports.likeProduct = async (req, res) => {
     );
     if (!user) return res.status(404).send("User not found");
     console.log(user);
-    res.send(product);
+    res.send(user.liked);
   } catch (error) {
     res.status(500).send("Internal server error");
     console.log(error.message);
@@ -74,34 +74,37 @@ module.exports.likeProduct = async (req, res) => {
 };
 module.exports.unlikeProduct = async (req, res) => {
   const { uid } = req.user;
-  const { productId } = req.body;
+  const { productId } = req.params;
+
   try {
     if (
       !mongoose.Types.ObjectId.isValid(uid) ||
       !mongoose.Types.ObjectId.isValid(productId)
-    )
+    ) {
       return res.status(400).send("Invalid Id");
+    }
 
     const product = await productModel.findByIdAndUpdate(
       productId,
       {
-        $addToSet: { likers: { likerId: uid } },
+        $pull: { likers: uid },
         $inc: { numLikes: -1 },
       },
       { new: true }
     );
-    if (!product) res.status(404).send("Product not found");
+    if (!product) return res.status(404).send("Product not found");
 
-    const user = await userModel.findByIdAndUpdate(
+    const user = await patientModel.findByIdAndUpdate(
       uid,
       {
-        $pull: { liked: { productId } },
+        $pull: { liked: productId },
       },
       { new: true }
     );
-    console.log(user);
-    if (!user) res.status(404).send("User not found");
-    res.send(product);
+    if (!user) return res.status(404).send("User not found");
+
+    console.log(user.liked);
+    res.send("Product liked");
   } catch (error) {
     res.status(500).send("Internal server error");
     console.log(error.message);

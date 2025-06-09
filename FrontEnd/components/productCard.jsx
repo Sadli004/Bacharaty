@@ -7,7 +7,8 @@ import { useProductStore } from "../store/productStore";
 import { useUserStore } from "../store/userStore";
 
 const ProductCard = ({ item }) => {
-  const { getSingleProduct, likeProduct, addToCart } = useProductStore();
+  const { getSingleProduct, likeProduct, addToCart, unlikeProduct } =
+    useProductStore();
   const { user } = useUserStore();
   const imageUrl =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQW674mm7aoc6mLqkJR7ISwbc2pEPApLNt69g&s";
@@ -33,7 +34,7 @@ const ProductCard = ({ item }) => {
           onPress={() => {
             !user?.liked.includes(item._id)
               ? likeProduct(item._id)
-              : console.log("unlike");
+              : unlikeProduct(item._id);
           }}
         >
           {user?.liked.includes(item._id) ? (

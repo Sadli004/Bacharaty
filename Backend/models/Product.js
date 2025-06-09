@@ -11,7 +11,7 @@ const ProductSchema = Schema({
   rating: Number,
   numReviews: Number,
   numLikes: Number,
-  likers: [{ likerId: { type: mongoose.Types.ObjectId, ref: "User" } }],
+  likers: [{ type: mongoose.Types.ObjectId, ref: "User" }],
   createdAt: Date,
   updatedAt: Date,
   countInStock: Number,

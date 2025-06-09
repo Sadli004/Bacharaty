@@ -44,7 +44,6 @@ export const useProductStore = create((set, get) => ({
   },
   likeProduct: async (productId) => {
     const token = useUserStore.getState().token;
-    const user = useUserStore.getState().user;
     try {
       axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
       const response = await axios.post(
@@ -53,13 +52,23 @@ export const useProductStore = create((set, get) => ({
           productId,
         }
       );
-      console.log(response.data);
     } catch (error) {
       console.error(error);
       // console.error(error.response?.data.message);
     }
   },
-  unlikeProduct: async () => {},
+  unlikeProduct: async (productId) => {
+    const token = useUserStore.getState().token;
+    try {
+      axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
+      const response = await axios.delete(
+        `${process.env.EXPO_PUBLIC_API_URL}/product/like/${productId}`
+      );
+    } catch (error) {
+      console.error(error);
+      // console.error(error.response?.data.message);
+    }
+  },
   addToCart: async (productId) => {
     const token = useUserStore.getState().token;
     try {
