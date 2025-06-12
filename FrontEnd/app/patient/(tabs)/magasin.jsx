@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import SearchInput from "../../../components/searchInput";
@@ -18,7 +19,7 @@ import { useProductStore } from "../../../store/productStore";
 import { DismissKeyboard } from "../../../utils/keyboard";
 import { useUserStore } from "../../../store/userStore";
 const Magasin = () => {
-  const { products, fetchProducts, loading } = useProductStore();
+  const { products, fetchProducts, loadingProducts } = useProductStore();
   const { user } = useUserStore();
   const isAndroid = Platform.OS == "android";
   const statusBarHeight = StatusBar.currentHeight;
@@ -55,19 +56,23 @@ const Magasin = () => {
           </View>
           <Categories />
         </View>
-        <FlatList
-          data={products}
-          keyExtractor={(item) => item._id}
-          numColumns={2}
-          renderItem={({ item }) => <ProductCard item={item} />}
-          ListEmptyComponent={
-            <View className="items-center justify-center h-full ">
-              <Text className="font-pbold text-xl">No items listed yet</Text>
-            </View>
-          }
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-        />
+        {!loadingProducts ? (
+          <FlatList
+            data={products}
+            keyExtractor={(item) => item._id}
+            numColumns={2}
+            renderItem={({ item }) => <ProductCard item={item} />}
+            ListEmptyComponent={
+              <View className="items-center justify-center h-full ">
+                <Text className="font-pbold text-xl">No items listed yet</Text>
+              </View>
+            }
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+          />
+        ) : (
+          <ActivityIndicator color="black" />
+        )}
       </KeyboardAvoidingView>
       <ExpStatusBar.StatusBar style="dark" />
     </View>

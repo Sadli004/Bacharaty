@@ -8,12 +8,13 @@ export const useProductStore = create((set, get) => ({
   product: {},
   cart: [],
   loadingCart: true,
+  loadingProducts: true,
   fetchProducts: async () => {
     try {
       const result = await axios.get(
         `${process.env.EXPO_PUBLIC_API_URL}/product/`
       );
-      set({ products: result.data, loading: false });
+      set({ products: result.data, loadingProducts: false });
     } catch (error) {
       Alert.alert(error.message);
     }
@@ -44,6 +45,7 @@ export const useProductStore = create((set, get) => ({
   },
   likeProduct: async (productId) => {
     const token = useUserStore.getState().token;
+    const { user, setUser } = useUserStore.getState();
     try {
       axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
       const response = await axios.post(
@@ -52,6 +54,10 @@ export const useProductStore = create((set, get) => ({
           productId,
         }
       );
+      setUser({
+        ...user,
+        liked: [...user.liked, productId],
+      });
     } catch (error) {
       console.error(error);
       // console.error(error.response?.data.message);
@@ -59,11 +65,16 @@ export const useProductStore = create((set, get) => ({
   },
   unlikeProduct: async (productId) => {
     const token = useUserStore.getState().token;
+    const { user, setUser } = useUserStore.getState();
     try {
       axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
       const response = await axios.delete(
         `${process.env.EXPO_PUBLIC_API_URL}/product/like/${productId}`
       );
+      setUser({
+        ...user,
+        liked: user.liked.filter((id) => id !== productId),
+      });
     } catch (error) {
       console.error(error);
       // console.error(error.response?.data.message);

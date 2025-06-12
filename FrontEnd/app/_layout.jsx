@@ -29,7 +29,6 @@ function RootLayout() {
   }, []);
   useEffect(() => {
     if (!loading) {
-      SplashScreen.hideAsync();
       if (user == null) {
         router.replace("auth/sign-in");
       }
@@ -40,6 +39,7 @@ function RootLayout() {
           router.replace("/doctor/dashboard");
         }
       }
+      SplashScreen.hideAsync();
     }
   }, [user, loading]);
   if (loading) {

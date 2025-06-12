@@ -22,7 +22,7 @@ const SignIn = () => {
     email: "",
     password: "",
   });
-  const { user, login } = useUserStore();
+  const { login } = useUserStore();
 
   const handleSignIn = async () => {
     login(form.email, form.password).catch((error) => {

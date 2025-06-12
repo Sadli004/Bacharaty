@@ -8,7 +8,7 @@ export const useUserStore = create((set) => ({
   token: null,
   isFirstLaunch: false,
   loading: true,
-
+  setUser: (user) => set({ user }),
   getUser: async () => {
     const token = await SecureS.getItemAsync("token");
 
