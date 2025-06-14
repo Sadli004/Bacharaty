@@ -6,6 +6,7 @@ import CustomButton from "../components/customButton";
 import * as SecureS from "expo-secure-store";
 import { useEffect, useState } from "react";
 import { useUserStore } from "../store/userStore";
+import OnboardingScreen from "./onBoarding";
 export default function Index() {
   const { isFirstLaunch } = useUserStore();
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -22,13 +23,7 @@ export default function Index() {
   }, []);
   return (
     <SafeAreaView className="flex h-full items-center justify-between">
-      {isFirstLaunch ? (
-        <View className="flex h-full items-center justify-between">
-          <Text className="text-3xl">OnBoarding screen</Text>
-        </View>
-      ) : (
-        <Text>Hello</Text>
-      )}
+      {isFirstLaunch ? <OnboardingScreen /> : <Text>Hello</Text>}
     </SafeAreaView>
   );
 }

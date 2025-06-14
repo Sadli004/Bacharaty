@@ -6,7 +6,7 @@ export const useUserStore = create((set) => ({
   user: null,
   role: null,
   token: null,
-  isFirstLaunch: false,
+  isFirstLaunch: true,
   loading: true,
   setUser: (user) => set({ user }),
   getUser: async () => {

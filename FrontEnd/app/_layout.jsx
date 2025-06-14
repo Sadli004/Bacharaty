@@ -30,11 +30,14 @@ function RootLayout() {
   useEffect(() => {
     if (!loading) {
       if (user == null) {
-        router.replace("auth/sign-in");
+        if (isFirstLaunch) {
+          router.replace("onBoarding");
+        } else router.replace("auth/sign-in");
       }
       if (user !== null) {
         if (role !== "Doctor") {
-          router.replace("/patient/magasin"); //home
+          // router.replace("/patient/magasin"); //home
+          router.replace("index");
         } else {
           router.replace("/doctor/dashboard");
         }
@@ -55,6 +58,7 @@ function RootLayout() {
     <ToastProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
+        <Stack.Screen name="onBoarding" />
         <Stack.Screen name="auth/sign-in" />
         <Stack.Screen name="auth/sign-up" />
         {/* <Stack.Screen name="(auth)" /> */}
