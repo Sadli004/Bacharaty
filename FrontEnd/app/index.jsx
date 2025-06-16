@@ -1,29 +1,60 @@
-import { Redirect, router, Stack } from "expo-router";
-import { ImageBackground, SafeAreaView, Text, View } from "react-native";
-import { images } from "../constants";
-import { StatusBar } from "expo-status-bar";
-import CustomButton from "../components/customButton";
+import { Redirect, router } from "expo-router";
+import { ActivityIndicator, SafeAreaView, Text, View } from "react-native";
 import * as SecureS from "expo-secure-store";
 import { useEffect, useState } from "react";
 import { useUserStore } from "../store/userStore";
 import OnboardingScreen from "./onBoarding";
+
 export default function Index() {
-  const { isFirstLaunch } = useUserStore();
-  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(null); // null means unknown
+  const { user, loading, role, getUser } = useUserStore();
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
   useEffect(() => {
     const checkFirstLaunch = async () => {
-      const value = await SecureS.getItemAsync("firstLaunch");
-      if (value === null) {
+      const alreadyLaunched = await SecureS.getItemAsync("alreadyLaunched");
+      if (alreadyLaunched === null) {
+        await SecureS.setItemAsync("alreadyLaunched", "true");
         setShowOnboarding(true);
-        await SecureS.setItemAsync("firstLaunch", "true");
       } else {
         setShowOnboarding(false);
+        router.replace("sign-in");
       }
     };
-  }, []);
+
+    if (!loading && user === null) {
+      checkFirstLaunch();
+    }
+
+    if (!loading && user !== null) {
+      if (role !== "Doctor") {
+        router.replace("/patient/magasin");
+      } else {
+        router.replace("/doctor/dashboard");
+      }
+    }
+  }, [loading, user]);
+
+  // While checking
+  if (loading || showOnboarding === null) {
+    return (
+      <View className="h-full flex items-center justify-center bg-white">
+        <Text>Loading</Text>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
+
+  // Show onboarding
+  if (showOnboarding) return <OnboardingScreen />;
+
   return (
-    <SafeAreaView className="flex h-full items-center justify-between">
-      {isFirstLaunch ? <OnboardingScreen /> : <Text>Hello</Text>}
-    </SafeAreaView>
+    <View className="h-full flex items-center justify-center bg-white">
+      <Text>Loading</Text>
+      <ActivityIndicator size="large" color="black" />
+    </View>
   );
 }

@@ -20,7 +20,7 @@ export const useUserStore = create((set) => ({
         token: null,
         loading: false,
       });
-      console.log("null");
+
       return;
     }
 
