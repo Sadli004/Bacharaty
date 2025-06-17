@@ -1,8 +1,6 @@
 import { create } from "zustand";
 import { useUserStore } from "./userStore";
 import axios from "axios";
-import Config from "react-native-config";
-const API_URL = "http://192.168.1.8:8082";
 export const useAppointmentStore = create((set) => ({
   appointments: [],
   fetchDoctorAppointments: async () => {

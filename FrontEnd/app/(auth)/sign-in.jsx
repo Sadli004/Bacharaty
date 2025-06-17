@@ -31,6 +31,7 @@ const SignIn = () => {
         placement: "bottom",
       });
     });
+    router.replace("/");
   };
   return (
     <SafeAreaView className="bg-[#f9f9f9] ">

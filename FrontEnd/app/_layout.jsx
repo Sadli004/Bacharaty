@@ -5,6 +5,7 @@ import { ActivityIndicator, Text, View } from "react-native";
 import { useUserStore } from "../store/userStore";
 import { ToastProvider } from "react-native-toast-notifications";
 import * as SecureS from "expo-secure-store";
+import ToastListener from "../components/toastListener";
 SplashScreen.preventAutoHideAsync();
 function RootLayout() {
   // const segments = useSegments();
@@ -24,14 +25,38 @@ function RootLayout() {
     if (fontsLoaded) SplashScreen.hideAsync();
     if (!fontsLoaded && !error) return;
   }, [fontsLoaded, error]);
-
+  const { user, loading, role, getUser } = useUserStore();
+  useEffect(() => {
+    getUser();
+  }, []);
+  useEffect(() => {
+    if (!loading) {
+      if (user == null) {
+        router.replace("/");
+      }
+      if (user !== null) {
+        if (role !== "Doctor") {
+          router.replace("/patient/magasin"); //home
+        } else {
+          router.replace("/doctor/dashboard");
+        }
+      }
+      SplashScreen.hideAsync();
+    }
+  }, [user, loading]);
+  if (loading) {
+    return (
+      <View className="h-full flex items-center justify-center bg-white">
+        <Text>Loading</Text>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
   return (
     <ToastProvider>
+      <ToastListener />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
-
-        {/* <Stack.Screen name="auth/sign-in" />
-        <Stack.Screen name="auth/sign-up" /> */}
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="patient/(tabs)" />
         <Stack.Screen name="doctor" />

@@ -2,13 +2,15 @@ import { create } from "zustand";
 import axios from "axios";
 import { Alert } from "react-native";
 import { useUserStore } from "./userStore";
-
+import { useErrorStore } from "./errorStore";
+import showToast from "../utils/showToast";
 export const useProductStore = create((set, get) => ({
   products: [],
   product: {},
   cart: [],
   loadingCart: true,
   loadingProducts: true,
+  clearProduct: () => set({ product: {} }),
   fetchProducts: async () => {
     try {
       const result = await axios.get(
@@ -20,14 +22,17 @@ export const useProductStore = create((set, get) => ({
     }
   },
   getSingleProduct: async (productId) => {
+    // const { errorMessage, setError } = useErrorStore().getState();
     try {
+      console.log("product");
       const result = await axios.get(
         `${process.env.EXPO_PUBLIC_API_URL}/product/${productId}`
       );
       set({ product: result.data });
     } catch (error) {
       console.log(error.response.data);
-      Alert.alert(error.message);
+      useErrorStore.getState().setError("Error loading product");
+      // Alert.alert(error.message);
     }
   },
   getCart: async () => {

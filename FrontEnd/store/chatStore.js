@@ -8,7 +8,7 @@ export const useChatStore = create((set) => ({
   chat: null,
   loadingMessages: true,
   loadingChats: true,
-
+  clearChat: () => set({ chat: null, messages: [], receiver: {} }),
   getUserChats: async () => {
     const token = useUserStore.getState().token;
     axios.defaults.headers.common["authorization"] = `Bearer ${token}`;

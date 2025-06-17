@@ -7,21 +7,18 @@ import OnboardingScreen from "./onBoarding";
 
 export default function Index() {
   const [showOnboarding, setShowOnboarding] = useState(null); // null means unknown
-  const { user, loading, role, getUser } = useUserStore();
-
-  useEffect(() => {
-    getUser();
-  }, []);
+  const { user, loading } = useUserStore();
 
   useEffect(() => {
     const checkFirstLaunch = async () => {
       const alreadyLaunched = await SecureS.getItemAsync("alreadyLaunched");
+      console.log(alreadyLaunched);
       if (alreadyLaunched === null) {
         await SecureS.setItemAsync("alreadyLaunched", "true");
         setShowOnboarding(true);
       } else {
+        await SecureS.deleteItemAsync("alreadyLaunched");
         setShowOnboarding(false);
-        router.replace("sign-in");
       }
     };
 
@@ -29,13 +26,13 @@ export default function Index() {
       checkFirstLaunch();
     }
 
-    if (!loading && user !== null) {
-      if (role !== "Doctor") {
-        router.replace("/patient/magasin");
-      } else {
-        router.replace("/doctor/dashboard");
-      }
-    }
+    // if (!loading && user !== null) {
+    //   if (role !== "Doctor") {
+    //     router.replace("/patient/magasin");
+    //   } else {
+    //     router.replace("/doctor/dashboard");
+    //   }
+    // }
   }, [loading, user]);
 
   // While checking
@@ -50,7 +47,7 @@ export default function Index() {
 
   // Show onboarding
   if (showOnboarding) return <OnboardingScreen />;
-
+  if (!showOnboarding) return <Redirect href="/sign-in" />;
   return (
     <View className="h-full flex items-center justify-center bg-white">
       <Text>Loading</Text>
