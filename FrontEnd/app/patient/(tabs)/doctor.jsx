@@ -7,7 +7,7 @@ import {
   StatusBar,
   Platform,
 } from "react-native";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { icons, images } from "../../../constants";
 import { router } from "expo-router";
 import SearchInput from "../../../components/searchInput";
@@ -23,6 +23,7 @@ const Doctor = () => {
   }, []);
 
   const myp = "#D6F0F3";
+
   return (
     <View className="flex-1 bg-[#f9f9f9]">
       {/* Header */}

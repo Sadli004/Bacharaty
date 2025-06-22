@@ -5,6 +5,7 @@ import profile_doc from "../assets/images/profile_doc.jpg";
 import doctor from "../assets/images/doctor (2).png";
 import cosmetic from "../assets/images/cosmetics.png";
 import checkup from "../assets/images/check-up.png";
+import logo_horizontal from "../assets/images/logo_horizontal.png";
 export default {
   sales,
   logo,
@@ -13,4 +14,5 @@ export default {
   doctor,
   cosmetic,
   checkup,
+  logo_horizontal,
 };

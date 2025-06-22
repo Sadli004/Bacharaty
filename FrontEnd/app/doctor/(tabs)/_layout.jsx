@@ -31,7 +31,7 @@ const TabsLayout = () => {
         tabBarShowLabel: false,
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#b4ebf5",
+          backgroundColor: "#FAFAFA",
           paddingTop: 10,
           paddingBottom: isAndroid ? 10 : 0,
         },

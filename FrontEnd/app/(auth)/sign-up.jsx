@@ -25,13 +25,13 @@ const SignUp = () => {
   });
   const { registre } = useUserStore();
   return (
-    <SafeAreaView className="bg-[#f9f9f9] ">
+    <SafeAreaView className="bg-background-light flex-1">
       <ScrollView>
         <KeyboardAvoidingView
           behavior={Platform.OS == "ios" ? "padding" : "height"}
           className="flex-1"
         >
-          <View className="w-full min-h-[90vh] justify-center px-6 my-6">
+          <View className="w-full min-h-[82vh] justify-center px-6 my-6">
             <Text className="font-psemibold text-3xl align-left">
               Create an account
             </Text>
@@ -88,10 +88,7 @@ const SignUp = () => {
 
             <Text className="mt-12 text-center font-pregular">
               Already have an account? {""}
-              <Link
-                href="auth/sign-in"
-                className=" text-primary font-psemibold"
-              >
+              <Link href="/sign-in" className=" text-primary font-psemibold">
                 Sign In
               </Link>
             </Text>

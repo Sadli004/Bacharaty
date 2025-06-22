@@ -34,9 +34,9 @@ const SignIn = () => {
     router.replace("/");
   };
   return (
-    <SafeAreaView className="bg-[#f9f9f9] ">
+    <SafeAreaView className="bg-background-light flex-1">
       <ScrollView>
-        <View className="w-full min-h-[90vh] justify-center px-6 my-6">
+        <View className="w-full min-h-[82vh] justify-center px-6 my-6">
           <Text className="font-psemibold text-3xl align-left">Hello!</Text>
           <View className="w-full px-2 mt-10">
             <FormField
@@ -97,7 +97,7 @@ const SignIn = () => {
           </View>
           <Text className="mt-12 text-center font-pregular">
             Don't have an account? {""}
-            <Link href="auth/sign-up" className=" text-primary font-psemibold">
+            <Link href="/sign-up" className=" text-primary font-psemibold">
               Sign Up
             </Link>
           </Text>

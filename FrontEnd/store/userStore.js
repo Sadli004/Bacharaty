@@ -41,7 +41,6 @@ export const useUserStore = create((set) => ({
         token: token,
         loading: false,
       });
-      console.log(response.data);
     } catch (error) {
       console.error("Get user failed:", error.response?.data || error.message);
       set({ loading: false, user: null, token: null, role: null });

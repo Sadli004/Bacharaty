@@ -22,9 +22,7 @@ export const useProductStore = create((set, get) => ({
     }
   },
   getSingleProduct: async (productId) => {
-    // const { errorMessage, setError } = useErrorStore().getState();
     try {
-      console.log("product");
       const result = await axios.get(
         `${process.env.EXPO_PUBLIC_API_URL}/product/${productId}`
       );

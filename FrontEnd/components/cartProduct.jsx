@@ -14,8 +14,8 @@ const CartProduct = ({ item, handlePress }) => {
       <View className="mr-4">
         <Image
           source={{ uri: item.product?.picture || imageUrl }}
-          resizeMode="cover"
-          className="h-20 w-20  rounded-lg"
+          resizeMode="contain"
+          className="h-20 w-20  rounded-lg bg-white"
         />
       </View>
       <View className="flex-1">

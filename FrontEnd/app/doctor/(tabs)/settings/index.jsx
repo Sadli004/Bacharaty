@@ -20,7 +20,7 @@ export default function Settings() {
     if (!user) router.replace("auth/sign-in");
   }, [user]);
   return (
-    <View className="flex-1 justify-center items-center bg-[#f9f9f9]">
+    <View className="flex-1 justify-center items-center bg-background-light">
       {/* Header*/}
       <View className="items-center gap-2">
         <Image

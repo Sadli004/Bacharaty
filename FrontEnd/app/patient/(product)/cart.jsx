@@ -3,13 +3,12 @@ import {
   Text,
   SafeAreaView,
   FlatList,
-  TouchableOpacity,
   StatusBar,
   Platform,
   Alert,
   ActivityIndicator,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { router } from "expo-router";
 import CustomButton from "../../../components/customButton";
 import CartProduct from "../../../components/cartProduct";
@@ -25,6 +24,7 @@ const Cart = () => {
     getCart();
   }, []);
   useEffect(() => {
+    console.log("cart");
     const countPrice = () => {
       let price = 0;
       for (let i = 0; i < cart.length; i++) {
@@ -38,6 +38,9 @@ const Cart = () => {
     } else {
       setPrice(0);
     }
+    return () => {
+      setPrice(0);
+    };
   }, [cart]);
   if (loadingCart) {
     return (
@@ -60,8 +63,8 @@ const Cart = () => {
           <CartProduct
             item={item}
             handlePress={() => {
-              getSingleProduct(item?.product._id);
-              router.push("patient/product/[id]");
+              // getSingleProduct(item?.product._id);
+              router.push(`patient/product/${[item?.product._id]}`);
             }}
           />
         )}

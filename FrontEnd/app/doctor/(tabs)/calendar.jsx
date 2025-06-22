@@ -31,7 +31,7 @@ export default function Tab() {
     fetchDoctorAppointments();
   }, [selectedDay]);
   return (
-    <View className="flex-1 bg-gray-100 p-2">
+    <View className="flex-1 bg-gray-100 p-2 bg-background-light">
       {/* Doctor Profile */}
       <SafeAreaView className="flex-row items-center mb-8 mx-2">
         <Image
@@ -78,7 +78,7 @@ export default function Tab() {
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => {
             const isActive = selectedDay.getDate() == item.date;
-            console.log(week);
+
             return (
               <TouchableOpacity
                 onPress={() => setSelectedDay(item.current)}

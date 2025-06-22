@@ -23,6 +23,38 @@ const ProductLayout = () => {
           ),
         }}
       />
+      <Stack.Screen
+        name="wishlist"
+        options={{
+          headerTitle: "My wishlist",
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Image
+                source={icons.leftArrow}
+                resizeMode="contain"
+                tintColor="#0CC0DF"
+                className={`${Platform.OS == "android" ? "mr-2" : ""}`}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="cart"
+        options={{
+          headerTitle: "Cart",
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => router.back()}>
+              <Image
+                source={icons.leftArrow}
+                resizeMode="contain"
+                tintColor="#0CC0DF"
+                className={`${Platform.OS == "android" ? "mr-2" : ""}`}
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
     </Stack>
   );
 };

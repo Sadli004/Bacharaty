@@ -23,9 +23,9 @@ export default function Chat() {
     if (!user) router.replace("auth/sign-in");
   }, [user]);
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-background-light">
       {/*Header */}
-      <SafeAreaView className="bg-secondary  mb-4">
+      <SafeAreaView className="  mb-4">
         <View className="p-2">
           <Text className="font-pbold text-xl mb-2">Chats</Text>
           <SearchInput otherStyles="rounded-3xl bg-light" />

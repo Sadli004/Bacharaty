@@ -30,7 +30,7 @@ const TabsLayout = () => {
         tabBarShowLabel: false,
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: isAndroid ? "#f9f9f9" : "transparent",
+          backgroundColor: isAndroid ? "#f9f9f9" : "#fafafa",
           paddingTop: 10,
         },
       }}
@@ -61,21 +61,6 @@ const TabsLayout = () => {
               focused={focused}
               icon={icons.magasin}
               name="Magasin"
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="cart"
-        options={{
-          title: "Cart",
-          headerShown: false,
-          tabBarIcon: ({ color, focused }) => (
-            <TabIcon
-              color={color}
-              focused={focused}
-              icon={icons.cart}
-              name="Cart"
             />
           ),
         }}

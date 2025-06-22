@@ -2,7 +2,7 @@ import { View, Text, Image, FlatList, TouchableOpacity } from "react-native";
 import React, { useEffect } from "react";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { icons } from "../../../constants";
+import { icons, images } from "../../../constants";
 import { useUserStore } from "../../../store/userStore";
 import { useAppointmentStore } from "../../../store/appointmentStore";
 import { AppDate } from "../../../utils/date";
@@ -18,7 +18,7 @@ const Dashboard = () => {
     if (!user) router.replace("auth/sign-in");
   }, [user]);
   return (
-    <View className="flex-1  p-2 bg-[#f9f9f9]">
+    <View className="flex-1  p-2 bg-background-light">
       {/* Doctor Profile */}
       <SafeAreaView className="flex-row items-center  justify-between">
         <View className="flex-row items-center">
@@ -34,9 +34,9 @@ const Dashboard = () => {
         <View>
           <TouchableOpacity>
             <Image
-              source={icons.notification}
+              source={images.logo_horizontal}
               resizeMode="contain"
-              className="w-6 h-6 "
+              className="w-24 h-20 "
             />
           </TouchableOpacity>
         </View>

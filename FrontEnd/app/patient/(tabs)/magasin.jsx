@@ -8,6 +8,8 @@ import {
   Platform,
   StatusBar,
   ActivityIndicator,
+  Pressable,
+  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import SearchInput from "../../../components/searchInput";
@@ -18,6 +20,8 @@ import * as ExpStatusBar from "expo-status-bar";
 import { useProductStore } from "../../../store/productStore";
 import { DismissKeyboard } from "../../../utils/keyboard";
 import { useUserStore } from "../../../store/userStore";
+import { icons } from "../../../constants";
+import { router } from "expo-router";
 const Magasin = () => {
   const { products, fetchProducts, loadingProducts } = useProductStore();
   const { user } = useUserStore();
@@ -28,7 +32,7 @@ const Magasin = () => {
   }, []);
 
   return (
-    <View className=" flex-1 bg-[#f9f9f9]">
+    <View className=" flex-1 bg-background-light">
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
         className="flex-1"
@@ -39,9 +43,31 @@ const Magasin = () => {
         >
           {/*Header */}
           <View className="flex-row justify-between mx-2">
-            <Text className="font-psemibold text-xl mx-2">
-              Welcome {user?.name}
-            </Text>
+            <Text className="font-psemibold text-lg ">Start shopping</Text>
+            <View className="flex-row items-center gap-4">
+              <TouchableOpacity
+                onPress={() => {
+                  router.push("patient/(product)/wishlist");
+                }}
+              >
+                <Image
+                  source={icons.heart}
+                  resizeMode="contain"
+                  className="h-6 w-6"
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  router.push("patient/(product)/cart");
+                }}
+              >
+                <Image
+                  source={icons.cart}
+                  resizeMode="contain"
+                  className="h-6 w-6"
+                />
+              </TouchableOpacity>
+            </View>
           </View>
           {/*Search Bar*/}
           <View className="m-2">
