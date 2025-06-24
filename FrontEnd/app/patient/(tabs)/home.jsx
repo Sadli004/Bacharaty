@@ -5,6 +5,8 @@ import {
   Image,
   FlatList,
   ImageBackground,
+  StatusBar,
+  Platform,
 } from "react-native";
 import React, { useEffect } from "react";
 import CustomButton from "../../../components/customButton";
@@ -19,6 +21,7 @@ const main = () => {
   const { user } = useUserStore();
   const { products, fetchProducts } = useProductStore();
   const { fetchDoctors, doctors } = useDoctorStore();
+  const statusBarHeight = StatusBar.currentHeight;
   useEffect(() => {
     fetchProducts();
     fetchDoctors();
@@ -27,28 +30,21 @@ const main = () => {
     if (!user) router.replace("sign-in");
   }, []);
   return (
-    <SafeAreaView className="bg-background-light h-full mx-2">
+    <SafeAreaView
+      className="bg-background-light h-full "
+      style={{ paddingTop: Platform.OS == "android" ? statusBarHeight : 0 }}
+    >
       {/* <View className="h-full mx-2"> */}
 
       <FlatList
         data={doctors}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => {
-          return (
-            // <View className="border mx-2 items-center p-2 flex-row">
-            //   <Image
-            //     source={{ uri: item.profilePicture }}
-            //     resizeMode="contain"
-            //     className="w-20 h-20 rounded-full"
-            //   />
-            //   <Text>{item.name}</Text>
-            // </View>
-            <DoctorList item={item} />
-          );
+          return <DoctorList item={item} />;
         }}
         ListHeaderComponent={() => {
           return (
-            <>
+            <View className="mx-2">
               <View className=" mb-4 flex-row justify-between items-center">
                 <View>
                   <Text className="text-sm font-pregular">Welcome back </Text>
@@ -64,7 +60,7 @@ const main = () => {
                 <Text className="font-psemibold text-xl">
                   My next appointment
                 </Text>
-                <View className="bg-white p-4 rounded-xl shadow ">
+                <View className="bg-gray-light p-4 rounded-xl shadow ">
                   <View className="flex-row items-center">
                     <Image
                       source={{
@@ -93,13 +89,25 @@ const main = () => {
                   showsHorizontalScrollIndicator={false}
                   renderItem={({ item }) => {
                     return (
-                      <View className="items-center mr-2 gap-2 mb-4">
-                        <Image
+                      <View className="flex-between p-2 gap-2 mb-4 border h-[200px] w-[200px] bg-transparent">
+                        {/* <Image
                           source={{ uri: item.picture }}
                           className="h-[120px] w-[120px] bg-white"
                           resizeMode="contain"
-                        />
-                        <Text className="text-sm font-plight">{item.name}</Text>
+                        /> */}
+                        <ImageBackground
+                          source={{ uri: item.picture }}
+                          className=" flex-1 "
+                          resizeMode="contain"
+                        >
+                          <Text className="text-sm font-plight">
+                            {item.name}
+                          </Text>
+                          <CustomButton
+                            title="check it out"
+                            containerStyles="bg-secondary rounded-3xl"
+                          />
+                        </ImageBackground>
                       </View>
                     );
                   }}
@@ -108,7 +116,7 @@ const main = () => {
               <Text className="font-psemibold text-xl">
                 Top rated Doctors in your area
               </Text>
-            </>
+            </View>
           );
         }}
       />

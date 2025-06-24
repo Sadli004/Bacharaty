@@ -12,7 +12,7 @@ const DoctorsLayout = () => {
         options={{
           headerTitle: "Doctor details",
           headerStyle: {
-            backgroundColor: "transparent",
+            backgroundColor: "#FAFAFA",
             alignItems: "center",
           },
           headerLeft: () => (

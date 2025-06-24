@@ -18,7 +18,7 @@ const Categories = () => {
           className={`px-4 py-2 mx-1 rounded-full ${
             selectedCategory === category
               ? "bg-primary text-white"
-              : "bg-lactive"
+              : "bg-secondary"
           }`}
         >
           <Text

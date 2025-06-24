@@ -25,14 +25,14 @@ export default function Chat() {
   }, []);
   if (!user) router.replace("auth/sign-in");
   return (
-    <View className="flex-1 bg-[#f9f9f9]">
+    <View className="flex-1 bg-background-light">
       {/*Header */}
       <SafeAreaView
         className="bg-transparent"
         style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}
       >
         <View className="p-2">
-          <Text className="font-psemibold text-3xl mb-2 mx-2">Chats</Text>
+          <Text className="font-psemibold text-xl mb-2 mx-2">Chats</Text>
           <SearchInput otherStyles="rounded-3xl bg-light" />
         </View>
       </SafeAreaView>

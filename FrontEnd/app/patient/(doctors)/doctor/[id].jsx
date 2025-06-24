@@ -1,4 +1,12 @@
-import { View, Text, SafeAreaView, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  ScrollView,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { icons, images } from "../../../../constants";
@@ -7,14 +15,27 @@ import BookingCalendar from "../../../../components/bookingCalendar";
 import { useDoctorStore } from "../../../../store/doctorStore";
 import { useChatStore } from "../../../../store/chatStore";
 import { useUserStore } from "../../../../store/userStore";
-import { getWeekDays } from "../../../../utils/date";
+import { formatDate, getWeekDays } from "../../../../utils/date";
+import DayPicker from "../../../../components/dayPicker";
+import DoctorHeader from "../../../../components/doctorHeader";
 const Docotor = () => {
   const { user } = useUserStore();
   const { doctor } = useDoctorStore();
   const { startNewChat } = useChatStore();
   const { chats, chatId } = useChatStore();
+  const [tab, setTab] = useState("About");
   const [selectedDay, setSelectedDay] = useState(new Date());
   const [week, setWeek] = useState(getWeekDays(selectedDay));
+  const [selectedTime, setSelectedTime] = useState(null);
+
+  const times = [
+    { id: 1, time: "08:00 AM" },
+    { id: 2, time: "08:30 AM" },
+    { id: 3, time: "09:00 AM" },
+    { id: 4, time: "10:00 AM" },
+    { id: 5, time: "10:30 AM" },
+    { id: 6, time: "11:00 AM" },
+  ];
   const handleStartChat = async () => {
     if (chats.length != 0) {
       const existingChat = chats.find(
@@ -27,97 +48,87 @@ const Docotor = () => {
       if (newChatId) router.replace(`patient/${newChatId}`);
     }
   };
-
-  return (
-    <SafeAreaView className="flex-1 bg-[#f9f9f9]">
-      <ScrollView>
-        {/* Doctor Info Card */}
-        <View className="items-center p-4">
-          <Image
-            source={{ uri: doctor.profilePicture } || images.profile} // Replace with actual URL or local image
-            className="w-28 h-28 rounded-full border-2 border-primary"
-            resizeMode="cover"
+  const headerComponent = () => (
+    <>
+      <DoctorHeader doctor={doctor} tab={tab} setTab={setTab} />
+      {tab === "About" ? (
+        <View className="p-4">
+          <Text className="text-lg font-pbold text-gray-800 mb-1">
+            About Me
+          </Text>
+          <Text className="text-gray-600">
+            I am {doctor?.name}, a specialist in dermatology for over 10 years,
+            based in Algiers.
+          </Text>
+          <Text className="text-lg font-pbold text-gray-800 mt-4 mb-1">
+            Reviews
+          </Text>
+        </View>
+      ) : (
+        <View className="p-4">
+          <View className="flex-row justify-between items-center mb-2">
+            <Text className="text-lg font-psemibold">
+              {formatDate(selectedDay)}
+            </Text>
+            <Image source={icons.calendar} className="w-6 h-6" />
+          </View>
+          <DayPicker
+            week={week}
+            selectedDay={selectedDay}
+            setSelectedDay={setSelectedDay}
           />
-          <Text className="mt-2 text-3xl font-psemibold text-gray-800">
-            {doctor.name}
-          </Text>
-          <Text className="text-sm text-gray-500">Dermatologue</Text>
         </View>
+      )}
+    </>
+  );
 
-        {/* Details Section */}
-        <View className="flex-column gap-2 justify-around p-4">
-          <View className=" p-2 rounded-xl shadow-lg bg-white justify-between flex-row ">
-            <View className=" border-r flex-1 mr-4 items-center flex-row gap-2">
-              <Image
-                source={icons.expertise}
-                className="h-6 w-6"
-                resizeMode="contain"
-              />
-              <View className="items-center">
-                <Text className="mt-1 text-sm font-bold text-gray-800">
-                  +{doctor.experience}
-                </Text>
-                <Text className="text-xs text-gray-500">Experience</Text>
-              </View>
-            </View>
-            <View className="items-center flex-row ">
-              <View>
-                <Image
-                  source={icons.star}
-                  resizeMode="contain"
-                  className="h-5 w-5"
-                  tintColor="orange"
-                />
-              </View>
-              <View className="items-start mx-3">
-                <Text className="mt-1 text-sm font-bold text-gray-800">
-                  4.8
-                </Text>
-                <Text className="text-xs text-gray-500">Rating</Text>
-              </View>
-            </View>
-          </View>
-          <View className=" p-2 rounded-xl shadow-lg bg-white flex-row items-center">
-            <View>
-              <Image
-                source={icons.money}
-                resizeMode="contain"
-                className="h-6 w-6"
-              />
-            </View>
-            <View className="items-start mx-3">
-              <Text className="mt-1 text-sm font-bold text-gray-800">
-                {doctor.feePerConsultation}
-              </Text>
-              <Text className="text-xs text-gray-500">Consultation Fee</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* About Me Section */}
-        <View className="py-4 px-4">
-          <Text className="text-lg font-pbold text-xl text-gray-800">
-            About me
-          </Text>
-          <Text className="mt-2 text-lg text-gray-600">
-            I am {doctor.name} specialist in dermatology for over 10 years, I am
-            currently based in Algiers and available for appointments
-          </Text>
-        </View>
-        {/* <BookingCalendar week={week} selectedDay={selectedDay} /> */}
-      </ScrollView>
-      {/* Booking Calendar */}
-      {/* Buttons */}
-      <View className="flex-row justify-around p-2 mx-2 ">
-        <CustomButton
-          title="Send a message"
-          containerStyles="flex-1 bg-primary rounded-3xl py-2 mx-2 p-4 flex-1 shadow-md"
-          textStyles="text-white items-center"
-          handlePress={() => {
-            handleStartChat();
-          }}
-        />
-      </View>
+  const renderItem = ({ item }) => {
+    if (tab === "About") {
+      return (
+        <Text className="text-gray-700 text-base mx-4 mt-1">
+          Review {item.id}
+        </Text>
+      );
+    } else {
+      return (
+        <TouchableOpacity
+          onPress={() => setSelectedTime(item.time)}
+          className={`items-center justify-center p-3 my-3 w-[28vw] rounded-md ${
+            selectedTime === item.time ? "bg-dark" : "bg-gray-light"
+          }`}
+        >
+          <Text className="text-white font-bold">{item.time}</Text>
+        </TouchableOpacity>
+      );
+    }
+  };
+  const reviews = [{ id: 1 }, { id: 2 }, { id: 3 }];
+  return (
+    <SafeAreaView className="flex-1 bg-background-light">
+      <FlatList
+        data={tab == "About" ? reviews : times}
+        keyExtractor={(item) => item.id}
+        key={tab}
+        numColumns={tab == "Availability" ? 3 : 1}
+        columnWrapperStyle={
+          tab == "Availability" && {
+            justifyContent: "space-around",
+          }
+        }
+        ListHeaderComponent={headerComponent}
+        renderItem={renderItem}
+        ListFooterComponent={() => {
+          const allowBooking = selectedDay && selectedTime;
+          return (
+            <CustomButton
+              title="Book now"
+              containerStyles={`${
+                allowBooking ? "bg-primary" : "bg-secondary"
+              } rounded-3xl mx-4`}
+            />
+          );
+        }}
+      />
     </SafeAreaView>
   );
 };

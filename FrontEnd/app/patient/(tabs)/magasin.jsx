@@ -32,56 +32,14 @@ const Magasin = () => {
   }, []);
 
   return (
-    <View className=" flex-1 bg-background-light">
+    <SafeAreaView
+      className=" flex-1 bg-background-light"
+      style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS == "ios" ? "padding" : "height"}
         className="flex-1"
       >
-        <SafeAreaView
-          className="bg-transparent" /*transparent*/
-          style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}
-        >
-          {/*Header */}
-          <View className="flex-row justify-between mx-2">
-            <Text className="font-psemibold text-lg ">Start shopping</Text>
-            <View className="flex-row items-center gap-4">
-              <TouchableOpacity
-                onPress={() => {
-                  router.push("patient/(product)/wishlist");
-                }}
-              >
-                <Image
-                  source={icons.heart}
-                  resizeMode="contain"
-                  className="h-6 w-6"
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  router.push("patient/(product)/cart");
-                }}
-              >
-                <Image
-                  source={icons.cart}
-                  resizeMode="contain"
-                  className="h-6 w-6"
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          {/*Search Bar*/}
-          <View className="m-2">
-            <DismissKeyboard>
-              <SearchInput otherStyles=" rounded-3xl bg-light" />
-            </DismissKeyboard>
-          </View>
-        </SafeAreaView>
-        <View>
-          <View className=" m-4">
-            <PopularProducts />
-          </View>
-          <Categories />
-        </View>
         {!loadingProducts ? (
           <FlatList
             data={products}
@@ -95,13 +53,64 @@ const Magasin = () => {
             }
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
+            ListHeaderComponent={() => {
+              return (
+                <View
+                  className="bg-transparent" /*transparent*/
+                  style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}
+                >
+                  {/*Header */}
+                  <View className="flex-row justify-between mx-2">
+                    <Text className="font-psemibold text-lg ">
+                      Start shopping
+                    </Text>
+                    <View className="flex-row items-center gap-4">
+                      <TouchableOpacity
+                        onPress={() => {
+                          router.push("patient/(product)/wishlist");
+                        }}
+                      >
+                        <Image
+                          source={icons.heart}
+                          resizeMode="contain"
+                          className="h-6 w-6"
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => {
+                          router.push("patient/(product)/cart");
+                        }}
+                      >
+                        <Image
+                          source={icons.cart}
+                          resizeMode="contain"
+                          className="h-6 w-6"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                  {/*Search Bar*/}
+                  <View className="m-2">
+                    <DismissKeyboard>
+                      <SearchInput otherStyles=" rounded-3xl bg-background-light border-gray-light focus:border-dactive" />
+                    </DismissKeyboard>
+                  </View>
+                  <View>
+                    <View className=" m-4">
+                      <PopularProducts />
+                    </View>
+                    <Categories />
+                  </View>
+                </View>
+              );
+            }}
           />
         ) : (
           <ActivityIndicator color="black" />
         )}
       </KeyboardAvoidingView>
       <ExpStatusBar.StatusBar style="dark" />
-    </View>
+    </SafeAreaView>
   );
 };
 

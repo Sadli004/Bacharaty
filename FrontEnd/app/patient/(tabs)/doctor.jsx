@@ -25,15 +25,15 @@ const Doctor = () => {
   const myp = "#D6F0F3";
 
   return (
-    <View className="flex-1 bg-[#f9f9f9]">
+    <View className="flex-1 bg-background-light">
       {/* Header */}
       <SafeAreaView
         className="  mb-4 bg-transparent"
         style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}
       >
         <View className="p-2 ">
-          <Text className="font-psemibold text-3xl mb-2 mx-2">Doctors</Text>
-          <SearchInput otherStyles="rounded-3xl bg-light " />
+          <Text className="font-psemibold text-xl mb-2 mx-2">Doctors</Text>
+          <SearchInput otherStyles="rounded-3xl bg-[#f9f9f9] border-dark focus:border-dactive " />
         </View>
       </SafeAreaView>
       <FlatList
@@ -46,7 +46,7 @@ const Doctor = () => {
                 getDoctorProfile(item._id);
                 router.push(`patient/doctor/${doctor._id}`);
               }}
-              className=" bg-lactive shadow-sm   p-2 m-1 mx-2 rounded-xl flex-row items-center h-[100px] overflow-hidden"
+              className=" bg-gray-light shadow-sm   p-2 m-1 mx-2 rounded-xl flex-row items-center h-[100px] overflow-hidden"
             >
               <Image
                 source={images.profile_doc || item.profilePicture}
@@ -57,15 +57,15 @@ const Doctor = () => {
                 <Text className="font-psemibold text-xl">{item.name}</Text>
                 <Text>Location : {item.location}</Text>
                 <Text>{item.experience} of experience</Text>
-                <Text className="">
-                  Rating: 4.9{" "}
+                <View className="flex-row items-center">
+                  <Text>Rating: 4.9 </Text>
                   <Image
                     source={icons.star}
                     className="h-4 w-4"
                     resizeMode="contain"
                     tintColor="orange"
                   />
-                </Text>
+                </View>
               </View>
             </TouchableOpacity>
           );

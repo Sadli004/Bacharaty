@@ -52,7 +52,6 @@ export const fromLastMsg = (date) => {
 };
 
 export const getWeekDays = (current) => {
-  console.log(current);
   const currentDay = current.getDay();
   const week = [];
   for (let i = 0; i < 7; i++) {

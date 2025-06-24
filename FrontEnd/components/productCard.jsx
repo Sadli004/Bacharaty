@@ -25,8 +25,8 @@ const ProductCard = ({ item }) => {
       <View className="relative h-[160px] rounded-xl overflow-hidden border border-lactive shadow-sm">
         <Image
           source={{ uri: item.picture || imageUrl }}
-          resizeMode="cover"
-          className="absolute w-full h-full "
+          resizeMode="contain"
+          className="absolute w-full h-full bg-white"
         />
 
         {/* Wishlist Button */}
