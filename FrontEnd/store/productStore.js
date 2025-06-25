@@ -30,7 +30,6 @@ export const useProductStore = create((set, get) => ({
     } catch (error) {
       console.log(error.response.data);
       useErrorStore.getState().setError("Error loading product");
-      // Alert.alert(error.message);
     }
   },
   getCart: async () => {

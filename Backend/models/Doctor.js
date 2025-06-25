@@ -13,8 +13,10 @@ const DoctorSchema = new Schema({
     type: String,
     required: true,
   },
-  timings: {
-    type: [],
+  availability: {
+    start: { type: String, default: "9:00" },
+    end: { type: String, default: "17:00" },
+    duration: { type: Number, default: 30 },
   },
 });
 const Doctor = User.discriminator("Doctor", DoctorSchema);

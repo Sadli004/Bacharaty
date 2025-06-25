@@ -6,6 +6,8 @@ import {
   ScrollView,
   FlatList,
   TouchableOpacity,
+  Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
@@ -18,16 +20,21 @@ import { useUserStore } from "../../../../store/userStore";
 import { formatDate, getWeekDays } from "../../../../utils/date";
 import DayPicker from "../../../../components/dayPicker";
 import DoctorHeader from "../../../../components/doctorHeader";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { BlurView } from "expo-blur";
+import { useAppointmentStore } from "../../../../store/appointmentStore";
 const Docotor = () => {
   const { user } = useUserStore();
   const { doctor } = useDoctorStore();
   const { startNewChat } = useChatStore();
   const { chats, chatId } = useChatStore();
+  const { bookAppointment } = useAppointmentStore();
   const [tab, setTab] = useState("About");
   const [selectedDay, setSelectedDay] = useState(new Date());
   const [week, setWeek] = useState(getWeekDays(selectedDay));
   const [selectedTime, setSelectedTime] = useState(null);
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const allowBooking = selectedDay && selectedTime;
   const times = [
     { id: 1, time: "08:00 AM" },
     { id: 2, time: "08:30 AM" },
@@ -47,6 +54,9 @@ const Docotor = () => {
       const newChatId = await startNewChat(user._id, doctor._id);
       if (newChatId) router.replace(`patient/${newChatId}`);
     }
+  };
+  const handleBooking = (doctorId, date, time) => {
+    bookAppointment(doctorId, date, time);
   };
   const headerComponent = () => (
     <>
@@ -70,13 +80,48 @@ const Docotor = () => {
             <Text className="text-lg font-psemibold">
               {formatDate(selectedDay)}
             </Text>
-            <Image source={icons.calendar} className="w-6 h-6" />
+            <TouchableOpacity onPress={() => setModalVisible(true)}>
+              <Image source={icons.calendar} className="w-6 h-6" />
+            </TouchableOpacity>
           </View>
+
           <DayPicker
             week={week}
             selectedDay={selectedDay}
             setSelectedDay={setSelectedDay}
           />
+          <View>
+            <Modal
+              visible={modalVisible}
+              animationType="slide"
+              transparent={true}
+              className="rounded-xl"
+            >
+              <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+                <BlurView intensity={10} className="flex-1">
+                  <View className="flex-1 justify-center items-center mx-6">
+                    <DateTimePicker
+                      value={selectedDay}
+                      mode="date"
+                      display="inline"
+                      accentColor="#1c5c73"
+                      themeVariant="light"
+                      minimumDate={new Date()}
+                      onChange={(event, selectedDate) => {
+                        setSelectedDay(selectedDate);
+                        setWeek(getWeekDays(new Date()));
+                        setModalVisible(false);
+                      }}
+                      style={{
+                        backgroundColor: "white",
+                        borderRadius: 10,
+                      }}
+                    />
+                  </View>
+                </BlurView>
+              </TouchableWithoutFeedback>
+            </Modal>
+          </View>
         </View>
       )}
     </>
@@ -105,28 +150,35 @@ const Docotor = () => {
   const reviews = [{ id: 1 }, { id: 2 }, { id: 3 }];
   return (
     <SafeAreaView className="flex-1 bg-background-light">
-      <FlatList
-        data={tab == "About" ? reviews : times}
-        keyExtractor={(item) => item.id}
-        key={tab}
-        numColumns={tab == "Availability" ? 3 : 1}
-        columnWrapperStyle={
-          tab == "Availability" && {
-            justifyContent: "space-around",
+      {tab == "About" ? (
+        <FlatList
+          data={reviews}
+          keyExtractor={(item) => item.id}
+          ListHeaderComponent={headerComponent}
+          renderItem={renderItem}
+        />
+      ) : (
+        <FlatList
+          data={times}
+          key={tab}
+          numColumns={3}
+          columnWrapperStyle={
+            tab == "Availability" && {
+              justifyContent: "space-around",
+            }
           }
-        }
-        ListHeaderComponent={headerComponent}
-        renderItem={renderItem}
-        ListFooterComponent={() => {
-          const allowBooking = selectedDay && selectedTime;
-          return (
-            <CustomButton
-              title="Book now"
-              containerStyles={`${
-                allowBooking ? "bg-primary" : "bg-secondary"
-              } rounded-3xl mx-4`}
-            />
-          );
+          keyExtractor={(item) => item.id}
+          ListHeaderComponent={headerComponent}
+          renderItem={renderItem}
+        />
+      )}
+      <CustomButton
+        title="Book now"
+        containerStyles={`${
+          allowBooking ? "bg-primary" : "bg-secondary"
+        } rounded-3xl mx-4`}
+        handlePress={() => {
+          bookAppointment(doctor._id, selectedDay, selectedTime);
         }}
       />
     </SafeAreaView>

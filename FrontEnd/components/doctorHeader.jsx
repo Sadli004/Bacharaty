@@ -52,7 +52,7 @@ const DoctorHeader = ({ doctor, tab, setTab }) => {
         </View>
       </View>
 
-      <View className="flex-row space-x-4">
+      <View className="flex-row space-x-4 mx-2">
         {["About", "Availability"].map((item) => (
           <TouchableOpacity
             key={item}

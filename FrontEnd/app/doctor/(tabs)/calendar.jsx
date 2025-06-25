@@ -123,7 +123,7 @@ export default function Tab() {
                     setModalVisible(false);
                   }}
                   style={{
-                    backgroundColor: "gray",
+                    backgroundColor: "white",
                     borderRadius: 10,
                     color: "black",
                   }}

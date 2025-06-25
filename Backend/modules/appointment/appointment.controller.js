@@ -1,12 +1,20 @@
 const { isValidObjectId } = require("mongoose");
 const mongoose = require("mongoose");
 const Appointment = require("../../models/Appointment");
-module.exports.createAppointment = (req, res) => {
-  const { patient, doctor, date, time } = req.body;
+module.exports.createAppointment = async (req, res) => {
+  const { uid } = req.user;
+  const patient = uid;
+  const { doctor, date, time } = req.body;
   if (!patient || !doctor || !date || !time)
     return res.status(400).json({ error: "All fields are required" });
   if (!isValidObjectId(patient) || !isValidObjectId(doctor))
     return res.status(400).json({ error: "Invalid id" });
+  const existant = await Appointment.findOne({
+    doctor: doctor,
+    date: date,
+    time: time,
+  });
+  if (existant) return res.status(409).send("Appointment already taken");
   const newAppointment = new Appointment({ patient, doctor, date, time });
   newAppointment
     .save()

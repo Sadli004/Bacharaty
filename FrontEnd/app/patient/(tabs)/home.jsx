@@ -69,7 +69,7 @@ const main = () => {
                       className="w-16 h-16 rounded-full mr-3"
                     />
                     <View>
-                      <Text className="text-lg font-pbold">
+                      <Text className="text-lg font-psemibold">
                         {doctors[0]?.name}
                       </Text>
                       <Text className="text-gray-500">21 Juin 2025</Text>
