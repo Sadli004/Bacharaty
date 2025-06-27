@@ -5,12 +5,12 @@ import { useErrorStore } from "../store/errorStore"; // repeat for other stores 
 
 const ToastListener = () => {
   const toast = useToast();
-  const { errorMessage, clearError } = useErrorStore();
+  const { errorMessage, clearError, type } = useErrorStore();
 
   useEffect(() => {
     if (errorMessage) {
       toast.show(errorMessage, {
-        type: "danger",
+        type: type || "danger",
         animationType: "zoom-in",
         duration: 1000,
       });

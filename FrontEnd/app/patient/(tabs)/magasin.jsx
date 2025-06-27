@@ -23,12 +23,14 @@ import { useUserStore } from "../../../store/userStore";
 import { icons } from "../../../constants";
 import { router } from "expo-router";
 const Magasin = () => {
-  const { products, fetchProducts, loadingProducts } = useProductStore();
+  const { products, fetchProducts, loadingProducts, getWishlist } =
+    useProductStore();
   const { user } = useUserStore();
   const isAndroid = Platform.OS == "android";
   const statusBarHeight = StatusBar.currentHeight;
   useEffect(() => {
     fetchProducts();
+    getWishlist();
   }, []);
 
   return (

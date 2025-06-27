@@ -29,6 +29,7 @@ export const useUserStore = create((set) => ({
       const response = await axios.get(
         `${process.env.EXPO_PUBLIC_API_URL}/user/`
       );
+      console.log(response.data);
 
       const profilePicUri = response.data.profilePicture
         ? `${process.env.EXPO_PUBLIC_API_URL}/download/user/profile/${response.data.profilePicture}`

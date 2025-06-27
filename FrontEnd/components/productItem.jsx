@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { icons, images } from "../constants";
 import { TouchableOpacity } from "react-native";
 import CustomButton from "./customButton";
-import Counter from "./quantityCounter";
+
 import { useProductStore } from "../store/productStore";
 import { useUserStore } from "../store/userStore";
 import { router, useLocalSearchParams } from "expo-router";
@@ -16,6 +16,7 @@ const ProductItem = () => {
     getCart,
     getSingleProduct,
     clearProduct,
+    getWishlist,
   } = useProductStore();
   const { id } = useLocalSearchParams();
   const { user } = useUserStore();
@@ -26,12 +27,13 @@ const ProductItem = () => {
   useEffect(() => {
     getSingleProduct(id);
     getCart();
+
     return () => {
       clearProduct();
     };
   }, []);
   return (
-    <SafeAreaView className="  rounded-lg   h-full bg-[#f9f9f9]">
+    <SafeAreaView className="  rounded-lg   h-full bg-background-light">
       <ScrollView>
         <Image
           source={{ uri: product.picture }}
@@ -39,7 +41,7 @@ const ProductItem = () => {
           className="h-[50vh] w-full bg-white"
         />
 
-        <View className=" border  bg-[#f9f9f9] shadow p-6  flex-1 ">
+        <View className=" border border-gray-light rounded-t-3xl  bg-background-light shadow shadow-xl p-6  flex-1 ">
           <View className="flex-row  items-center justify-between">
             <Text className="text-3xl font-psemibold">{product.name}</Text>
             <TouchableOpacity
@@ -93,15 +95,22 @@ const ProductItem = () => {
           </View>
         </View>
       </ScrollView>
-      <View className="flex-row items-center mx-2  border">
+      <View className="flex-row items-center mx-2  ">
         <CustomButton
-          title={existsinCart(product._id) ? "Go to cart" : "Add to cart"}
-          containerStyles="flex-1 rounded-3xl text-primary"
+          // title={existsinCart(product._id) ? "Go to cart" : "Add to cart"}
+          title="Cart"
+          containerStyles=" rounded-3xl bg-white w-[35vw] mr-2 border border-primary"
+          textStyles="text-primary"
           handlePress={() => {
-            existsinCart(product._id)
-              ? router.push("patient/cart")
-              : addToCart(product._id);
+            // existsinCart(product._id)
+            //   ? router.push("patient/cart")
+            //   : addToCart(product._id);
+            addToCart(product._id);
           }}
+        />
+        <CustomButton
+          title="Buy now"
+          containerStyles="flex-1 rounded-3xl  w-[35vw]"
         />
       </View>
     </SafeAreaView>

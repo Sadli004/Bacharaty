@@ -25,6 +25,7 @@ module.exports.getProducts = async (req, res) => {
 
 module.exports.getProductById = async (req, res) => {
   const { id } = req.params;
+
   try {
     if (!mongoose.Types.ObjectId.isValid(id))
       return res
@@ -38,11 +39,28 @@ module.exports.getProductById = async (req, res) => {
   }
 };
 
+module.exports.getWishlist = async (req, res) => {
+  const { uid } = req.user;
+
+  try {
+    if (!mongoose.Types.ObjectId.isValid(uid)) {
+      return res.status(400).send("Invalid user id");
+    }
+
+    const user = await patientModel
+      .findById(uid)
+      .select("liked")
+      .populate("liked");
+    return res.send(user.liked);
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).send("Internal server error");
+  }
+};
 module.exports.likeProduct = async (req, res) => {
   const { uid } = req.user;
   const { productId } = req.body;
   try {
-    console.log(productId);
     if (
       !mongoose.Types.ObjectId.isValid(uid) ||
       !mongoose.Types.ObjectId.isValid(productId)
@@ -57,13 +75,15 @@ module.exports.likeProduct = async (req, res) => {
       { new: true }
     );
     if (!product) return res.status(404).send("Product not found");
-    const user = await patientModel.findByIdAndUpdate(
-      uid,
-      {
-        $addToSet: { liked: productId },
-      },
-      { new: true }
-    );
+    const user = await patientModel
+      .findByIdAndUpdate(
+        uid,
+        {
+          $addToSet: { liked: productId },
+        },
+        { new: true }
+      )
+      .select("liked");
     if (!user) return res.status(404).send("User not found");
     console.log(user);
     res.send(user.liked);

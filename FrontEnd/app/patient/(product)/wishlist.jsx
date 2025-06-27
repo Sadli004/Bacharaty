@@ -7,20 +7,30 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useProductStore } from "../../../store/productStore";
 import { icons } from "../../../constants";
+import { router } from "expo-router";
 
 export default function Wishlist() {
-  const { products } = useProductStore();
+  const { getWishlist, wishlist, addToCart } = useProductStore();
+
+  useEffect(() => {
+    getWishlist();
+  }, []);
   return (
     <SafeAreaView className="bg-background-light h-full">
       <FlatList
-        data={products}
+        data={wishlist}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => {
           return (
-            <View className="flex-row my-2 bg-gray-light rounded-xl p-2 justify-around items-center">
+            <TouchableOpacity
+              onPress={() => {
+                router.push(`patient/product/${item._id}`);
+              }}
+              className="flex-row my-2 bg-gray-light rounded-xl p-2 justify-around items-center"
+            >
               <View className="flex-row  items-center space-x-4 ">
                 <Image
                   source={{ uri: item.picture }}
@@ -33,7 +43,12 @@ export default function Wishlist() {
                   </Text>
                   <Text className="text-sm">{item.brand}</Text>
                   <Text className="text-lg font-psemibold">{item.price}</Text>
-                  <TouchableOpacity className="flex-row bg-primary p-2 rounded-xl items-center">
+                  <TouchableOpacity
+                    onPress={() => {
+                      addToCart(item._id);
+                    }}
+                    className="flex-row bg-primary p-2 rounded-xl items-center"
+                  >
                     <Image
                       source={icons.cart}
                       resizeMode="contain"
@@ -56,7 +71,7 @@ export default function Wishlist() {
                   className="h-6 w-6"
                 />
               </View> */}
-            </View>
+            </TouchableOpacity>
           );
         }}
         contentContainerStyle={{

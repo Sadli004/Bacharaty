@@ -8,6 +8,7 @@ export const useProductStore = create((set, get) => ({
   products: [],
   product: {},
   cart: [],
+  wishlist: [],
   loadingCart: true,
   loadingProducts: true,
   clearProduct: () => set({ product: {} }),
@@ -45,11 +46,25 @@ export const useProductStore = create((set, get) => ({
       console.error(error.message);
     }
   },
+  getWishlist: async () => {
+    const token = useUserStore.getState().token;
+    axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
+
+    try {
+      const response = await axios.get(
+        `${process.env.EXPO_PUBLIC_API_URL}/product/wishlist/`
+      );
+      set({ wishlist: response.data });
+    } catch (error) {
+      console.error(error.message);
+      useErrorStore.getState().setError("Network error");
+    }
+  },
   likeProduct: async (productId) => {
     const token = useUserStore.getState().token;
     const { user, setUser } = useUserStore.getState();
+    axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
     try {
-      axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
       const response = await axios.post(
         `${process.env.EXPO_PUBLIC_API_URL}/product/like/`,
         {
@@ -84,6 +99,14 @@ export const useProductStore = create((set, get) => ({
   },
   addToCart: async (productId) => {
     const token = useUserStore.getState().token;
+    const cart = useProductStore.getState().cart;
+    const existInCart = cart?.some((item) => item?.product?._id === productId);
+    if (existInCart) {
+      useErrorStore
+        .getState()
+        .setError("Product already exists in cart", "normal");
+      return;
+    }
     try {
       axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
       const response = await axios.post(
@@ -95,6 +118,7 @@ export const useProductStore = create((set, get) => ({
       set((state) => ({
         cart: [...state.cart, response.data],
       }));
+      useErrorStore.getState().setError("Item added to cart", "success");
     } catch (error) {
       console.error(error.message);
     }

@@ -7,7 +7,7 @@ import { useProductStore } from "../store/productStore";
 import { useUserStore } from "../store/userStore";
 
 const ProductCard = ({ item }) => {
-  const { getSingleProduct, likeProduct, addToCart, unlikeProduct } =
+  const { getSingleProduct, likeProduct, addToCart, unlikeProduct, wishlist } =
     useProductStore();
   const { user } = useUserStore();
   const imageUrl =

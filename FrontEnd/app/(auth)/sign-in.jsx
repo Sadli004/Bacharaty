@@ -66,7 +66,9 @@ const SignIn = () => {
             </Text>
             <CustomButton
               title="Sign In"
-              handlePress={handleSignIn}
+              handlePress={() => {
+                router.push("/otp");
+              }}
               containerStyles="mt-7 shadow-md"
             />
           </View>

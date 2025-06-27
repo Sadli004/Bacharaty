@@ -26,7 +26,7 @@ export default function Settings() {
     setDarkModeEnable((previousState) => !previousState);
   useEffect(() => {
     console.log(theme);
-    if (!user) router.replace("auth/sign-in");
+    if (!user) router.replace("/sign-in");
   }, [user, theme]);
   useEffect(() => {
     Appearance.setColorScheme(theme == "light" ? "dark" : "light");
@@ -200,7 +200,6 @@ export default function Settings() {
           containerStyles="bg-primary rounded-3xl"
           textStyles="text-white"
           handlePress={() => {
-            // router.push("auth/sign-in");
             logout();
           }}
         />

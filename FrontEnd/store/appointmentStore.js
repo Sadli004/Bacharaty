@@ -30,10 +30,26 @@ export const useAppointmentStore = create((set) => ({
         }
       );
       console.log(response.data);
-      useErrorStore.getState().setError("Appointment booked succesfully");
+      useErrorStore
+        .getState()
+        .setError("Appointment booked succesfully", "success");
     } catch (error) {
       console.error(error.message);
       useErrorStore.getState().setError("Error booking appointment");
+    }
+  },
+  fetchUserAppointment: async () => {
+    const token = useUserStore.getState().token;
+    axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
+    try {
+      const response = await axios.get(
+        `${process.env.EXPO_PUBLIC_API_URL}/appointment/patient`
+      );
+      console.log(response.data);
+      set({ appointments: response.data });
+    } catch (error) {
+      console.error(error.message);
+      useErrorStore.getState().setError("Error fetching appointments");
     }
   },
 }));

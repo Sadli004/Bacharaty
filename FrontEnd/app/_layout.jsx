@@ -43,7 +43,7 @@ function RootLayout() {
       }
       SplashScreen.hideAsync();
     }
-  }, [user, loading]);
+  }, [loading]);
   if (loading) {
     return (
       <View className="h-full flex items-center justify-center bg-white">
