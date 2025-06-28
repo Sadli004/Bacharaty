@@ -7,11 +7,6 @@ const OnboardingScreen = ({}) => {
     <Onboarding
       onSkip={() => router.replace("/sign-in")}
       onDone={() => router.replace("/sign-in")}
-      // imageContainerStyles={{
-      //   backgroundColor: "white",
-      //   borderRadius: "50%",
-      //   margin: 50,
-      // }}
       pages={[
         {
           backgroundColor: "#AAEEEA",
@@ -51,28 +46,6 @@ const OnboardingScreen = ({}) => {
         },
       ]}
     />
-    // <SafeAreaView className="bg-[#AAEEEA] h-full">
-    //   <ScrollView>
-    //     <View className="items-center justify-center min-h-[80vh] ">
-    //       <Image
-    //         source={images.checkup}
-    //         resizeMode="contain"
-    //         className="rounded-full bg-white w-[350px] h-[350px] mb-6"
-    //       />
-    //       <View className="items-center gap-4">
-    //         <Text className="font-pbold text-xl">Chat with Our Doctors</Text>
-    //         <Text>
-    //           Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-    //           Accusamus sint repudiandae veniam! Quas vel illo numquam explicabo
-    //         </Text>
-    //       </View>
-    //     </View>
-    //     <View className="bg-[#AAEEEA] opacity-75 flex flex-row justify-around border p-2">
-    //       <Text>Next</Text>
-    //       <Text>Skip</Text>
-    //     </View>
-    //   </ScrollView>
-    // </SafeAreaView>
   );
 };
 

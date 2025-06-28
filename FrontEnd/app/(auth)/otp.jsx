@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import CustomButton from "../../components/customButton";
 
 export default function OTP() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -37,13 +38,13 @@ export default function OTP() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F8FAFF]">
+    <SafeAreaView className="flex-1 bg-background-light">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1 items-center justify-center px-6"
       >
-        <Text className="text-[28px] font-semibold text-black">
-          Verify <Text className="italic text-[#1D4ED8]">your email</Text>
+        <Text className="text-[28px] font-psemibold text-black">
+          Verify <Text className=" text-[#0097B2]">your email</Text>
         </Text>
 
         <Text className="text-center text-sm text-gray-500 mt-2">
@@ -72,16 +73,11 @@ export default function OTP() {
         <TouchableOpacity>
           <Text className="text-sm text-gray-500 mb-6">
             Didn’t get the code?{" "}
-            <Text className="text-blue-600 font-semibold">Resend it.</Text>
+            <Text className="text-[#0097B2] font-psemibold">Resend it.</Text>
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          className="bg-blue-600 w-full py-4 rounded-xl items-center"
-          onPress={handleContinue}
-        >
-          <Text className="text-white font-semibold text-base">Continue</Text>
-        </TouchableOpacity>
+        <CustomButton title="Continue" containerStyles="py-4 w-full" />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

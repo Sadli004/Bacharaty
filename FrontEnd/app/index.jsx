@@ -7,7 +7,7 @@ import OnboardingScreen from "./onBoarding";
 
 export default function Index() {
   const [showOnboarding, setShowOnboarding] = useState(null); // null means unknown
-  const { user, loading } = useUserStore();
+  const { user, loading, role } = useUserStore();
 
   useEffect(() => {
     const checkFirstLaunch = async () => {
@@ -21,18 +21,6 @@ export default function Index() {
         setShowOnboarding(false);
       }
     };
-
-    if (!loading && user === null) {
-      checkFirstLaunch();
-    }
-
-    // if (!loading && user !== null) {
-    //   if (role !== "Doctor") {
-    //     router.replace("/patient/magasin");
-    //   } else {
-    //     router.replace("/doctor/dashboard");
-    //   }
-    // }
   }, [loading, user]);
 
   // While checking

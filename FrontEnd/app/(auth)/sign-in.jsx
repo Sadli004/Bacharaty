@@ -22,7 +22,7 @@ const SignIn = () => {
     email: "",
     password: "",
   });
-  const { login } = useUserStore();
+  const { login, user, role } = useUserStore();
 
   const handleSignIn = async () => {
     login(form.email, form.password).catch((error) => {
@@ -31,8 +31,14 @@ const SignIn = () => {
         placement: "bottom",
       });
     });
-    router.replace("/");
   };
+  useEffect(() => {
+    if (user) {
+      if (role == "Doctor") {
+        router.replace("/doctor/dashboard");
+      } else router.replace("/patient/home");
+    }
+  }, [user, role]);
   return (
     <SafeAreaView className="bg-background-light flex-1">
       <ScrollView>
@@ -60,15 +66,17 @@ const SignIn = () => {
                 setForm({ ...form, password: e });
               }}
             />
-
-            <Text className="text-right text-gray-500 font-plight">
-              Password recovery
-            </Text>
+            <TouchableOpacity onPress={() => router.push("/recovery")}>
+              <Text className="text-right text-gray-500 font-plight">
+                Password recovery
+              </Text>
+            </TouchableOpacity>
             <CustomButton
               title="Sign In"
-              handlePress={() => {
-                router.push("/otp");
-              }}
+              // handlePress={() => {
+              //   router.push("/otp");
+              // }}
+              handlePress={handleSignIn}
               containerStyles="mt-7 shadow-md"
             />
           </View>
