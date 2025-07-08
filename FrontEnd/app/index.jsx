@@ -21,6 +21,7 @@ export default function Index() {
         setShowOnboarding(false);
       }
     };
+    checkFirstLaunch();
   }, [loading, user]);
 
   // While checking
@@ -36,10 +37,4 @@ export default function Index() {
   // Show onboarding
   if (showOnboarding) return <OnboardingScreen />;
   if (!showOnboarding) return <Redirect href="/sign-in" />;
-  return (
-    <View className="h-full flex items-center justify-center bg-white">
-      <Text>Loading</Text>
-      <ActivityIndicator size="large" color="black" />
-    </View>
-  );
 }

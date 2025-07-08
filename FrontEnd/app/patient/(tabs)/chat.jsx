@@ -22,6 +22,7 @@ export default function Chat() {
   const statusBarHeight = StatusBar.currentHeight;
   useEffect(() => {
     getUserChats();
+    console.log(chats);
   }, []);
   if (!user) router.replace("auth/sign-in");
   return (
@@ -51,7 +52,12 @@ export default function Chat() {
                 index != 0 && "mt-0.5"
               }`}
               // style={{ marginTop: index != 0 ? 10 : 0 }}
-              onPress={() => router.push(`patient/${item.chatId?._id}`)}
+              onPress={() =>
+                router.push({
+                  pathname: "/[chatId]",
+                  params: { chatId: item?.chatId?._id },
+                })
+              }
             >
               <View className="items-center justify-center">
                 {!item.isSeen && (

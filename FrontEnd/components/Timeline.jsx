@@ -24,7 +24,7 @@ const TimeLine = ({ time, patient, type, duration, status }) => {
           />
 
           <View className="flex-1">
-            <Text className="text-lg font-semibold">{patient}</Text>
+            <Text className="text-lg font-semibold">Abdellah</Text>
             <Text className="text-gray-500">Video</Text>
           </View>
 

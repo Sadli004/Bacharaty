@@ -49,7 +49,22 @@ export const useAppointmentStore = create((set) => ({
       set({ appointments: response.data });
     } catch (error) {
       console.error(error.message);
-      useErrorStore.getState().setError("Error fetching appointments");
+      useErrorStore.getState().setError("Couldn't load appointments");
+    }
+  },
+  fetchAppointmentPerDay: async (date) => {
+    const token = useUserStore.getState().token;
+    axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
+    console.log(token);
+    try {
+      const response = await axios.get(
+        `${process.env.EXPO_PUBLIC_API_URL}/appointment/doctor/day?date=${date}`
+      );
+      console.log(response.data);
+      set({ appointments: response.data });
+    } catch (error) {
+      console.error(error.message);
+      useErrorStore.getState().setError("Couldn't load appointments");
     }
   },
 }));

@@ -28,21 +28,16 @@ export default function Chat() {
       <SafeAreaView className="  mb-4">
         <View className="p-2">
           <Text className="font-pbold text-xl mb-2">Chats</Text>
-          <SearchInput otherStyles="rounded-3xl bg-light" />
+          <SearchInput otherStyles="rounded-3xl focus:border-dark" />
         </View>
       </SafeAreaView>
       <View>
         <FlatList
           data={chats}
-          extraData={chats}
-          refreshing
-          onRefresh={() => {
-            getUserChats();
-          }}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity
-              className="flex-row gap-2 border-b border-secondary p-2 items-center"
+              className="flex-row gap-2 border-b border-gray-light p-2 items-center"
               onPress={() => router.push(`patient/${item.chatId?._id}`)}
             >
               <View className="items-center justify-center">

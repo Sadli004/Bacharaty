@@ -48,9 +48,6 @@ module.exports.getAppointmentsByUser = async (req, res) => {
 module.exports.getAppointmentsForDoctor = async (req, res) => {
   const { uid } = req.user;
   try {
-    // const appointments = await Appointment.find({ doctor: uid })
-    //   .select("-doctor")
-    //   .populate("patient", "name");
     const appointments = await Appointment.aggregate([
       {
         $match: { doctor: new mongoose.Types.ObjectId(uid) },
@@ -78,8 +75,9 @@ module.exports.getAppointmentsForDoctor = async (req, res) => {
   }
 };
 module.exports.getAppointmentsPerDayForDoctor = async (req, res) => {
-  const { date } = req.body;
+  const { date } = req.query;
   const { uid } = req.user;
+
   try {
     const startOfDay = new Date(date);
     startOfDay.setHours(0, 0, 0, 0);

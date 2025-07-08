@@ -1,17 +1,19 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { icons, images } from "../constants";
+import { useDoctorStore } from "../store/doctorStore";
+import { router } from "expo-router";
 
 export default function DoctorList({ item, handlePress }) {
   return (
     <TouchableOpacity
-      onPress={handlePress}
-      className=" bg-lgray shadow-sm   p-2 m-1 mx-2 rounded-xl flex-row items-center h-[100px] overflow-hidden"
+      onPress={() => router.push(`patient/doctor/${item._id}`)}
+      className=" bg-light  w-[50vw]  p-2  m-2 rounded-xl items-center overflow-hidden"
     >
       <Image
-        source={images.profile_doc || item.profilePicture}
+        source={{ uri: item.profilePicture }}
         resizeMode="cover"
-        className="h-16 w-16 rounded-full border border-white mr-3"
+        className="h-[150px] w-full mx-2 rounded-xl border border-white mr-3"
       />
       <View className="m-2 flex-shrink">
         <Text className="font-psemibold text-xl">{item.name}</Text>

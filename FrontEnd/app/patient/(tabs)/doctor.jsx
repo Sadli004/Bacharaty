@@ -43,7 +43,6 @@ const Doctor = () => {
           return (
             <TouchableOpacity
               onPress={() => {
-                getDoctorProfile(item._id);
                 router.push(`patient/doctor/${doctor._id}`);
               }}
               className=" bg-gray-light shadow-sm   p-2 m-1 mx-2 rounded-xl flex-row items-center h-[100px] overflow-hidden"

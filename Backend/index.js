@@ -3,6 +3,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
+const { StreamChat } = require("stream-chat");
 require("dotenv").config();
 
 const app = express();
@@ -94,6 +95,17 @@ app.use("/appointment", require("./modules/appointment/appointment.routes"));
 app.use("/chat", require("./modules/chat/chat.routes"));
 app.use("/download", require("./modules/files/files.routes"));
 
+//Strem token generating
+const client = StreamChat.getInstance(
+  process.env.STREAM_KEY,
+  process.env.STREAM_API_SECRET
+);
+app.use("/video-token", (req, res) => {
+  const { userId } = req.query;
+  const id = String(userId);
+  const token = client.createToken(id);
+  res.json({ token });
+});
 // Start server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {

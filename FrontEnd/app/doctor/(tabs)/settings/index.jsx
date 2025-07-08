@@ -17,7 +17,7 @@ export default function Settings() {
   const router = useRouter();
   const { user, logout } = useUserStore();
   useEffect(() => {
-    if (!user) router.replace("auth/sign-in");
+    if (!user) router.replace("/sign-in");
   }, [user]);
   return (
     <View className="flex-1 justify-center items-center bg-background-light">

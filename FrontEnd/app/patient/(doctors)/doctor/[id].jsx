@@ -25,7 +25,8 @@ import { BlurView } from "expo-blur";
 import { useAppointmentStore } from "../../../../store/appointmentStore";
 const Docotor = () => {
   const { user } = useUserStore();
-  const { doctor } = useDoctorStore();
+  const { id } = useLocalSearchParams();
+  const { doctor, getDoctorProfile } = useDoctorStore();
   const { startNewChat } = useChatStore();
   const { chats, chatId } = useChatStore();
   const { bookAppointment } = useAppointmentStore();
@@ -148,6 +149,9 @@ const Docotor = () => {
     }
   };
   const reviews = [{ id: 1 }, { id: 2 }, { id: 3 }];
+  useEffect(() => {
+    getDoctorProfile(id);
+  }, []);
   return (
     <SafeAreaView className="flex-1 bg-background-light">
       {tab == "About" ? (

@@ -11,17 +11,19 @@ import {
   StatusBar,
   ActivityIndicator,
 } from "react-native";
-import { icons } from "../../constants";
+
 import { useEffect, useState, useRef } from "react";
-import MessageInput from "../../components/messageInput";
+import MessageInput from "../components/messageInput";
 import { router, useLocalSearchParams } from "expo-router";
-import { useChatStore } from "../../store/chatStore";
-import { useUserStore } from "../../store/userStore";
-import { formatDate, formatTime } from "../../utils/date";
-import { connectSocket, getSocket } from "../../utils/socket-io";
-import Toast from "react-native-toast-notifications";
+import { useChatStore } from "../store/chatStore";
+import { useUserStore } from "../store/userStore";
+import { formatDate, formatTime } from "../utils/date";
+import { connectSocket, getSocket } from "../utils/socket-io";
+
 import { useToast } from "react-native-toast-notifications";
-const Chat = () => {
+import { icons } from "../constants";
+import { getStreamToken } from "../utils/streamVideo";
+export default function Chat() {
   const { chatId } = useLocalSearchParams();
   const MessagesRef = useRef(null);
   const [message, setMessage] = useState("");
@@ -135,12 +137,28 @@ const Chat = () => {
     setSelectedMessage(msg);
     setIsEditing(true);
   };
-  const handleCall = () => {
-    Alert.alert(
-      "This feature is not available yet",
-      "This app is still under development and the requested feature will be available on release"
-    );
-  };
+  // const handleCall = async (type = "video") => {
+  //   try {
+  //     const streamToken = await getStreamToken(user._id); // Backend call
+  //     const client = initializeStreamVideo({
+  //       apiKey: process.env.EXPO_PUBLIC_STREAM_API_KEY,
+  //       user: { id: user._id, name: user.name },
+  //       token: streamToken,
+  //     });
+
+  //     const callId = `call-${chatId}`;
+  //     const call = client.call("default", callId);
+
+  //     await call.join({ create: true }); // auto-creates if not existing
+  //     router.push({
+  //       pathname: "/video-call",
+  //       params: { callId },
+  //     });
+  //   } catch (err) {
+  //     Alert.alert("Error", "Failed to start call");
+  //     console.error(err);
+  //   }
+  // };
 
   return (
     <View className="flex-1 bg-[#f9f9f9]">
@@ -176,7 +194,7 @@ const Chat = () => {
             </View>
           </View>
           <View className="flex-row gap-4 items-center mr-4">
-            <TouchableOpacity onPress={() => handleCall()}>
+            <TouchableOpacity onPress={() => console.log("Hello world")}>
               <Image
                 source={icons.audio_call}
                 resizeMode="contain"
@@ -184,7 +202,7 @@ const Chat = () => {
                 tintColor="#0CC0DF"
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleCall()}>
+            <TouchableOpacity onPress={() => handleCall("video")}>
               <Image
                 source={icons.video_call}
                 resizeMode="contain"
@@ -303,6 +321,6 @@ const Chat = () => {
       </KeyboardAvoidingView>
     </View>
   );
-};
+}
 
-export default Chat;
+// export default Chat;

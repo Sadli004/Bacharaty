@@ -10,7 +10,7 @@ import {
   StatusBar,
 } from "react-native";
 import { useUserStore } from "../../../store/userStore";
-import DatePicker from "react-native-modern-datepicker";
+
 import { icons } from "../../../constants";
 import { FontAwesome } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
@@ -20,15 +20,30 @@ import TimeLine from "../../../components/Timeline";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useAppointmentStore } from "../../../store/appointmentStore";
 import { formatDate, formatTime, getWeekDays } from "../../../utils/date";
+import SelectDropdown from "react-native-select-dropdown";
+import { Picker } from "@react-native-picker/picker";
 export default function Tab() {
-  const { fetchDoctorAppointments, appointments } = useAppointmentStore();
+  const { fetchDoctorAppointments, appointments, fetchAppointmentPerDay } =
+    useAppointmentStore();
   const { user } = useUserStore();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDay, setSelectedDay] = useState(new Date());
   const [week, setWeek] = useState(getWeekDays(selectedDay));
   const [isSelected, setIsSelected] = useState(false);
+  const [editSchedule, setEditSchedule] = useState(false);
+  const [weekDay, setWeekDay] = useState(null);
+  const days = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
   useEffect(() => {
-    fetchDoctorAppointments();
+    // fetchDoctorAppointments();
+    fetchAppointmentPerDay(selectedDay);
   }, [selectedDay]);
   return (
     <View className="flex-1 bg-gray-100 p-2 bg-background-light">
@@ -36,7 +51,7 @@ export default function Tab() {
       <SafeAreaView className="flex-row items-center mb-8 mx-2">
         <Image
           source={{ uri: user?.profilePicture }}
-          className="w-16 h-16 rounded-full border-2 border-primary"
+          className="w-16 h-16 rounded-full border border-dark"
         />
         <View className="ml-4">
           <Text className="text-lg font-pbold">{user?.name}</Text>
@@ -45,10 +60,10 @@ export default function Tab() {
       </SafeAreaView>
       {/*Schedule */}
       <Text className="font-pbold text-xl mb-2">Schedule</Text>
-      <View className=" py-4 px-2 rounded-lg shadow-xl bg-white mb-8">
+      <View className=" py-2 rounded-lg   mb-8">
         <View className="flex-row justify-between items-center mt-2 mb-4">
           <View className="flex-row gap-2">
-            <TouchableOpacity className="text-white bg-primary p-2 rounded-lg shadow">
+            <TouchableOpacity className="text-white bg-secondary2 p-2 rounded-lg shadow">
               <Text className="text-md font-pregular text-white">
                 This week
               </Text>
@@ -58,15 +73,15 @@ export default function Tab() {
               className={
                 isSelected
                   ? ` bg-primary p-2 rounded-lg shadow`
-                  : ` border border-primary bg-gray-100 shadow p-2 rounded-lg`
+                  : ` border border-secondary2 bg-gray-100 shadow p-2 rounded-lg`
               }
             >
-              <Text className="text-md font-pregular text-primary">
+              <Text className="text-md font-pregular text-secondary2">
                 Calendar
               </Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setEditSchedule(true)}>
             <Image source={icons.edit} resizeMode="cover" className="w-6 h-6" />
           </TouchableOpacity>
         </View>
@@ -82,8 +97,8 @@ export default function Tab() {
             return (
               <TouchableOpacity
                 onPress={() => setSelectedDay(item.current)}
-                className={`rounded-3xl shadow-sm  mr-2 p-2 h-[70px] w-[47px] items-center ${
-                  isActive ? "bg-primary" : "bg-secondary"
+                className={`rounded-3xl shadow-sm  mr-2 p-2 h-16 w-14 items-center ${
+                  isActive ? "bg-dark" : "bg-gray-light"
                 }`}
               >
                 <Text className={`${isActive ? "text-white" : "text-black"}`}>
@@ -117,6 +132,7 @@ export default function Tab() {
                   mode="date"
                   display="inline"
                   accentColor="lightblue"
+                  themeVariant="light"
                   onChange={(event, selectedDate) => {
                     setSelectedDay(selectedDate);
                     setWeek(getWeekDays(new Date()));
@@ -128,6 +144,32 @@ export default function Tab() {
                     color: "black",
                   }}
                 />
+              </View>
+            </BlurView>
+          </TouchableWithoutFeedback>
+        </Modal>
+      </View>
+      <View>
+        <Modal
+          visible={editSchedule}
+          animationType="slide"
+          transparent={true}
+          className="rounded-xl"
+        >
+          <TouchableWithoutFeedback onPress={() => setEditSchedule(false)}>
+            <BlurView intensity={10} className="flex-1 justify-center">
+              <View className="min-h-[50vh]   mx-6 bg-primary">
+                <View className="border border-gray-300 rounded-md  ">
+                  <Picker
+                    selectedValue={weekDay}
+                    onValueChange={(itemValue) => setWeekDay(itemValue)}
+                  >
+                    {days.map((day) => (
+                      <Picker.Item label={day} value={day} key={day} />
+                    ))}
+                  </Picker>
+                  <Text>Hello world</Text>
+                </View>
               </View>
             </BlurView>
           </TouchableWithoutFeedback>
@@ -150,7 +192,7 @@ export default function Tab() {
         renderItem={({ item }) => <TimeLine {...item} />}
         ListEmptyComponent={
           <View className="min-h-[70%]">
-            <Text>No appointments yet for {selectedDay}</Text>
+            <Text>No appointments yet for {formatDate(selectedDay)}</Text>
           </View>
         }
       />
