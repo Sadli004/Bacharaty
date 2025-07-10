@@ -33,7 +33,7 @@ const Doctor = () => {
       >
         <View className="p-2 ">
           <Text className="font-psemibold text-xl mb-2 mx-2">Doctors</Text>
-          <SearchInput otherStyles="rounded-3xl bg-[#f9f9f9] border-dark focus:border-dactive " />
+          <SearchInput otherStyles="rounded-3xl bg-[#f9f9f9]  focus:border-dactive " />
         </View>
       </SafeAreaView>
       <FlatList
@@ -43,7 +43,7 @@ const Doctor = () => {
           return (
             <TouchableOpacity
               onPress={() => {
-                router.push(`patient/doctor/${doctor._id}`);
+                router.push(`patient/doctor/${item._id}`);
               }}
               className=" bg-gray-light shadow-sm   p-2 m-1 mx-2 rounded-xl flex-row items-center h-[100px] overflow-hidden"
             >

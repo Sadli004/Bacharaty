@@ -34,7 +34,7 @@ export default function Chat() {
       >
         <View className="p-2">
           <Text className="font-psemibold text-xl mb-2 mx-2">Chats</Text>
-          <SearchInput otherStyles="rounded-3xl bg-light" />
+          <SearchInput otherStyles="rounded-3xl bg-transparent focus:border-dactive" />
         </View>
       </SafeAreaView>
       <View className="mt-3">
@@ -48,7 +48,7 @@ export default function Chat() {
           keyExtractor={(item) => item._id}
           renderItem={({ item, index }) => (
             <TouchableOpacity
-              className={`flex-row gap-2 border-b border-gray p-2 items-center ${
+              className={`flex-row gap-2 border-b border-gray-light p-2 items-center ${
                 index != 0 && "mt-0.5"
               }`}
               // style={{ marginTop: index != 0 ? 10 : 0 }}

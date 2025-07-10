@@ -14,6 +14,6 @@ router.get("/doctor", checkAccess, getAppointmentsForDoctor);
 router.get("/patient", checkAccess, getAppointmentsByUser);
 router.get("/doctor/day", checkAccess, getAppointmentsPerDayForDoctor);
 router.patch("/:id", updateAppointment);
-router.delete("/:id", cancelAppointment);
+router.delete("/:id", checkAccess, cancelAppointment);
 
 module.exports = router;

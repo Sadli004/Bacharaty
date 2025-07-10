@@ -1,10 +1,14 @@
 import {
   FlatList,
   Image,
+  Modal,
+  Platform,
   SafeAreaView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -12,15 +16,40 @@ import { useAppointmentStore } from "../../store/appointmentStore";
 import { icons, images } from "../../constants";
 import CustomButton from "../../components/customButton";
 import { AppDate } from "../../utils/date";
+import { BlurView } from "expo-blur";
+import { router } from "expo-router";
 
 export default function Appointments() {
   const [activeTab, setActiveTab] = useState(1);
-  const { fetchUserAppointment, appointments } = useAppointmentStore();
+  const isAndroid = Platform.OS == "android";
+  const [showcancelConfirmation, setShowCancelConfirmation] = useState(false);
+  const { fetchUserAppointment, appointments, cancelAppointment } =
+    useAppointmentStore();
   useEffect(() => {
     fetchUserAppointment();
   }, []);
   return (
-    <SafeAreaView className="bg-background-light h-full">
+    <SafeAreaView
+      className={`bg-background-light h-full `}
+      style={{ paddingTop: isAndroid ? StatusBar.currentHeight : 0 }}
+    >
+      <View className="flex-row w-full justify-between p-2 border-b border-gray-light bg-white mb-4">
+        <TouchableOpacity onPress={() => router.back()}>
+          <Image
+            source={icons.leftArrow}
+            resizeMode="contain"
+            className="w-6 h-6 "
+          />
+        </TouchableOpacity>
+        <Text className="text-lg">My appointments</Text>
+        <TouchableOpacity onPress={() => router.push("patient/(tabs)/doctor")}>
+          <Image
+            source={icons.plus}
+            resizeMode="contain"
+            className="w-6 h-6 "
+          />
+        </TouchableOpacity>
+      </View>
       <View className="flex-row justify-around">
         <TouchableOpacity
           onPress={() => setActiveTab(1)}
@@ -57,12 +86,16 @@ export default function Appointments() {
               <View className="flex-row items-center justify-between">
                 <View className="flex-row gap-2 items-center">
                   <Image
-                    source={images.profile_doc}
+                    source={
+                      item?.profilePicture
+                        ? { uri: item?.profilePicture }
+                        : images.profile_doc
+                    }
                     resizeMode="contain"
                     className="h-16 w-16 rounded-full"
                   />
                   <View>
-                    <Text>Doctor name</Text>
+                    <Text>{item.doctor?.name || " Doctor name"} </Text>
                     <Text className="text-gray-500">Dermatologist</Text>
                   </View>
                 </View>
@@ -83,11 +116,12 @@ export default function Appointments() {
                 </View>
                 <View className="flex-row gap-2 items-center">
                   <Image
-                    source={icons.calendar}
+                    source={icons.clock}
                     className="h-4 w-4"
                     resizeMode="contain"
+                    tintColor={"black"}
                   />
-                  <Text>{AppDate(item.date)}</Text>
+                  <Text>{item.doctor?.location || item.time}</Text>
                 </View>
               </View>
               <View className="flex-row justify-around">
@@ -95,6 +129,7 @@ export default function Appointments() {
                   title="Cancel"
                   containerStyles={"bg-transparent border w-[40%] p-2"}
                   textStyles={"text-gray-dark"}
+                  handlePress={() => setShowCancelConfirmation(true)}
                 />
                 <CustomButton
                   title="Reschedule"
@@ -106,6 +141,34 @@ export default function Appointments() {
           );
         }}
       />
+      {/* <View className="align-end"> */}
+      <Modal visible={showcancelConfirmation} transparent>
+        <TouchableWithoutFeedback
+          onPress={() => setShowCancelConfirmation(false)}
+        >
+          <BlurView intensity={100} className="flex-1 justify-end">
+            <View className="absolute bottom-0 w-full bg-white border border-gray-light rounded-t-3xl p-6 shadow-lg">
+              <Text className="text-lg font-pbold">Cancel Appointment ? </Text>
+              <Text className="text-lg font-pregular">
+                Are you sure you want to cancel ?
+              </Text>
+              <View className="flex-row justify-around space-x-2">
+                <CustomButton
+                  title={"Back"}
+                  containerStyles={"bg-transparent border w-[40%] mr-2 p-2"}
+                  textStyles={"text-black"}
+                  handlePress={() => setShowCancelConfirmation(false)}
+                />
+                <CustomButton
+                  title={"Yes Cancel"}
+                  containerStyles={" w-[40%] p-2 bg-secondary2"}
+                />
+              </View>
+            </View>
+          </BlurView>
+        </TouchableWithoutFeedback>
+      </Modal>
+      {/* </View> */}
     </SafeAreaView>
   );
 }

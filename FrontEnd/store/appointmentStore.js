@@ -60,11 +60,27 @@ export const useAppointmentStore = create((set) => ({
       const response = await axios.get(
         `${process.env.EXPO_PUBLIC_API_URL}/appointment/doctor/day?date=${date}`
       );
-      console.log(response.data);
+      // console.log(response.data);
       set({ appointments: response.data });
     } catch (error) {
       console.error(error.message);
       useErrorStore.getState().setError("Couldn't load appointments");
+    }
+  },
+  cancelAppointment: async (id) => {
+    const token = useUserStore.getState().token;
+    axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
+    try {
+      const response = await axios.delete(
+        `${process.env.EXPO_PUBLIC_API_URL}/appointment/${id}`
+      );
+      console.log("data" + response.data || "message" + response.messages);
+      useErrorStore.getState().setError("Appointment cancelled", "Success");
+    } catch (error) {
+      console.log(error.message);
+      useErrorStore
+        .getState()
+        .setError("An error occured, Couldn't cancel appointment");
     }
   },
 }));

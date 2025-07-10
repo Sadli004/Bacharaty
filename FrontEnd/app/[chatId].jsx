@@ -21,7 +21,7 @@ import { formatDate, formatTime } from "../utils/date";
 import { connectSocket, getSocket } from "../utils/socket-io";
 
 import { useToast } from "react-native-toast-notifications";
-import { icons } from "../constants";
+import { icons, images } from "../constants";
 import { getStreamToken } from "../utils/streamVideo";
 export default function Chat() {
   const { chatId } = useLocalSearchParams();
@@ -182,15 +182,11 @@ export default function Chat() {
             </TouchableOpacity>
             <View className="flex-row items-center gap-2 ml-2">
               <Image
-                source={
-                  { uri: receiver?.profilePicture } || {
-                    uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
-                  }
-                }
+                source={{ uri: receiver?.profilePicture } || images.profile}
                 resizeMode="cover"
                 className="h-10 w-10 rounded-full"
               />
-              <Text className="text-xl">{receiver?.name}</Text>
+              <Text className="text-xl">{receiver?.name || "User "}</Text>
             </View>
           </View>
           <View className="flex-row gap-4 items-center mr-4">
@@ -202,7 +198,7 @@ export default function Chat() {
                 tintColor="#0CC0DF"
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleCall("video")}>
+            <TouchableOpacity onPress={() => console.log("handleCall(video)")}>
               <Image
                 source={icons.video_call}
                 resizeMode="contain"
@@ -266,14 +262,14 @@ export default function Chat() {
                                 item.content && "bg-secondary"
                               }
                           ${item.media && "border flex-1 border-primary"}`
-                            : "bg-lgray self-start rounded-t-xl rounded-br-xl"
+                            : "bg-gray-light self-start rounded-t-xl rounded-br-xl"
                         }`}
                       >
                         <>
                           <Text className={`font-pregular `}>
                             {item.content}
                           </Text>
-                          <Text className="text-xs font-plight text-gray-300 self-end">
+                          <Text className="text-xs font-plight text-gray-500 self-end">
                             {formatTime(item.createdAt)}
                           </Text>
                         </>

@@ -37,9 +37,9 @@ module.exports.getAppointmentList = async (req, res) => {
 module.exports.getAppointmentsByUser = async (req, res) => {
   const { uid } = req.user;
   try {
-    const appointments = await Appointment.find({ patient: uid }).select(
-      "-patient"
-    );
+    const appointments = await Appointment.find({ patient: uid })
+      .select("-patient")
+      .populate("doctor", "name location");
     res.json(appointments);
   } catch (error) {
     res.status(500).send(error.message);
@@ -115,12 +115,36 @@ module.exports.updateAppointment = async (req, res) => {
 };
 module.exports.cancelAppointment = async (req, res) => {
   const { id } = req.params;
+  const { uid } = req.user;
+
   try {
-    if (!isValidObjectId(id))
-      return res.status(400).json({ error: "Invalid Id" });
-    await Appointment.findByIdAndDelete(id);
-    res.json({ message: "Appointment cancelled successfully" });
+    // Validate IDs
+
+    // if (!isValidObjectId(id) || !isValidObjectId(userId)) {
+    //   return res.status(400).json({ error: "Invalid ID format" });
+    // }
+
+    // Find the appointment where the user is either patient or doctor
+    const appointment = await Appointment.findOneAndDelete({
+      _id: id,
+      $or: [{ patient: uid }, { doctor: uid }],
+    });
+
+    if (!appointment) {
+      return res.status(404).json({
+        error:
+          "Appointment not found or you don't have permission to cancel it",
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: "Appointment cancelled successfully",
+    });
   } catch (error) {
-    res.status(500).send(error.message);
+    console.error("Error cancelling appointment:", error);
+    return res.status(500).json({
+      error: "An error occurred while cancelling the appointment",
+    });
   }
 };

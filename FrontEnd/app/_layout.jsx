@@ -60,7 +60,7 @@ function RootLayout() {
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="patient/(tabs)" />
         <Stack.Screen
-          name="patient/appointments.jsx"
+          name="patient/appointments"
           screenOptions={{ headerShown: true }}
         />
         <Stack.Screen name="doctor" />
