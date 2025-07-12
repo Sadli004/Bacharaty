@@ -38,7 +38,7 @@ export default function OTP() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background-light">
+    <SafeAreaView className="flex-1 bg-background-light dark:bg-background-dark">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1 items-center justify-center px-6"

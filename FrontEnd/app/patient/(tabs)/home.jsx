@@ -23,6 +23,7 @@ const main = () => {
   const { products, fetchProducts } = useProductStore();
   const { fetchDoctors, doctors } = useDoctorStore();
   const statusBarHeight = StatusBar.currentHeight;
+
   useEffect(() => {
     fetchProducts();
     fetchDoctors();
@@ -32,7 +33,7 @@ const main = () => {
   }, []);
   return (
     <SafeAreaView
-      className="bg-background-light  "
+      className={`bg-background-light dark:bg-background-dark `}
       style={{ paddingTop: Platform.OS == "android" ? statusBarHeight : 0 }}
     >
       <View className="mx-2">

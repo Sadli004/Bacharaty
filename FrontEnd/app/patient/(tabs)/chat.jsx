@@ -24,7 +24,7 @@ export default function Chat() {
     getUserChats();
     console.log(chats);
   }, []);
-  if (!user) router.replace("auth/sign-in");
+  if (!user) router.replace("/sign-in");
   return (
     <View className="flex-1 bg-background-light">
       {/*Header */}

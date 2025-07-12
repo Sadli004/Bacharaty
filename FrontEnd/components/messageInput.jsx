@@ -12,6 +12,7 @@ const MessageInput = ({
   placeholder,
   otherStyles,
   handleSend,
+  isDark,
 }) => {
   // send a picture from camera
   const openCamera = async () => {
@@ -73,7 +74,11 @@ const MessageInput = ({
   return (
     <View className="flex-row w-full items-center gap-1 mt-1">
       <TouchableOpacity onPress={pickFile}>
-        <View className="rounded-full bg-lgray p-2">
+        <View
+          className={`rounded-full ${
+            isDark ? "bg-gray-dark" : "bg-gray-light"
+          } p-2`}
+        >
           <Image
             source={icons.attachment}
             // tintColor="#1c5c73"
@@ -84,7 +89,9 @@ const MessageInput = ({
         </View>
       </TouchableOpacity>
       <View
-        className={` ${otherStyles} flex-1 h-12 bg-lgray focus:border-pactive bg-gray-100 rounded-3xl justify-between flex-row items-center`}
+        className={` ${otherStyles} flex-1 h-12 ${
+          isDark ? "bg-gray-dark" : "bg-gray-light"
+        } focus:border-pactive  rounded-3xl justify-between flex-row items-center`}
       >
         {audioUri && (
           <View className="flex-row items-center bg-white border rounded-xl px-2 py-1 mb-2 mx-2">

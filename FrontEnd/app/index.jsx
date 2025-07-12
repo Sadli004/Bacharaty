@@ -12,12 +12,11 @@ export default function Index() {
   useEffect(() => {
     const checkFirstLaunch = async () => {
       const alreadyLaunched = await SecureS.getItemAsync("alreadyLaunched");
-      console.log(alreadyLaunched);
+
       if (alreadyLaunched === null) {
         await SecureS.setItemAsync("alreadyLaunched", "true");
         setShowOnboarding(true);
       } else {
-        await SecureS.deleteItemAsync("alreadyLaunched");
         setShowOnboarding(false);
       }
     };

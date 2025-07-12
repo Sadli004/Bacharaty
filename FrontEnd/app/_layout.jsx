@@ -6,8 +6,12 @@ import { useUserStore } from "../store/userStore";
 import { ToastProvider } from "react-native-toast-notifications";
 import * as SecureS from "expo-secure-store";
 import ToastListener from "../components/toastListener";
+// import { ThemeProvider, useTheme } from "../context/themeContext";
+import { useColorScheme } from "nativewind";
+import { NativeWindProvider } from "nativewind";
 SplashScreen.preventAutoHideAsync();
-function RootLayout() {
+
+export default function RootLayout() {
   // const segments = useSegments();
   const [fontsLoaded, error] = useFonts({
     "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
@@ -26,11 +30,12 @@ function RootLayout() {
     if (!fontsLoaded && !error) return;
   }, [fontsLoaded, error]);
   const { user, loading, role, getUser } = useUserStore();
+  const { colorScheme, setColorScheme } = useColorScheme();
   useEffect(() => {
     getUser();
   }, []);
   useEffect(() => {
-    if (!loading) {
+    if (!loading && fontsLoaded) {
       if (user == null) {
         router.replace("/");
       }
@@ -44,6 +49,20 @@ function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loading]);
+  useEffect(() => {
+    const loadTheme = async () => {
+      try {
+        const savedTheme = await SecureS.getItemAsync("theme");
+        if (savedTheme) setColorScheme(savedTheme);
+      } catch (error) {
+        console.error("Failed to load theme", error);
+      }
+    };
+    loadTheme();
+  }, []);
+  useEffect(() => {
+    SecureS.setItemAsync("theme", colorScheme == "dark" ? "dark" : "light");
+  }, [colorScheme]);
   if (loading) {
     return (
       <View className="h-full flex items-center justify-center bg-white">
@@ -55,6 +74,7 @@ function RootLayout() {
   return (
     <ToastProvider>
       <ToastListener />
+
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="(auth)" />
@@ -68,4 +88,3 @@ function RootLayout() {
     </ToastProvider>
   );
 }
-export default RootLayout;

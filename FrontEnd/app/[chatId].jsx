@@ -23,6 +23,7 @@ import { connectSocket, getSocket } from "../utils/socket-io";
 import { useToast } from "react-native-toast-notifications";
 import { icons, images } from "../constants";
 import { getStreamToken } from "../utils/streamVideo";
+import { useColorScheme } from "nativewind";
 export default function Chat() {
   const { chatId } = useLocalSearchParams();
   const MessagesRef = useRef(null);
@@ -31,6 +32,8 @@ export default function Chat() {
   const [isEditing, setIsEditing] = useState();
   const isAndroid = Platform.OS == "android";
   const statusBarHeight = StatusBar.currentHeight;
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme == "dark";
   const toast = useToast();
   const {
     messages,
@@ -161,7 +164,11 @@ export default function Chat() {
   // };
 
   return (
-    <View className="flex-1 bg-[#f9f9f9]">
+    <View
+      className={`flex-1 ${
+        isDark ? "bg-background-dark" : "bg-background-light"
+      }`}
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"
@@ -186,7 +193,9 @@ export default function Chat() {
                 resizeMode="cover"
                 className="h-10 w-10 rounded-full"
               />
-              <Text className="text-xl">{receiver?.name || "User "}</Text>
+              <Text className={`text-xl ${isDark && "text-white"}`}>
+                {receiver?.name || "User "}
+              </Text>
             </View>
           </View>
           <View className="flex-row gap-4 items-center mr-4">
@@ -195,7 +204,7 @@ export default function Chat() {
                 source={icons.audio_call}
                 resizeMode="contain"
                 className="h-6 w-6"
-                tintColor="#0CC0DF"
+                tintColor={isDark ? "white" : "#0CC0DF"}
               />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => console.log("handleCall(video)")}>
@@ -203,7 +212,7 @@ export default function Chat() {
                 source={icons.video_call}
                 resizeMode="contain"
                 className="h-8 w-8"
-                tintColor="#0CC0DF"
+                tintColor={isDark ? "white" : "#0CC0DF"}
               />
             </TouchableOpacity>
           </View>
@@ -240,14 +249,10 @@ export default function Chat() {
                   index === 0;
                 return (
                   <>
-                    {/* {loadingMessages ? (
-                    <View>
-                      <ActivityIndicator size="large" color="black" />
-                    </View>
-                  ) : (
-                    <> */}
                     {newDay && (
-                      <Text className="self-center my-2">
+                      <Text
+                        className={`self-center my-2 ${isDark && "text-white"}`}
+                      >
                         {formatDate(item.createdAt)}
                       </Text>
                     )}
@@ -311,7 +316,7 @@ export default function Chat() {
             setValue={setMessage}
             handleSend={handleSendMessage}
             otherStyles="shadow-md mt-1"
-            // istyping={message == "" ? false : true}
+            isDark={isDark}
           />
         </SafeAreaView>
       </KeyboardAvoidingView>

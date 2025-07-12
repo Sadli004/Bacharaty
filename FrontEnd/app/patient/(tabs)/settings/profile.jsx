@@ -15,6 +15,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { DismissKeyboard } from "../../../../utils/keyboard";
 import { useImagePicker } from "../../../../hooks/useImagePicker";
+import { images } from "../../../../constants";
 export default function Profile() {
   const { user, updateProfile } = useUserStore();
   const { imageUri, pickImage, clear } = useImagePicker();
@@ -43,12 +44,13 @@ export default function Profile() {
               <Image
                 className="w-20 h-20 rounded-full"
                 resizeMode="cover"
-                source={{
-                  uri:
-                    imageUri ||
-                    user.profilePicture ||
-                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png",
-                }}
+                source={
+                  user?.profilePicture
+                    ? {
+                        uri: imageUri || user?.profilePicture,
+                      }
+                    : images.profile
+                }
               />
               <Text className="font-pbold text-xl">{user?.name}</Text>
               <TouchableOpacity

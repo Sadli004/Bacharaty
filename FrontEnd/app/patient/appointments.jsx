@@ -18,9 +18,12 @@ import CustomButton from "../../components/customButton";
 import { AppDate } from "../../utils/date";
 import { BlurView } from "expo-blur";
 import { router } from "expo-router";
+import SearchInput from "../../components/searchInput";
+import { useColorScheme } from "nativewind";
 
 export default function Appointments() {
   const [activeTab, setActiveTab] = useState(1);
+  const { colorScheme } = useColorScheme();
   const isAndroid = Platform.OS == "android";
   const [showcancelConfirmation, setShowCancelConfirmation] = useState(false);
   const { fetchUserAppointment, appointments, cancelAppointment } =
@@ -30,10 +33,10 @@ export default function Appointments() {
   }, []);
   return (
     <SafeAreaView
-      className={`bg-background-light h-full `}
+      className={`bg-background-light  dark:bg-background-dark flex-1`}
       style={{ paddingTop: isAndroid ? StatusBar.currentHeight : 0 }}
     >
-      <View className="flex-row w-full justify-between p-2 border-b border-gray-light bg-white mb-4">
+      <View className="flex-row w-full items-center justify-between p-2 border-b border-gray-light bg-white mb-4">
         <TouchableOpacity onPress={() => router.back()}>
           <Image
             source={icons.leftArrow}
