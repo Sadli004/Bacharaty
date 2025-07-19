@@ -103,7 +103,7 @@ export const useChatStore = create((set) => ({
         loadingMessages: false,
       });
     } catch (error) {
-      console.error(error.response.data);
+      console.error("Error getting chat " + error.response.data);
     }
   },
   sendMessage: async (chatId, message) => {

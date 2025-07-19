@@ -13,11 +13,14 @@ import { router } from "expo-router";
 import SearchInput from "../../../components/searchInput";
 import { TouchableOpacity } from "react-native";
 import { useDoctorStore } from "../../../store/doctorStore";
+import { useColorScheme } from "nativewind";
 
 const Doctor = () => {
   const { fetchDoctors, doctors, getDoctorProfile, doctor } = useDoctorStore();
   const isAndroid = Platform.OS == "android";
   const statusBarHeight = StatusBar.currentHeight;
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme == "dark";
   useEffect(() => {
     fetchDoctors();
   }, []);
@@ -25,15 +28,29 @@ const Doctor = () => {
   const myp = "#D6F0F3";
 
   return (
-    <View className="flex-1 bg-background-light">
+    <View
+      className={`flex-1 ${
+        isDark ? "bg-background-dark" : "bg-background-light"
+      }`}
+    >
       {/* Header */}
       <SafeAreaView
         className="  mb-4 bg-transparent"
         style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}
       >
         <View className="p-2 ">
-          <Text className="font-psemibold text-xl mb-2 mx-2">Doctors</Text>
-          <SearchInput otherStyles="rounded-3xl bg-[#f9f9f9]  focus:border-dactive " />
+          <Text
+            className={`font-psemibold text-xl mb-2 mx-2 ${
+              isDark && "text-white"
+            }`}
+          >
+            Doctors
+          </Text>
+          <SearchInput
+            otherStyles={`rounded-3xl ${
+              isDark ? "bg-gray-dark" : " bg-gray-light"
+            }  `}
+          />
         </View>
       </SafeAreaView>
       <FlatList

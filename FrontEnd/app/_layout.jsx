@@ -1,6 +1,6 @@
 import { router, SplashScreen, Stack, useSegments } from "expo-router";
 import { useFonts } from "expo-font";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import { useUserStore } from "../store/userStore";
 import { ToastProvider } from "react-native-toast-notifications";
@@ -8,7 +8,9 @@ import * as SecureS from "expo-secure-store";
 import ToastListener from "../components/toastListener";
 // import { ThemeProvider, useTheme } from "../context/themeContext";
 import { useColorScheme } from "nativewind";
-import { NativeWindProvider } from "nativewind";
+import { getStreamToken, streamClient } from "../utils/streamVideo";
+import { StreamVideo } from "@stream-io/video-react-native-sdk";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -31,6 +33,7 @@ export default function RootLayout() {
   }, [fontsLoaded, error]);
   const { user, loading, role, getUser } = useUserStore();
   const { colorScheme, setColorScheme } = useColorScheme();
+  const [client, setClient] = useState(null);
   useEffect(() => {
     getUser();
   }, []);
@@ -63,6 +66,24 @@ export default function RootLayout() {
   useEffect(() => {
     SecureS.setItemAsync("theme", colorScheme == "dark" ? "dark" : "light");
   }, [colorScheme]);
+  useEffect(() => {
+    const connectUser = async () => {
+      try {
+        const streamToken = await getStreamToken(user._id);
+        const token = String(streamToken);
+        await streamClient.connectUser(
+          { id: user._id, name: user.name },
+          token
+        );
+        console.log("done");
+      } catch (err) {
+        console.error("❌ Failed to init Stream client:", err);
+      }
+    };
+    if (user) connectUser();
+    if (!user && loading) return;
+  }, [user]);
+
   if (loading) {
     return (
       <View className="h-full flex items-center justify-center bg-white">
@@ -72,19 +93,23 @@ export default function RootLayout() {
     );
   }
   return (
-    <ToastProvider>
-      <ToastListener />
-
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="patient/(tabs)" />
-        <Stack.Screen
-          name="patient/appointments"
-          screenOptions={{ headerShown: true }}
-        />
-        <Stack.Screen name="doctor" />
-      </Stack>
-    </ToastProvider>
+    <StreamVideo client={streamClient}>
+      <ToastProvider>
+        <ToastListener />
+        <GestureHandlerRootView>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="(auth)" />
+            <Stack.Screen name="patient/(tabs)" />
+            <Stack.Screen
+              name="patient/appointments"
+              screenOptions={{ headerShown: true }}
+            />
+            <Stack.Screen name="doctor" />
+            <Stack.Screen name="video-call/[callId]" />
+          </Stack>
+        </GestureHandlerRootView>
+      </ToastProvider>
+    </StreamVideo>
   );
 }

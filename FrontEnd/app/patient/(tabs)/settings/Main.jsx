@@ -114,7 +114,7 @@ export default function Settings() {
                 Icon={icons.globe}
                 isDark={isDark}
               />
-              <View className="flex-row items-center justify-between py px-2">
+              <View className="flex-row items-center justify-between p-2">
                 <View className="flex-row items-center gap-2">
                   <Image
                     source={icons.moon}

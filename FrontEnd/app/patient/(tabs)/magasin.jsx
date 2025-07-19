@@ -22,11 +22,15 @@ import { DismissKeyboard } from "../../../utils/keyboard";
 import { useUserStore } from "../../../store/userStore";
 import { icons } from "../../../constants";
 import { router } from "expo-router";
+import { useColorScheme } from "nativewind";
+import IconButton from "../../../components/iconButton";
 const Magasin = () => {
   const { products, fetchProducts, loadingProducts, getWishlist } =
     useProductStore();
   const { user } = useUserStore();
   const isAndroid = Platform.OS == "android";
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme == "dark";
   const statusBarHeight = StatusBar.currentHeight;
   useEffect(() => {
     fetchProducts();
@@ -35,7 +39,9 @@ const Magasin = () => {
 
   return (
     <SafeAreaView
-      className=" flex-1 bg-background-light"
+      className={` flex-1 ${
+        isDark ? "bg-background-dark" : "bg-background-light"
+      }`}
       style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}
     >
       <KeyboardAvoidingView
@@ -50,7 +56,11 @@ const Magasin = () => {
             renderItem={({ item }) => <ProductCard item={item} />}
             ListEmptyComponent={
               <View className="items-center justify-center h-full ">
-                <Text className="font-pbold text-xl">No items listed yet</Text>
+                <Text
+                  className={`font-pbold text-xl ${isDark && "text-white"}`}
+                >
+                  No items listed yet
+                </Text>
               </View>
             }
             showsVerticalScrollIndicator={false}
@@ -63,38 +73,43 @@ const Magasin = () => {
                 >
                   {/*Header */}
                   <View className="flex-row justify-between mx-2">
-                    <Text className="font-psemibold text-lg ">
+                    <Text
+                      className={`font-psemibold text-lg ${
+                        isDark && "text-white"
+                      }`}
+                    >
                       Start shopping
                     </Text>
-                    <View className="flex-row items-center gap-4">
-                      <TouchableOpacity
-                        onPress={() => {
-                          router.push("patient/(product)/wishlist");
-                        }}
-                      >
-                        <Image
-                          source={icons.heart}
-                          resizeMode="contain"
-                          className="h-6 w-6"
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() => {
+                    <View className="flex-row items-center ">
+                      <IconButton
+                        Icon={icons.cart}
+                        handlePress={() => {
                           router.push("patient/(product)/cart");
                         }}
-                      >
-                        <Image
-                          source={icons.cart}
-                          resizeMode="contain"
-                          className="h-6 w-6"
-                        />
-                      </TouchableOpacity>
+                        buttonStyles={"mr-4"}
+                        iconStyles={"h-6 w-6"}
+                        tintColor={isDark && "white"}
+                      />
+                      <IconButton
+                        Icon={icons.heart}
+                        handlePress={() => {
+                          router.push("patient/(product)/wishlist");
+                        }}
+                        iconStyles={"h-6 w-6"}
+                        tintColor={isDark && "white"}
+                      />
                     </View>
                   </View>
                   {/*Search Bar*/}
                   <View className="m-2">
                     <DismissKeyboard>
-                      <SearchInput otherStyles=" rounded-3xl bg-background-light border-gray-light focus:border-dactive" />
+                      <SearchInput
+                        otherStyles={` rounded-3xl ${
+                          isDark
+                            ? "bg-gray-dark border-gray-light"
+                            : "bg-gray-light"
+                        } `}
+                      />
                     </DismissKeyboard>
                   </View>
                   <View>

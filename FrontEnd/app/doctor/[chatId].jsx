@@ -144,7 +144,7 @@ const Chat = () => {
       >
         {/**Header */}
         <SafeAreaView
-          className="bg-lgray items-center justify-between flex-row h-auto"
+          className="bg-gray-light items-center justify-between flex-row h-auto"
           style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}
         >
           <View className="flex-row items-center py-2  ml-2">
@@ -197,8 +197,6 @@ const Chat = () => {
             onContentSizeChange={() =>
               MessagesRef.current?.scrollToEnd({ animated: true })
             }
-            // refreshing
-            // onRefresh={() => getChatMessages(chatId)}
             contentContainerStyle={{ flexGrow: 1, justifyContent: "flex-end" }}
             keyboardShouldPersistTaps="handled"
             renderItem={({ item, index }) => {
@@ -228,7 +226,9 @@ const Chat = () => {
                                 item.content && "bg-secondary"
                               }
                           ${item.media && "border flex-1 border-primary"}`
-                            : "bg-lgray self-start rounded-t-xl rounded-br-xl"
+                            : `${
+                                isDark ? "bg-gray-dark" : "bg-gray-light"
+                              }  self-start rounded-t-xl rounded-br-xl`
                         }`}
                     >
                       <>

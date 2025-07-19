@@ -15,28 +15,44 @@ import { useEffect } from "react";
 import { router } from "expo-router";
 import { useUserStore } from "../../../store/userStore";
 import { formatTime, fromLastMsg } from "../../../utils/date";
+import { useColorScheme } from "nativewind";
 export default function Chat() {
   const { getUserChats, chats, receiver, loadingChats } = useChatStore();
   const { user } = useUserStore();
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme == "dark";
   const isAndroid = Platform.OS == "android";
   const statusBarHeight = StatusBar.currentHeight;
   useEffect(() => {
     getUserChats();
-    console.log(chats);
   }, []);
   if (!user) router.replace("/sign-in");
   return (
-    <View className="flex-1 bg-background-light">
+    <SafeAreaView
+      className={`flex-1 ${
+        isDark ? "bg-background-dark" : "bg-background-light"
+      }`}
+    >
       {/*Header */}
-      <SafeAreaView
+      <View
         className="bg-transparent"
         style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}
       >
         <View className="p-2">
-          <Text className="font-psemibold text-xl mb-2 mx-2">Chats</Text>
-          <SearchInput otherStyles="rounded-3xl bg-transparent focus:border-dactive" />
+          <Text
+            className={`font-psemibold text-xl mb-2 mx-2 ${
+              isDark && "text-white"
+            }`}
+          >
+            Chats
+          </Text>
+          <SearchInput
+            otherStyles={`rounded-3xl ${
+              isDark ? "bg-gray-dark" : " bg-gray-light"
+            }  `}
+          />
         </View>
-      </SafeAreaView>
+      </View>
       <View className="mt-3">
         <FlatList
           data={chats}
@@ -48,10 +64,9 @@ export default function Chat() {
           keyExtractor={(item) => item._id}
           renderItem={({ item, index }) => (
             <TouchableOpacity
-              className={`flex-row gap-2 border-b border-gray-light p-2 items-center ${
-                index != 0 && "mt-0.5"
-              }`}
-              // style={{ marginTop: index != 0 ? 10 : 0 }}
+              className={`flex-row gap-4  border-b ${
+                isDark ? "border-gray-dark" : "border-gray-light"
+              }  p-2 items-center ${index != 0 && "mt-0.5"}`}
               onPress={() =>
                 router.push({
                   pathname: "/[chatId]",
@@ -75,11 +90,15 @@ export default function Chat() {
               />
               <View className=" ">
                 <View className="flex-1">
-                  <Text className="text-xl font-psemibold">
+                  <Text
+                    className={`text-xl font-psemibold ${
+                      isDark && "text-gray-light"
+                    }`}
+                  >
                     {item.receiver?.name}
                   </Text>
                   <Text
-                    className="font-pregular "
+                    className={`${isDark && "text-gray-light"} font-pregular `}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >
@@ -105,6 +124,6 @@ export default function Chat() {
           )}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }

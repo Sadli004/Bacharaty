@@ -84,7 +84,7 @@ const Cart = () => {
         )}
         ListFooterComponent={() => {}}
       />
-      <View className="bg-lgray shadow-sm  m-2 rounded-3xl  p-4 mb-4">
+      <View className="bg-gray-light shadow-sm  m-2 rounded-3xl  p-4 mb-4">
         <View className="bg-[#f9f9f9] rounded-xl p-2 mb-2">
           <View className="flex-row justify-between p-2">
             <Text className="font-psemibold text-xl">Price</Text>

@@ -1,21 +1,19 @@
-// import { StreamVideoClient } from "@stream-io/video-react-native-sdk";
+// // lib/stream.ts
+import { StreamVideoClient } from "@stream-io/video-react-native-sdk";
 
-// let client = null;
+import axios from "axios";
 
-// export const initializeStreamVideo = ({ apiKey, user, token }) => {
-//   client = new StreamVideoClient({ apiKey, user, token });
-//   return client;
-// };
+const apiKey = process.env.EXPO_PUBLIC_STREAM_API_KEY;
 
-// export const getStreamVideoClient = () => client;
+export const streamClient = new StreamVideoClient(apiKey);
 
-// export const getStreamToken = async (userId) => {
-//   try {
-//     const response = await axios.get(
-//       `${process.env.EXPO_PUBLIC_API_URL}/video-token/userId?${userId}`
-//     );
-//     return response.data;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+export const getStreamToken = async (userId) => {
+  try {
+    const response = await axios.get(
+      `${process.env.EXPO_PUBLIC_API_URL}/video-token/userId?userId=${userId}`
+    );
+    return response.data.token;
+  } catch (error) {
+    console.log(error);
+  }
+};

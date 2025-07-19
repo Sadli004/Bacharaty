@@ -33,7 +33,7 @@ const main = () => {
   }, []);
   return (
     <SafeAreaView
-      className={`bg-background-light dark:bg-background-dark `}
+      className={`bg-background-light dark:bg-background-dark flex-1`}
       style={{ paddingTop: Platform.OS == "android" ? statusBarHeight : 0 }}
     >
       <View className="mx-2">

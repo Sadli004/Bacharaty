@@ -98,7 +98,9 @@ export default function Appointments() {
                     className="h-16 w-16 rounded-full"
                   />
                   <View>
-                    <Text>{item.doctor?.name || " Doctor name"} </Text>
+                    <Text className={`text-lg font-psemibold`}>
+                      {item.doctor?.name || " Doctor name"}{" "}
+                    </Text>
                     <Text className="text-gray-500">Dermatologist</Text>
                   </View>
                 </View>

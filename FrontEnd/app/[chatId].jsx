@@ -14,6 +14,7 @@ import {
 
 import { useEffect, useState, useRef } from "react";
 import MessageInput from "../components/messageInput";
+import IconButton from "../components/iconButton";
 import { router, useLocalSearchParams } from "expo-router";
 import { useChatStore } from "../store/chatStore";
 import { useUserStore } from "../store/userStore";
@@ -22,8 +23,9 @@ import { connectSocket, getSocket } from "../utils/socket-io";
 
 import { useToast } from "react-native-toast-notifications";
 import { icons, images } from "../constants";
-import { getStreamToken } from "../utils/streamVideo";
 import { useColorScheme } from "nativewind";
+import { getStreamToken, streamClient } from "../utils/streamVideo";
+import axios from "axios";
 export default function Chat() {
   const { chatId } = useLocalSearchParams();
   const MessagesRef = useRef(null);
@@ -140,28 +142,18 @@ export default function Chat() {
     setSelectedMessage(msg);
     setIsEditing(true);
   };
-  // const handleCall = async (type = "video") => {
-  //   try {
-  //     const streamToken = await getStreamToken(user._id); // Backend call
-  //     const client = initializeStreamVideo({
-  //       apiKey: process.env.EXPO_PUBLIC_STREAM_API_KEY,
-  //       user: { id: user._id, name: user.name },
-  //       token: streamToken,
-  //     });
+  const handleCall = async (type = "video") => {
+    try {
+      const callId = chatId;
+      const call = streamClient.call("default", callId);
+      await call.join({ create: true });
 
-  //     const callId = `call-${chatId}`;
-  //     const call = client.call("default", callId);
-
-  //     await call.join({ create: true }); // auto-creates if not existing
-  //     router.push({
-  //       pathname: "/video-call",
-  //       params: { callId },
-  //     });
-  //   } catch (err) {
-  //     Alert.alert("Error", "Failed to start call");
-  //     console.error(err);
-  //   }
-  // };
+      router.push(`/video-call/${callId}`);
+    } catch (err) {
+      console.error("Failed to start call", err);
+      Alert.alert("Error", "Failed to start the call");
+    }
+  };
 
   return (
     <View
@@ -189,7 +181,11 @@ export default function Chat() {
             </TouchableOpacity>
             <View className="flex-row items-center gap-2 ml-2">
               <Image
-                source={{ uri: receiver?.profilePicture } || images.profile}
+                source={
+                  receiver?.profilePicture
+                    ? { uri: receiver?.profilePicture }
+                    : images.profile
+                }
                 resizeMode="cover"
                 className="h-10 w-10 rounded-full"
               />
@@ -198,23 +194,19 @@ export default function Chat() {
               </Text>
             </View>
           </View>
-          <View className="flex-row gap-4 items-center mr-4">
-            <TouchableOpacity onPress={() => console.log("Hello world")}>
-              <Image
-                source={icons.audio_call}
-                resizeMode="contain"
-                className="h-6 w-6"
-                tintColor={isDark ? "white" : "#0CC0DF"}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => console.log("handleCall(video)")}>
-              <Image
-                source={icons.video_call}
-                resizeMode="contain"
-                className="h-8 w-8"
-                tintColor={isDark ? "white" : "#0CC0DF"}
-              />
-            </TouchableOpacity>
+          <View className="flex-row  items-center mr-4">
+            <IconButton
+              Icon={icons.audio_call}
+              iconStyles={"h-5 w-5 mr-4"}
+              tintColor={isDark ? "white" : "primary"}
+              handlePress={() => console.log("audio call")}
+            />
+            <IconButton
+              Icon={icons.video_call}
+              iconStyles={"h-6 w-6 "}
+              tintColor={isDark ? "white" : "primary"}
+              handlePress={() => handleCall("video")}
+            />
           </View>
         </SafeAreaView>
 
@@ -267,11 +259,17 @@ export default function Chat() {
                                 item.content && "bg-secondary"
                               }
                           ${item.media && "border flex-1 border-primary"}`
-                            : "bg-gray-light self-start rounded-t-xl rounded-br-xl"
+                            : `${
+                                isDark ? "bg-gray-dark" : "bg-gray-light"
+                              } self-start rounded-t-xl rounded-br-xl`
                         }`}
                       >
                         <>
-                          <Text className={`font-pregular `}>
+                          <Text
+                            className={`font-pregular ${
+                              !isSender && isDark && "text-white"
+                            }`}
+                          >
                             {item.content}
                           </Text>
                           <Text className="text-xs font-plight text-gray-500 self-end">

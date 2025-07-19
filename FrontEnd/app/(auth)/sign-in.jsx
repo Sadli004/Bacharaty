@@ -87,7 +87,7 @@ const SignIn = () => {
             </Text>
             {/* <View className="flex-1 h-px bg-gray" /> */}
             <View className=" gap-8 w-[90%]">
-              <TouchableOpacity className=" border border-gray shadow-md  items-center justify-center flex-row rounded-3xl py-2 px-4">
+              <TouchableOpacity className=" border border-gray-light shadow-md  items-center justify-center flex-row rounded-3xl py-2 px-4">
                 <Image
                   source={icons.google}
                   resizeMode="contain"
@@ -95,7 +95,7 @@ const SignIn = () => {
                 />
                 <Text className="text-base">Continue with Google</Text>
               </TouchableOpacity>
-              <TouchableOpacity className=" border border-gray shadow-md items-center justify-center flex-row rounded-3xl py-2 px-4">
+              <TouchableOpacity className=" border border-gray-light shadow-md items-center justify-center flex-row rounded-3xl py-2 px-4">
                 <Image
                   source={icons.apple}
                   resizeMode="contain"

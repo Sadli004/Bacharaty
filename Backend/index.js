@@ -102,8 +102,10 @@ const client = StreamChat.getInstance(
 );
 app.use("/video-token", (req, res) => {
   const { userId } = req.query;
+  console.log(typeof userId);
   const id = String(userId);
   const token = client.createToken(id);
+  console.log(token);
   res.json({ token });
 });
 // Start server

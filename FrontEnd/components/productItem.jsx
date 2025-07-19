@@ -33,7 +33,7 @@ const ProductItem = () => {
     };
   }, []);
   return (
-    <SafeAreaView className="  rounded-lg   h-full bg-background-light">
+    <SafeAreaView className="  rounded-lg   flex-1 bg-background-light">
       <ScrollView>
         <Image
           source={{ uri: product.picture }}
@@ -95,7 +95,7 @@ const ProductItem = () => {
           </View>
         </View>
       </ScrollView>
-      <View className="flex-row items-center mx-2  ">
+      <View className="flex-row items-center mx-2  mb-2">
         <CustomButton
           // title={existsinCart(product._id) ? "Go to cart" : "Add to cart"}
           title="Cart"
