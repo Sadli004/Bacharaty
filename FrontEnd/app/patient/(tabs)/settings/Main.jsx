@@ -35,14 +35,12 @@ export default function Settings() {
   return (
     <SafeAreaView
       className={`flex-1 bg-background-light ${isDark && "bg-background-dark"}`}
+      style={{ paddingTop: isAndroid ? statusBarHeight : "" }}
     >
       <ScrollView>
         <View className={` justify-center items-center`}>
           {/* Header*/}
-          <View
-            className="items-center gap-2"
-            style={{ paddingTop: isAndroid ? statusBarHeight : "" }}
-          >
+          <View className="items-center gap-2">
             <Image
               className="w-20 h-20 rounded-full"
               resizeMode="cover"

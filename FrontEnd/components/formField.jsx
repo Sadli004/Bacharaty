@@ -12,10 +12,10 @@ const FormField = ({
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
-    <View className={`space-y-2 w-full flex-column ${props.containerStyles}`}>
+    <View className={`space-y-1 w-full flex-column ${props.containerStyles}`}>
       <Text>{title}</Text>
       <View
-        className={`w-full h-14 border border-primary focus:border-pactive bg-gray-100 rounded-xl justify-between flex-row items-center ${props.otherStyles}`}
+        className={`w-full h-14 border  border-primary focus:border-pactive bg-gray-100 rounded-lg justify-between flex-row items-center ${props.otherStyles}`}
       >
         <TextInput
           className="flex-1 items-center p-4 "

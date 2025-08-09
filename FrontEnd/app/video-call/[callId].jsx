@@ -1,5 +1,5 @@
 // app/video-call.tsx
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
 import {
   StreamCall,
@@ -15,9 +15,6 @@ export default function VideoCallScreen() {
   const [call, setCall] = useState(null);
 
   useEffect(() => {
-    console.log(callId);
-  }, []);
-  useEffect(() => {
     const setupCall = async () => {
       const call = client.call("default", callId);
       await call.join({ create: true });
@@ -28,16 +25,18 @@ export default function VideoCallScreen() {
 
     return () => {
       call?.leave();
+      setCall(null);
     };
   }, [callId]);
 
   if (!call) return null;
-
+  const goToChatScreen = async () => {
+    router.back();
+  };
   return (
     <StreamCall call={call}>
       <View style={{ flex: 1 }}>
-        <CallContent />
-        <CallControls />
+        <CallContent onHangupCallHandler={goToChatScreen} />
       </View>
     </StreamCall>
   );

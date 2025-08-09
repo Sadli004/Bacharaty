@@ -17,11 +17,13 @@ import { useEffect, useState } from "react";
 import { BlurView } from "expo-blur";
 // import Timeline from "react-native-timeline-flatlist";
 import TimeLine from "../../../components/Timeline";
+import FormField from "../../../components/formField";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useAppointmentStore } from "../../../store/appointmentStore";
 import { formatDate, formatTime, getWeekDays } from "../../../utils/date";
 import SelectDropdown from "react-native-select-dropdown";
 import { Picker } from "@react-native-picker/picker";
+import CustomButton from "../../../components/customButton";
 export default function Tab() {
   const { fetchDoctorAppointments, appointments, fetchAppointmentPerDay } =
     useAppointmentStore();
@@ -42,8 +44,8 @@ export default function Tab() {
     "Sunday",
   ];
   useEffect(() => {
-    // fetchDoctorAppointments();
-    fetchAppointmentPerDay(selectedDay);
+    fetchDoctorAppointments();
+    // fetchAppointmentPerDay(selectedDay);
   }, [selectedDay]);
   return (
     <View className="flex-1 bg-gray-100 p-2 bg-background-light">
@@ -157,9 +159,10 @@ export default function Tab() {
           className="rounded-xl"
         >
           <TouchableWithoutFeedback onPress={() => setEditSchedule(false)}>
-            <BlurView intensity={10} className="flex-1 justify-center">
-              <View className="min-h-[50vh]   mx-6 bg-primary">
-                <View className="border border-gray-300 rounded-md  ">
+            <BlurView intensity={100} className="flex-1 justify-center">
+              <View className="min-h-[50vh] p-4 rounded-lg  mx-6 bg-gray-light space-y-4 ">
+                <Text className="font-psemibold text-lg">Edit Schedule</Text>
+                <View className="border border-black rounded-md  ">
                   <Picker
                     selectedValue={weekDay}
                     onValueChange={(itemValue) => setWeekDay(itemValue)}
@@ -168,8 +171,19 @@ export default function Tab() {
                       <Picker.Item label={day} value={day} key={day} />
                     ))}
                   </Picker>
-                  <Text>Hello world</Text>
                 </View>
+                <FormField
+                  title={"Start"}
+                  placeholder={"8:00"}
+                  containerStyles={"max-w-[50%] mt-2"}
+                  otherStyles={"border-gray-light"}
+                />
+                <FormField
+                  title={"End"}
+                  placeholder={"16:00"}
+                  containerStyles={"max-w-[50%] mt-2"}
+                />
+                <CustomButton title={"Save"} containerStyles={"mt-6"} />
               </View>
             </BlurView>
           </TouchableWithoutFeedback>

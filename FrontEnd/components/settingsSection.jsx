@@ -7,8 +7,8 @@ const SettingSection = ({ title, Icon, isDark, isLast }) => {
     <TouchableOpacity
       activeOpacity={0.5}
       className={`flex-row items-center justify-between p-2 ${
-        !isLast && "border-b"
-      } ${isDark && "border-white"}`}
+        !isLast && "border-b border-gray-300"
+      } ${isDark && "border-gray-400"}`}
     >
       <View className="flex-row items-center gap-2">
         <Image

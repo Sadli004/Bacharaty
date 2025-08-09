@@ -118,13 +118,6 @@ module.exports.cancelAppointment = async (req, res) => {
   const { uid } = req.user;
 
   try {
-    // Validate IDs
-
-    // if (!isValidObjectId(id) || !isValidObjectId(userId)) {
-    //   return res.status(400).json({ error: "Invalid ID format" });
-    // }
-
-    // Find the appointment where the user is either patient or doctor
     const appointment = await Appointment.findOneAndDelete({
       _id: id,
       $or: [{ patient: uid }, { doctor: uid }],
