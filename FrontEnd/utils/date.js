@@ -20,7 +20,7 @@ const months = [
   "Nov",
   "Dec",
 ];
-const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+export const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export const formatDate = (date) => {
   const d = new Date(date);

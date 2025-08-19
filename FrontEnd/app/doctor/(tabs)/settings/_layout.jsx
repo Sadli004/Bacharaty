@@ -16,6 +16,17 @@ const SettingsLayout = () => {
           },
         }}
       />
+      <Stack.Screen
+        name="availability"
+        options={{
+          headerShown: true,
+          headerBackTitle: "Settings",
+          title: "Editing Working hours",
+          headerStyle: {
+            backgroundColor: "#FAFAFA",
+          },
+        }}
+      />
     </Stack>
   );
 };

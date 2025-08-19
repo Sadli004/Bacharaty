@@ -12,7 +12,7 @@ const CustomButton = ({
 }) => {
   return (
     <TouchableOpacity
-      className={`bg-primary rounded-lg  mt-4 p-4 ${containerStyles}`}
+      className={`bg-primary rounded-lg  mt-4 p-2 ${containerStyles}`}
       onPress={handlePress}
     >
       {props.icon ? (

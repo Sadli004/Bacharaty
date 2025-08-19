@@ -78,9 +78,12 @@ export default function Settings() {
                 isDark={isDark}
               />
               <SettingSection
-                title={"Payment Information"}
-                Icon={icons.wallet}
+                title={"Availability"}
+                Icon={icons.calendar}
                 isDark={isDark}
+                handlePress={() =>
+                  router.push("doctor/(tabs)/settings/availability")
+                }
               />
               <SettingSection
                 title={"Notifications"}

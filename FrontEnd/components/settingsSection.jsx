@@ -2,13 +2,14 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 import React from "react";
 import { icons } from "../constants";
 
-const SettingSection = ({ title, Icon, isDark, isLast }) => {
+const SettingSection = ({ title, Icon, isDark, isLast, handlePress }) => {
   return (
     <TouchableOpacity
       activeOpacity={0.5}
       className={`flex-row items-center justify-between p-2 ${
         !isLast && "border-b border-gray-300"
       } ${isDark && "border-gray-400"}`}
+      onPress={handlePress}
     >
       <View className="flex-row items-center gap-2">
         <Image

@@ -8,9 +8,17 @@ const ScheduleSchema = new mongoose.Schema({
   workingDays: [{ type: String }],
   workingHours: [
     {
-      day: String,
-      start: String,
-      end: String,
+      day: { type: String },
+      start: { type: String, default: "8:00" },
+      end: { type: String, default: "16:00" },
+    },
+  ],
+  exceptions: [
+    {
+      date: String,
+      start: { type: String, default: "8:00" },
+      end: { type: String, default: "16:00" },
+      available: Boolean,
     },
   ],
   slotDuration: { type: Number, default: 30 },
