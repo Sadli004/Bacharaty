@@ -4,7 +4,7 @@ const { checkAccess } = require("../../middleware/authMiddlware");
 //Routes
 router.post("/", doctorController.createDoctor);
 router.get("/", doctorController.getDoctorsList);
-router.post("/schedule", checkAccess, doctorController.makeSchedule);
-router.get("schedule/:doctorId", doctorController.getSchedule);
+router.get("/schedule/:doctorId", doctorController.getDocSchedule);
+router.put("/workingHours", checkAccess, doctorController.updateWorkingHours);
 router.get("/:id", doctorController.getDoctorById);
 module.exports = router;

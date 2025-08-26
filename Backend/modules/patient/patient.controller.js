@@ -3,6 +3,7 @@ const userModel = require("../../models/User");
 const productModel = require("../../models/Product");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const Doctor = require("../../models/Doctor");
 module.exports.signup = async (req, res) => {
   const info = req.body;
   try {

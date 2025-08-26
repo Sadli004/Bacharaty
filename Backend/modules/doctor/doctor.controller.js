@@ -1,5 +1,6 @@
 const Doctor = require("../../models/Doctor");
-const Schedule = require("../../models/Schedule");
+const Appointment = require("../../models/Appointment");
+const moment = require("moment");
 module.exports.createDoctor = async (req, res) => {
   const info = req.body;
   try {
@@ -47,14 +48,81 @@ module.exports.makeSchedule = async (req, res) => {
   }
 };
 // GET /schedule/:doctorId
-module.exports.getSchedule = async (req, res) => {
+module.exports.getDocSchedule = async (req, res) => {
+  const { doctorId } = req.params;
+  const { date } = req.query;
   try {
-    const schedule = await DoctorSchedule.findOne({
-      doctorId: req.params.doctorId,
+    const doctor = await Doctor.findById(doctorId);
+    if (!doctor)
+      return res.status(404).json({ message: "Couldn't find doctor" });
+    const dayOfWeek = moment(date).format("dddd"); //ex: Monday
+    console.log(dayOfWeek);
+    console.log(doctor.workingHours);
+    const workingDay = doctor.workingHours.find(
+      (d) => d.day.toLowerCase() == dayOfWeek.toLowerCase()
+    );
+    console.log(workingDay);
+    if (!workingDay) return res.json({ date, slots: [] });
+    const exception = doctor.exceptions.find(
+      (ex) => moment(ex.date).format("YYYY-MM-DD") === date
+    );
+    let startTime = workingDay.start;
+    let endTime = workingDay.end;
+    if (exception) {
+      if (!exception.available) {
+        return res.status().json({ date, slots: [] });
+      }
+      startTime = exception.start || startTime;
+      endTime = exception.end || endTime;
+    }
+    const slotDuration = doctor.slotDuration || 30;
+    let slots = [];
+    let current = moment(`${date} ${startTime}`, "YYYY-MM-DD HH:mm");
+    const end = moment(`${date} ${endTime}`, "YYYY-MM-DD HH:mm");
+
+    while (current < end) {
+      slots.push(current.format("HH:mm"));
+      current.add(slotDuration, "minutes");
+    }
+
+    // Filter out already booked appointments
+    const appointments = await Appointment.find({
+      doctor: doctorId,
+      date: {
+        $gte: moment(date).startOf("day").toDate(),
+        $lte: moment(date).endOf("day").toDate(),
+      },
     });
-    if (!schedule) return res.status(404).send("No schedule found");
-    res.json(schedule);
-  } catch (err) {
-    res.status(500).send("Server error");
+
+    const bookedTimes = appointments.map((a) => a.time);
+
+    slots = slots.filter((slot) => !bookedTimes.includes(slot));
+
+    res.json({ date, slots });
+  } catch (error) {
+    return res.status(500).send("Network error");
   }
 };
+
+//update working hours
+module.exports.updateWorkingHours = async (req,res) => {
+const {uid} = req.user;
+const {day, start,end} = req.body;
+try {
+  const doctor = await Doctor.findById(uid);
+  if(!doctor) return res.status(404).json({Message: "Doctor not found"})
+  const workingHour = doctor.workingHours.find(wh => wh.day === day);
+    if (!workingHour) {
+      return res.status(404).json({ message: `${day} schedule not found` });
+    }
+
+    workingHour.start = start;
+    workingHour.end = end;
+
+    await doctor.save();
+    res.json(doctor.workingHours);
+} catch (error) {
+  console.log(error)
+  return res.status(500).send('Network error')
+}
+}

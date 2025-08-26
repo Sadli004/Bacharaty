@@ -5,7 +5,6 @@ const ScheduleSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  workingDays: [{ type: String }],
   workingHours: [
     {
       day: { type: String },
@@ -15,7 +14,7 @@ const ScheduleSchema = new mongoose.Schema({
   ],
   exceptions: [
     {
-      date: String,
+      date: Date,
       start: { type: String, default: "8:00" },
       end: { type: String, default: "16:00" },
       available: Boolean,

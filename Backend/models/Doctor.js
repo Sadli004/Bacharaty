@@ -13,12 +13,32 @@ const DoctorSchema = new Schema({
     type: String,
     required: true,
   },
-  availability: {
-    start: { type: String, default: "9:00" },
-    end: { type: String, default: "17:00" },
-    duration: { type: Number, default: 30 },
-  },
-  schedule: { type: mongoose.Types.ObjectId, ref: "Schedule" },
+  workingHours: [
+    {
+      day: {
+        type: String,
+        enum: [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wedesday",
+          "Saturday",
+          "Friday",
+        ],
+      },
+      start: { type: String, default: "8:00" },
+      end: { type: String, default: "16:00" },
+    },
+  ],
+  exceptions: [
+    {
+      date: Date,
+      start: { type: String, default: "8:00" },
+      end: { type: String, default: "16:00" },
+      available: Boolean,
+    },
+  ],
+  slotDuration: { type: Number, default: 30 },
 });
 const Doctor = User.discriminator("Doctor", DoctorSchema);
 module.exports = Doctor;

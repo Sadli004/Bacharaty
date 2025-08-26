@@ -5,14 +5,22 @@ module.exports.createAppointment = async (req, res) => {
   const { uid } = req.user;
   const patient = uid;
   const { doctor, date, time } = req.body;
+  
   if (!patient || !doctor || !date || !time)
     return res.status(400).json({ error: "All fields are required" });
   if (!isValidObjectId(patient) || !isValidObjectId(doctor))
     return res.status(400).json({ error: "Invalid id" });
+  const slotDate = new Date(date);
+  const [hours,minutes] = time.split(':').map(Number);
+  
+  if (slotDate.setHours(hours,minutes,0,0) < new Date()) {
+      return res.status(400).json({ message: "Cannot book past dates" });
+    }
   const existant = await Appointment.findOne({
-    doctor: doctor,
-    date: date,
-    time: time,
+    doctor,
+    date: slotDate,
+    time,
+    status: { $in: ["Pending", "Confirmed"] }
   });
   if (existant) return res.status(409).send("Appointment already taken");
   const newAppointment = new Appointment({ patient, doctor, date, time });
@@ -20,7 +28,7 @@ module.exports.createAppointment = async (req, res) => {
     .save()
     .then((appointment) => res.json(appointment))
     .catch((err) =>
-      res
+      res  
         .status(400)
         .json({ error: "Failed to create appointment" + err.message })
     );
