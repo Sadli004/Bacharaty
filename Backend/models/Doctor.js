@@ -16,14 +16,16 @@ const DoctorSchema = new Schema({
   workingHours: [
     {
       day: {
-        type: String,
+        type: Number,
         enum: [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wedesday",
-          "Saturday",
-          "Friday",
+          0,//Saturday
+          1,//Sunday
+          2,//Monday
+          3,//Tuesday
+          4,//Wednesday
+          5,//Thursday
+          6,//Friday  
+             
         ],
       },
       start: { type: String, default: "8:00" },
@@ -39,6 +41,16 @@ const DoctorSchema = new Schema({
     },
   ],
   slotDuration: { type: Number, default: 30 },
+});
+DoctorSchema.pre("save", function (next) {
+  const days = this.workingHours.map(wh => wh.day);
+  const uniqueDays = new Set(days);
+
+  if (days.length !== uniqueDays.size) {
+    return next(new Error("Duplicate days are not allowed in working hours"));
+  }
+
+  next();
 });
 const Doctor = User.discriminator("Doctor", DoctorSchema);
 module.exports = Doctor;

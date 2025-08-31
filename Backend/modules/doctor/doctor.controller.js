@@ -55,12 +55,11 @@ module.exports.getDocSchedule = async (req, res) => {
     const doctor = await Doctor.findById(doctorId);
     if (!doctor)
       return res.status(404).json({ message: "Couldn't find doctor" });
-    const dayOfWeek = moment(date).format("dddd"); //ex: Monday
+    // const dayOfWeek = moment(date).format("dddd"); //ex: Monday
+    const dayOfWeek = new Date(date).getDay();
     console.log(dayOfWeek);
     console.log(doctor.workingHours);
-    const workingDay = doctor.workingHours.find(
-      (d) => d.day.toLowerCase() == dayOfWeek.toLowerCase()
-    );
+    const workingDay = doctor.workingHours.find((d) => d.day == dayOfWeek);
     console.log(workingDay);
     if (!workingDay) return res.json({ date, slots: [] });
     const exception = doctor.exceptions.find(
@@ -70,7 +69,7 @@ module.exports.getDocSchedule = async (req, res) => {
     let endTime = workingDay.end;
     if (exception) {
       if (!exception.available) {
-        return res.status().json({ date, slots: [] });
+        return res.status(400).json({ date, slots: [] });
       }
       startTime = exception.start || startTime;
       endTime = exception.end || endTime;
@@ -100,18 +99,19 @@ module.exports.getDocSchedule = async (req, res) => {
 
     res.json({ date, slots });
   } catch (error) {
+    console.log(error);
     return res.status(500).send("Network error");
   }
 };
 
 //update working hours
-module.exports.updateWorkingHours = async (req,res) => {
-const {uid} = req.user;
-const {day, start,end} = req.body;
-try {
-  const doctor = await Doctor.findById(uid);
-  if(!doctor) return res.status(404).json({Message: "Doctor not found"})
-  const workingHour = doctor.workingHours.find(wh => wh.day === day);
+module.exports.updateWorkingHours = async (req, res) => {
+  const { uid } = req.user;
+  const { day, start, end } = req.body;
+  try {
+    const doctor = await Doctor.findById(uid);
+    if (!doctor) return res.status(404).json({ Message: "Doctor not found" });
+    const workingHour = doctor.workingHours.find((wh) => wh.day === day);
     if (!workingHour) {
       return res.status(404).json({ message: `${day} schedule not found` });
     }
@@ -120,9 +120,140 @@ try {
     workingHour.end = end;
 
     await doctor.save();
-    res.json(doctor.workingHours);
-} catch (error) {
-  console.log(error)
-  return res.status(500).send('Network error')
-}
-}
+    return res.json(doctor.workingHours);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send("Network error");
+  }
+};
+//add a working day
+module.exports.makeAvailable = async (req, res) => {
+  const { uid } = req.user;
+  const { day, start, end } = req.body;
+
+  try {
+    const doctor = await Doctor.findById(uid);
+    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
+
+    // Prevent duplicate day entries
+    if (doctor.workingHours.some((workDay) => workDay.day === day)) {
+      return res.status(400).json({ message: "This day is already set" });
+    }
+
+    // Add the new working day
+    doctor.workingHours.push({ day, start, end });
+
+    // Sort by day (0-6)
+    doctor.workingHours.sort((a, b) => a.day - b.day);
+
+    await doctor.save();
+
+    return res.json(doctor.workingHours);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Network error");
+  }
+};
+
+// unavailable for day (delete from working days)
+module.exports.makeUnavailable = async (req, res) => {
+  const { uid } = req.user;
+  const { day } = req.body;
+  try {
+    const doctor = await Doctor.findById(uid);
+    if (!doctor) return res.status(404).json({ Message: "Doctor not found" });
+    const dayIndex = doctor.workingHours.findIndex(
+      (workDay) => workDay.day == day
+    );
+    if (dayIndex === -1) {
+      return res
+        .status(404)
+        .json({ message: `${day} is not found in working hours` });
+    }
+    doctor.workingHours.splice(dayIndex, 1);
+    doctor.save();
+    return res.status(200).json(doctor.workingHours);
+  } catch (error) {
+    return res.status(500).send("Network error");
+  }
+};
+// add exception
+module.exports.addExceptions = async (req, res) => {
+  const { uid } = req.user;
+  const { date } = req.query; // date in format YYYY-MM-DD
+  let { start, end, available } = req.body;
+
+  try {
+    const doctor = await Doctor.findById(uid);
+    if (!doctor) return res.status(404).json({ Message: "Doctor not found" });
+
+    // If not available, we ignore time slots
+    if (available == false) {
+      start = null;
+      end = null;
+    }
+
+    // Push the exception
+    doctor.exceptions.push({ date, available, start, end });
+
+    // Sort exceptions by date (ascending)
+    doctor.exceptions.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    await doctor.save();
+
+    return res.json(doctor.exceptions);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Internal server error");
+  }
+};
+// edit exceptions
+module.exports.editException = async (req, res) => {
+  const { uid } = req.user;
+  const { date } = req.query;
+  let { start, end, available } = req.body;
+  try {
+    const doctor = await Doctor.findById(uid);
+    if (!doctor) return res.status(404).json({ Message: "Doctor not found" });
+
+    let exception = doctor.exceptions.find(
+      (ex) => moment(ex.date).format("YYYY-MM-DD") == date
+    );
+    // return res.send(exception);
+    if (available == 0) {
+      console.log("available");
+      exception.available = available;
+      exception.start = null;
+      exception.end = null;
+    } else {
+      exception.available = available;
+      exception.start = start;
+      exception.end = end;
+    }
+
+    await doctor.save();
+
+    return res.json(doctor.exceptions);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Internal server error");
+  }
+};
+module.exports.deleteException = async (req, res) => {
+  const { uid } = req.user;
+  const { date } = req.query;
+  try {
+    const doctor = await Doctor.findById(uid);
+    if (!doctor) return res.status(404).json({ Message: "Doctor not found" });
+    const index = doctor.exceptions.findIndex(
+      (ex) => moment(ex.date).format("YYYY-MM-DD") == date
+    );
+
+    doctor.exceptions.splice(index, 1);
+    await doctor.save();
+    return res.json(doctor.exceptions);
+  } catch (error) {
+    console.log(error);
+    req.status(500).send("Internal server error");
+  }
+};
