@@ -10,6 +10,7 @@ const DoctorsLayout = () => {
       <Stack.Screen
         name="doctor/[id]"
         options={{
+          headerShown: false,
           headerTitle: "Doctor details",
           headerStyle: {
             backgroundColor: "#FAFAFA",

@@ -2,15 +2,16 @@ import { View, Text, Image } from "react-native";
 import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { icons } from "../constants";
+import { useProductStore } from "../store/productStore";
 
-const Counter = ({ count }) => {
-  // const [count, setCount] = useState(1);
+const Counter = ({ count, productId }) => {
+  const { updateQuantity } = useProductStore();
 
   return (
-    <View className=" rounded-xl flex-row items-center shadow-md space-x-2 bg-primary">
+    <View className="  flex-row items-center space-x-2 ">
       <TouchableOpacity
-        className=" "
-        // onPress={() => count > 1 && setCount(count - 1)}
+        className={`rounded-sm border border-secondary2 p-1 bg-secondary2`}
+        onPress={() => count > 1 && updateQuantity(productId, count - 1)}
       >
         <Image
           source={icons.minus}
@@ -19,10 +20,10 @@ const Counter = ({ count }) => {
           className="w-4 h-4 mx-1"
         />
       </TouchableOpacity>
-      <Text className="text-lg px-1 text-white">{count}</Text>
+      <Text className="text-lg px-1 text-black">{count}</Text>
       <TouchableOpacity
-        className=""
-        // onPress={() => setCount(count + 1)}
+        className={`rounded-sm border border-secondary2 p-1 bg-secondary2`}
+        onPress={() => updateQuantity(productId, count + 1)}
       >
         <Image
           source={icons.plus}

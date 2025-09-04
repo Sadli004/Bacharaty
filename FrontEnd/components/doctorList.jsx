@@ -8,7 +8,7 @@ export default function DoctorList({ item, handlePress }) {
   return (
     <TouchableOpacity
       onPress={() => router.push(`patient/doctor/${item._id}`)}
-      className=" bg-light  w-[50vw]  p-2  m-2 rounded-xl items-center overflow-hidden"
+      className=" bg-light  w-[50vw]  p-2  m-2 rounded-xl items-center overflow-hidden max-h-[350px]"
     >
       <Image
         source={{ uri: item.profilePicture }}
@@ -32,5 +32,3 @@ export default function DoctorList({ item, handlePress }) {
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({});

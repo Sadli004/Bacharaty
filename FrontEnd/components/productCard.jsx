@@ -5,6 +5,7 @@ import { TouchableOpacity } from "react-native";
 import { router } from "expo-router";
 import { useProductStore } from "../store/productStore";
 import { useUserStore } from "../store/userStore";
+import { Icon } from "./icon";
 
 const ProductCard = ({ item }) => {
   const { getSingleProduct, likeProduct, addToCart, unlikeProduct, wishlist } =
@@ -52,23 +53,24 @@ const ProductCard = ({ item }) => {
 
       {/* Product Details */}
       <View className="p-3 bg-white">
-        <Text className="text-black font-semibold text-base">{item?.name}</Text>
-        <Text className="text-sm text-gray-500">{item?.brand}</Text>
+        <Text className="text-black font-pregular text-md" numberOfLines={1}>
+          {item?.name}
+        </Text>
+        <Text className="text-sm font-pregular text-gray-500">
+          {item?.brand}
+        </Text>
         <View className="flex-row justify-between items-center mt-2">
-          <Text className="text-lg font-bold text-primary">{item?.price}</Text>
+          <Text className="text-lg font-pbold text-black">{item?.price}</Text>
 
           {/* Add to Cart Button */}
-          <TouchableOpacity
+
+          <Icon
+            source={icons.cart}
+            style="h-7 w-7"
             onPress={() => {
               addToCart(item?._id);
             }}
-          >
-            <Image
-              source={icons.cart}
-              className="h-7 w-7"
-              tintColor="#0CC0DF"
-            />
-          </TouchableOpacity>
+          />
         </View>
       </View>
     </TouchableOpacity>

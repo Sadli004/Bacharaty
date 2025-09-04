@@ -44,7 +44,7 @@ export default function Appointments() {
             className="w-6 h-6 "
           />
         </TouchableOpacity>
-        <Text className="text-lg">My appointments</Text>
+        <Text className="text-lg font-pregular">My appointments</Text>
         <TouchableOpacity onPress={() => router.push("patient/(tabs)/doctor")}>
           <Image
             source={icons.plus}
@@ -60,7 +60,7 @@ export default function Appointments() {
             activeTab == 1 ? "bg-secondary " : "bg-gray-light"
           }`}
         >
-          <Text>Upcoming</Text>
+          <Text className={`font-pregular`}>Upcoming</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setActiveTab(2)}
@@ -68,7 +68,7 @@ export default function Appointments() {
             activeTab == 2 ? "bg-secondary " : "bg-gray-light"
           }`}
         >
-          <Text>Completed</Text>
+          <Text className={`font-pregular`}>Completed</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setActiveTab(3)}
@@ -76,7 +76,7 @@ export default function Appointments() {
             activeTab == 3 ? "bg-secondary " : "bg-gray-light"
           }`}
         >
-          <Text>Canceled</Text>
+          <Text className={`font-pregular`}>Canceled</Text>
         </TouchableOpacity>
       </View>
       <FlatList
@@ -101,7 +101,9 @@ export default function Appointments() {
                     <Text className={`text-lg font-psemibold`}>
                       {item.doctor?.name || " Doctor name"}{" "}
                     </Text>
-                    <Text className="text-gray-500">Dermatologist</Text>
+                    <Text className="text-gray-500 font-pregular">
+                      Dermatologist
+                    </Text>
                   </View>
                 </View>
                 <Image
@@ -117,7 +119,7 @@ export default function Appointments() {
                     className="h-4 w-4"
                     resizeMode="contain"
                   />
-                  <Text>{AppDate(item.date)}</Text>
+                  <Text className={`font-pregular`}>{AppDate(item.date)}</Text>
                 </View>
                 <View className="flex-row gap-2 items-center">
                   <Image
@@ -126,7 +128,7 @@ export default function Appointments() {
                     resizeMode="contain"
                     tintColor={"black"}
                   />
-                  <Text>{item.doctor?.location || item.time}</Text>
+                  <Text className={`font-pregular`}>{item.time}</Text>
                 </View>
               </View>
               <View className="flex-row justify-around">

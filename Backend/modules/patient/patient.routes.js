@@ -5,6 +5,10 @@ router.post("/", patientController.signup);
 router.get("/", patientController.getAllPatients);
 router.get("/cart", checkAccess, patientController.getCart);
 router.post("/cart/add", checkAccess, patientController.addToCart);
-router.post("/cart/delete", checkAccess, patientController.removeCart);
+router.delete(
+  "/cart/delete/:productId",
+  checkAccess,
+  patientController.removeCart
+);
 
 module.exports = router;

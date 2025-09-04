@@ -19,6 +19,7 @@ import CartProduct from "../../../components/cartProduct";
 import FormField from "../../../components/formField";
 import { useProductStore } from "../../../store/productStore";
 import { icons } from "../../../constants";
+import { Icon } from "../../../components/icon";
 
 const Cart = () => {
   const { getCart, cart, getSingleProduct, loadingCart } = useProductStore();
@@ -27,28 +28,31 @@ const Cart = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const isAndroid = Platform.OS == "android";
   const statusBarHeight = StatusBar.currentHeight;
+  const [deleteMode, setDeleteMode] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState();
   useEffect(() => {
     getCart();
-  }, []);
-  useEffect(() => {
     console.log("cart");
-    const countPrice = () => {
-      let price = 0;
-      for (let i = 0; i < cart.length; i++) {
-        price += cart[i].product.price * cart[i].quantity;
-      }
-      return price;
-    };
+  }, [getCart]);
+  useEffect(() => {
+    if (!loadingCart) {
+      const countPrice = () => {
+        let price = 0;
+        for (let i = 0; i < cart.length; i++) {
+          price += cart[i].product?.price * cart[i].quantity;
+        }
+        return price;
+      };
 
-    if (cart.length > 0) {
-      setPrice(countPrice());
-    } else {
-      setPrice(0);
+      if (cart.length > 0) {
+        setPrice(countPrice());
+      } else {
+        setPrice(0);
+      }
+      return () => {
+        setPrice(0);
+      };
     }
-    return () => {
-      setPrice(0);
-    };
   }, [cart]);
   if (loadingCart) {
     return (
@@ -59,22 +63,46 @@ const Cart = () => {
   }
   return (
     <SafeAreaView
-      className=" h-full border-primary bg-[#f9f9f9]"
+      className=" h-full border-primary bg-background-light"
       style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}
     >
+      <View className="flex-row w-full items-center justify-between p-2  bg-transparent mb-4">
+        <Icon
+          source={icons.leftArrow}
+          resizeMode="contain"
+          tintColor={"black"}
+          style="w-6 h-6 "
+          onPress={() => router.back()}
+        />
+
+        <Text className="text-lg font-pregular">Cart</Text>
+        <Icon
+          source={icons.trash}
+          resizeMode="contain"
+          style="w-6 h-6 "
+          tintColor={"red"}
+          onPress={() => setDeleteMode((previous) => !previous)}
+        />
+      </View>
       <FlatList
         data={cart}
         keyExtractor={(item) => item._id}
         onRefresh={getCart}
         refreshing={loadingCart}
         renderItem={({ item }) => (
-          <CartProduct
-            item={item}
-            handlePress={() => {
-              // getSingleProduct(item?.product._id);
-              router.push(`patient/product/${[item?.product._id]}`);
-            }}
-          />
+          <View className={`flex-row items-center`}>
+            <CartProduct
+              item={item}
+              handlePress={() => {
+                router.push(`patient/product/${[item?.product._id]}`);
+              }}
+            />
+            {deleteMode && (
+              <View
+                className={`rounded-full p-1 bg-transparent border h-6 w-6 mr-2`}
+              ></View>
+            )}
+          </View>
         )}
         ListEmptyComponent={() => (
           <View className="min-h-[70%] items-center justify-center">
@@ -82,16 +110,13 @@ const Cart = () => {
             <CustomButton title="Start shopping" />
           </View>
         )}
-        ListFooterComponent={() => {}}
       />
-      <View className="bg-gray-light shadow-sm  m-2 rounded-3xl  p-4 mb-4">
-        <View className="bg-[#f9f9f9] rounded-xl p-2 mb-2">
-          <View className="flex-row justify-between p-2">
-            <Text className="font-psemibold text-xl">Price</Text>
-            <Text className="text-xl font-pbold">{Price} DZD</Text>
-          </View>
+      <View className="bg-[#F2F0EF] shadow-sm  m-2 rounded-3xl  p-4 mb-4">
+        <View className=" flex-row justify-between rounded-xl px-3 py-2 mb-2">
+          <Text className="font-psemibold text-xl">Price</Text>
+          <Text className="text-xl font-pbold">{Price} DZD</Text>
         </View>
-        <View className="bg-[#f9f9f9] rounded-xl flex-row justify-between p-4">
+        <View className=" rounded-xl flex-row justify-between px-3 py-2">
           <Text className="font-psemibold text-xl ">Total</Text>
           <Text className="text-xl font-pbold">
             {Price - Price * (discount / 100)} DZD
@@ -105,33 +130,46 @@ const Cart = () => {
         />
       </View>
       <View>
-        <Modal visible={modalVisible} animationType="slide">
-          <ScrollView className="h-full bg-background-light">
-            <View className="bg-background-light min-h-[100vh]  justify-center border mx-2">
-              <View className="flex-row justify-between w-[100%]">
-                <Text className="text-xl font-psemibold">
-                  Order information
+        <Modal
+          visible={modalVisible}
+          animationType="slide"
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View className="flex-1 bg-background-light pt-10">
+            <View className="px-4">
+              <View className="flex-row justify-between items-center mb-6">
+                <Text className="text-2xl font-psemibold">
+                  Order Information
                 </Text>
-                <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <TouchableOpacity
+                  onPress={() => setModalVisible(false)}
+                  className="p-2"
+                >
                   <Image
-                    source={icons.minus}
+                    source={icons.close || icons.minus} // Use close icon if available
                     resizeMode="contain"
                     className="h-6 w-6"
                   />
                 </TouchableOpacity>
               </View>
-              <FormField title="First name" />
-              <FormField title="Last name" />
-              <FormField title="Phone number" keyboardType="numeric" />
-              <FormField title="Delivery state" defaultValue="Alger" />
-              <FormField title="City" />
 
-              <CustomButton
-                title="Proceed to payment"
-                containerStyles="rounded-3xl mx-2"
-              />
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <FormField title="First name" />
+                <FormField title="Last name" />
+                <FormField title="Phone number" keyboardType="phone-pad" />
+                <FormField title="Delivery state" defaultValue="Alger" />
+                <FormField title="City" />
+
+                <View className="my-6">
+                  <CustomButton
+                    title="Proceed to payment"
+                    containerStyles="rounded-3xl"
+                    // handlePress={handlePayment}
+                  />
+                </View>
+              </ScrollView>
             </View>
-          </ScrollView>
+          </View>
         </Modal>
       </View>
     </SafeAreaView>

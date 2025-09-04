@@ -91,22 +91,20 @@ module.exports.addToCart = async (req, res) => {
 
 module.exports.removeCart = async (req, res) => {
   const { uid } = req.user;
-  const { productId } = req.body;
+  const { productId } = req.params;
 
   try {
     // Fetch user with cart field only
-    const user = await userModel.findById(uid).select("cart");
+    const user = await Patient.findById(uid).select("cart");
     if (!user) return res.status(404).json({ message: "User not found" });
 
     // Find index of product in cart
-    const index = user.cart.findIndex(
-      (cartItem) => cartItem.product.toString() === productId
+    await Patient.findByIdAndUpdate(
+      uid,
+      { $pull: { cart: { product: productId } } },
+      { new: true }
     );
-    if (index < 0)
-      return res.status(404).json({ message: "Product not found in cart" });
-
-    // Remove item
-    user.cart.splice(index, 1);
+    console.log(user.cart);
     await user.save();
 
     res

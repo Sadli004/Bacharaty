@@ -18,7 +18,9 @@ const DoctorHeader = ({ doctor, tab, setTab }) => {
         <Text className="mt-2 text-3xl font-psemibold text-gray-800">
           {doctor?.name || "Doctor Name"}
         </Text>
-        <Text className="text-sm text-gray-500">Dermatologist</Text>
+        <Text className="text-sm text-gray-500 font-pregular">
+          Dermatologist
+        </Text>
       </View>
 
       <View className="flex-column gap-2 justify-around p-4">
@@ -26,17 +28,21 @@ const DoctorHeader = ({ doctor, tab, setTab }) => {
           <View className="border-r flex-1 mr-4 items-center flex-row gap-2">
             <Image source={icons.expertise} className="h-6 w-6" />
             <View className="items-center">
-              <Text className="text-sm font-bold text-gray-800">
+              <Text className="text-sm font-psemibold text-gray-800 ">
                 +{doctor?.experience || 0}
               </Text>
-              <Text className="text-xs text-gray-500">Experience</Text>
+              <Text className="text-xs text-gray-500 font-pregular">
+                Experience
+              </Text>
             </View>
           </View>
           <View className="items-center flex-row">
             <Image source={icons.star} className="h-5 w-5" tintColor="orange" />
             <View className="items-start mx-3">
-              <Text className="text-sm font-bold text-gray-800">4.8</Text>
-              <Text className="text-xs text-gray-500">Rating</Text>
+              <Text className="text-sm font-psemibold text-gray-800">4.8</Text>
+              <Text className="text-xs text-gray-500 font-pregular">
+                Rating
+              </Text>
             </View>
           </View>
         </View>
@@ -44,10 +50,12 @@ const DoctorHeader = ({ doctor, tab, setTab }) => {
         <View className="p-2 rounded-xl shadow-lg bg-white flex-row items-center">
           <Image source={icons.money} className="h-6 w-6" />
           <View className="items-start mx-3">
-            <Text className="text-sm font-bold text-gray-800">
+            <Text className="text-sm font-psemibold text-gray-800">
               {doctor?.feePerConsultation || "0 DZD"}
             </Text>
-            <Text className="text-xs text-gray-500">Consultation Fee</Text>
+            <Text className="text-xs text-gray-500 font-pregular">
+              Consultation Fee
+            </Text>
           </View>
         </View>
       </View>
@@ -61,7 +69,7 @@ const DoctorHeader = ({ doctor, tab, setTab }) => {
             }`}
             onPress={() => setTab(item)}
           >
-            <Text className="text-xl">{item}</Text>
+            <Text className="text-lg font-pregular">{item}</Text>
           </TouchableOpacity>
         ))}
       </View>

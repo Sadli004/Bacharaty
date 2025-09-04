@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Modal,
   TouchableWithoutFeedback,
+  Platform,
+  StatusBar,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
@@ -23,6 +25,7 @@ import DoctorHeader from "../../../../components/doctorHeader";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { BlurView } from "expo-blur";
 import { useAppointmentStore } from "../../../../store/appointmentStore";
+import { Icon } from "../../../../components/icon";
 const Docotor = () => {
   const { user } = useUserStore();
   const { id } = useLocalSearchParams();
@@ -35,6 +38,8 @@ const Docotor = () => {
   const [week, setWeek] = useState(getWeekDays(selectedDay));
   const [selectedTime, setSelectedTime] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const isAndroid = Platform.OS == "android";
+  const statusBarHeight = StatusBar.currentHeight;
   const allowBooking = selectedDay && selectedTime;
   const times = [
     { id: 1, time: "08:00 AM" },
@@ -60,14 +65,25 @@ const Docotor = () => {
     bookAppointment(doctorId, date, time);
   };
   const headerComponent = () => (
-    <>
+    <View style={{ paddingTop: isAndroid ? statusBarHeight : 0 }}>
+      <View className="flex-row w-full items-center justify-between max-w-[75%]   p-2  bg-transparent ">
+        <Icon
+          source={icons.leftArrow}
+          resizeMode="contain"
+          tintColor={"black"}
+          style="w-6 h-6 "
+          onPress={() => router.back()}
+        />
+
+        <Text className="text-lg font-pregular">Doctor Details</Text>
+      </View>
       <DoctorHeader doctor={doctor} tab={tab} setTab={setTab} />
       {tab === "About" ? (
         <View className="p-4">
           <Text className="text-lg font-pbold text-gray-800 mb-1">
             About Me
           </Text>
-          <Text className="text-gray-600">
+          <Text className="text-gray-600 font-pregular">
             I am {doctor?.name}, a specialist in dermatology for over 10 years,
             based in Algiers.
           </Text>
@@ -125,7 +141,7 @@ const Docotor = () => {
           </View>
         </View>
       )}
-    </>
+    </View>
   );
 
   const renderItem = ({ item }) => {
@@ -143,7 +159,7 @@ const Docotor = () => {
             selectedTime === item.time ? "bg-dark" : "bg-gray-light"
           }`}
         >
-          <Text className="text-white font-bold">{item.time}</Text>
+          <Text className="text-white font-psemibold">{item.time}</Text>
         </TouchableOpacity>
       );
     }
@@ -178,7 +194,7 @@ const Docotor = () => {
       )}
       <CustomButton
         title="Book now"
-        containerStyles={`${
+        containerStyles={` mb-4 ${
           allowBooking ? "bg-primary" : "bg-secondary"
         } rounded-3xl mx-4`}
         handlePress={() => {

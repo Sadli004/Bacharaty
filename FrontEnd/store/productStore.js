@@ -115,6 +115,7 @@ export const useProductStore = create((set, get) => ({
           productId: productId,
         }
       );
+
       set((state) => ({
         cart: [...state.cart, response.data],
       }));
@@ -122,5 +123,32 @@ export const useProductStore = create((set, get) => ({
     } catch (error) {
       console.error(error.message);
     }
+  },
+  removeCartItem: async (productId) => {
+    const token = useUserStore.getState().token;
+    const cart = useProductStore.getState().cart;
+    try {
+      axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
+      const response = await axios.delete(
+        `${process.env.EXPO_PUBLIC_API_URL}/patient/cart/delete/${productId}`
+      );
+      console.log(response.data);
+      set((state) => ({
+        cart: state.cart.filter((item) => item.product?._id !== productId),
+      }));
+      useErrorStore.getState().setError(response.data.message, "success");
+    } catch (error) {
+      console.error(error.response.data);
+      useErrorStore.getState().setError("Couldn't delete item from cart");
+    }
+  },
+  updateQuantity: (productId, newQuantity) => {
+    set((state) => ({
+      cart: state.cart.map((item) =>
+        item.product?._id == productId
+          ? { ...item, quantity: newQuantity }
+          : item
+      ),
+    }));
   },
 }));

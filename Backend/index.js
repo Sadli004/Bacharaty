@@ -4,10 +4,18 @@ const { Server } = require("socket.io");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const { StreamChat } = require("stream-chat");
+const { ChargilyClient } = require("@chargily/chargily-pay");
 require("dotenv").config();
 
 const app = express();
 const server = http.createServer(app);
+//Chargily client init
+const chargily = new ChargilyClient({
+  api_key: process.env.CHARGILI_SECRET_KEY,
+  mode: "test",
+});
+
+//socket
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -107,6 +115,28 @@ app.use("/video-token", (req, res) => {
   const token = client.createToken(id);
   console.log(token);
   res.json({ token });
+});
+
+app.use("/checkout", async (req, res) => {
+  try {
+    const checkout = await chargily.createCheckout({
+      amount: 1500,
+      currency: "dzd",
+      payment_method: "CIB",
+      locale: "en",
+      success_url: "https://moment.github.io/luxon/demo/global.html",
+      failure_url: "http://localhost:8082/doctor/",
+      description: "Book appointment",
+      metadata: { appointmentId: "68adf7b041bc5a1b90079771" },
+    });
+    return res.json({
+      Message: "Payment success",
+      CheckoutUrl: checkout.checkout_url,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
 });
 // Start server
 const PORT = process.env.PORT || 5000;

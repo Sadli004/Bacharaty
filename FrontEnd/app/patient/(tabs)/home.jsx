@@ -12,7 +12,7 @@ import {
 import React, { useEffect } from "react";
 import CustomButton from "../../../components/customButton";
 import { useUserStore } from "../../../store/userStore";
-import { images } from "../../../constants";
+import { icons, images } from "../../../constants";
 import { useProductStore } from "../../../store/productStore";
 import { useDoctorStore } from "../../../store/doctorStore";
 import DoctorList from "../../../components/doctorList";
@@ -61,12 +61,28 @@ const main = () => {
                 }}
                 className="w-16 h-16 rounded-full mr-3"
               />
-              <View>
+              <View className="items-start">
                 <Text className="text-lg font-psemibold">
                   {doctors[0]?.name}
                 </Text>
-                <Text className="text-gray-500">21 Juin 2025</Text>
-                <Text className="text-gray-500">11:30</Text>
+                <View className={`flex-row gap-2 items-center`}>
+                  <Image
+                    source={icons.calendar}
+                    className={`w-5 h-5`}
+                    resizeMode="contain"
+                  />
+                  <Text className="text-gray-500 font-pregular">
+                    21 Juin 2025
+                  </Text>
+                </View>
+                <View className={`flex-row gap-2 items-center`}>
+                  <Image
+                    source={icons.clock}
+                    className={`w-6 h-6`}
+                    resizeMode="contain"
+                  />
+                  <Text className="text-gray-500 font-pregular">11:30</Text>
+                </View>
               </View>
             </View>
           </TouchableOpacity>

@@ -42,6 +42,8 @@ import moon from "../assets/icons/moon.png";
 import globe from "../assets/icons/globe.png";
 import wallet from "../assets/icons/wallet.png";
 import location from "../assets/icons/location.png";
+import trash from "../assets/icons/trash.png";
+import checkmark from "../assets/icons/checkmark.png";
 export default {
   play,
   bookmark,
@@ -87,4 +89,6 @@ export default {
   moon,
   wallet,
   location,
+  trash,
+  checkmark,
 };

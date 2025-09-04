@@ -140,22 +140,4 @@ export const useUserStore = create((set) => ({
     axios.defaults.headers.common["authorization"] = "";
     set({ user: null, role: null, loading: false });
   },
-  // likeProduct: async (productId) => {
-
-  //   try {
-  //     axios.defaults.headers.common["authorization"] = `Bearer ${token}`;
-  //     const response = await axios.post(
-  //       `${process.env.EXPO_PUBLIC_API_URL}/product/like/`,
-  //       {
-  //         productId,
-  //       }
-  //     );
-
-  //     set((state) => ({
-  //       user: {...user, liked : response.data.patient.liked}
-  //     }));
-  //   } catch (error) {
-  //     console.error(error.response?.data.message);
-  //   }
-  // },
 }));

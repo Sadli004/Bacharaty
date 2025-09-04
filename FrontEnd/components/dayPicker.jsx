@@ -20,7 +20,7 @@ export default function DayPicker({ week, selectedDay, setSelectedDay }) {
         return (
           <TouchableOpacity
             onPress={() => setSelectedDay(item.current)}
-            className={`rounded-3xl shadow-sm mt-3 mr-2 p-2 h-[70px] w-[47px] items-center ${
+            className={`rounded-3xl shadow-sm mt-3 mr-2 p-2 h-[60px] w[60px] items-center ${
               isActive ? "bg-dark" : "bg-gray-light"
             }`}
           >

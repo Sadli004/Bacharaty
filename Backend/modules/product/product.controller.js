@@ -123,7 +123,7 @@ module.exports.unlikeProduct = async (req, res) => {
     );
     if (!user) return res.status(404).send("User not found");
 
-    console.log(user.liked);
+    // console.log(user.liked);
     res.send("Product liked");
   } catch (error) {
     res.status(500).send("Internal server error");

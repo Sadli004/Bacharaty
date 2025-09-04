@@ -101,10 +101,7 @@ export default function RootLayout() {
             <Stack.Screen name="index" />
             <Stack.Screen name="(auth)" />
             <Stack.Screen name="patient/(tabs)" />
-            <Stack.Screen
-              name="patient/appointments"
-              screenOptions={{ headerShown: true }}
-            />
+            <Stack.Screen name="patient/appointments" />
             <Stack.Screen name="doctor" />
             <Stack.Screen name="video-call/[callId]" />
           </Stack>
